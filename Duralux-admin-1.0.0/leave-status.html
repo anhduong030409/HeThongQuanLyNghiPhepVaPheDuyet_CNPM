@@ -54,7 +54,7 @@
                     <li class="nxl-item nxl-hasmenu">
                         <a href="javascript:void(0);" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-airplay"></i></span>
-                            <span class="nxl-mtext">Dashboards</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                            <span class="nxl-mtext">Dashboard</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
                         </a>
                         <ul class="nxl-submenu">
                             <li class="nxl-item"><a class="nxl-link" href="index.html">CRM</a></li>
@@ -2103,11 +2103,11 @@
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">Dashboard</h5>
+                        <h5 class="m-b-10">Nhân viên</h5>
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item">Theo dõi trạng thái</li>
                     </ul>
                 </div>
                 <div class="page-header-right ms-auto">
@@ -2185,76 +2185,95 @@
                     <div class="col-xxl-3 col-md-6 mb-4 mb-xxl-0">
                         <div class="card stretch stretch-full border-0 shadow-sm">
                             <div class="card-body">
-                                <div class="d-flex align-items-center gap-3 mb-4">
-                                    <div class="avatar-text avatar-lg bg-soft-primary text-primary rounded">
-                                        <i class="feather-umbrella"></i>
-                                    </div>
-                                    <div>
-                                        <div class="fs-4 fw-bold text-dark">10.5/12</div>
-                                        <h3 class="fs-13 fw-semibold text-muted mb-0">Ngày phép còn lại</h3>
+                                <div class="d-flex align-items-start justify-content-between mb-4">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <div class="avatar-text avatar-lg bg-soft-primary text-primary rounded">
+                                            <i class="feather-umbrella"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fs-4 fw-bold text-dark">
+                                                <span class="counter">10.5</span>/<span class="counter">12</span>
+                                            </div>
+                                            <h3 class="fs-13 fw-semibold text-muted mb-0">Ngày phép còn lại</h3>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="progress ht-3">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 87.5%"></div>
+                                <div class="pt-2">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <span class="fs-12 fw-medium text-muted">Mức độ sử dụng:</span>
+                                        <span class="fs-11 text-muted">Đã dùng 1.5 ngày</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-xxl-3 col-md-6 mb-4 mb-xxl-0">
-                        <div class="card stretch stretch-full border-0 shadow-sm border-top border-warning border-3">
+                        <div class="card stretch stretch-full border-0 shadow-sm">
                             <div class="card-body">
-                                <div class="d-flex align-items-center gap-3 mb-4">
-                                    <div class="avatar-text avatar-lg bg-soft-warning text-warning rounded">
-                                        <i class="feather-clock"></i>
-                                    </div>
-                                    <div>
-                                        <div class="fs-4 fw-bold text-dark">02 Đơn</div>
-                                        <h3 class="fs-13 fw-semibold text-muted mb-0 text-warning">Đang chờ phê duyệt</h3>
+                                <div class="d-flex align-items-start justify-content-between mb-4">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <div class="avatar-text avatar-lg bg-soft-warning text-warning rounded">
+                                            <i class="feather-clock"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fs-4 fw-bold text-dark"><span class="counter">02</span> Đơn</div>
+                                            <h3 class="fs-13 fw-semibold text-muted mb-0">Đang chờ phê duyệt</h3>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span class="fs-11 text-muted">Cần quản lý phản hồi</span>
-                                    <span class="spinner-grow spinner-grow-sm text-warning" role="status"></span>
+                                <div class="pt-2">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <span class="fs-12 fw-medium text-muted">Trạng thái: Đang xử lý</span>
+                                        <span class="spinner-grow spinner-grow-sm text-warning" role="status"></span>
+                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-xxl-3 col-md-6 mb-4 mb-md-0">
                         <div class="card stretch stretch-full border-0 shadow-sm">
                             <div class="card-body">
-                                <div class="d-flex align-items-center gap-3 mb-4">
-                                    <div class="avatar-text avatar-lg bg-soft-success text-success rounded">
-                                        <i class="feather-check-circle"></i>
-                                    </div>
-                                    <div>
-                                        <div class="fs-4 fw-bold text-dark">08 Đơn</div>
-                                        <h3 class="fs-13 fw-semibold text-muted mb-0">Đã được chấp thuận</h3>
+                                <div class="d-flex align-items-start justify-content-between mb-4">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <div class="avatar-text avatar-lg bg-soft-success text-success rounded">
+                                            <i class="feather-check-circle"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fs-4 fw-bold text-dark"><span class="counter">08</span> Đơn</div>
+                                            <h3 class="fs-13 fw-semibold text-muted mb-0">Đã được chấp thuận</h3>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="progress ht-3">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                                <div class="pt-2">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <span class="fs-12 fw-medium text-muted">Tổng thời gian nghỉ</span>
+                                        <span class="fs-12 fw-bold text-dark">14 ngày</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-xxl-3 col-md-6">
-                        <div class="card stretch stretch-full border-0 shadow-sm border-top border-danger border-3">
+                        <div class="card stretch stretch-full border-0 shadow-sm">
                             <div class="card-body">
-                                <div class="d-flex align-items-center gap-3 mb-4">
-                                    <div class="avatar-text avatar-lg bg-soft-danger text-danger rounded">
-                                        <i class="feather-alert-octagon"></i>
-                                    </div>
-                                    <div>
-                                        <div class="fs-4 fw-bold text-dark">01 Đơn</div>
-                                        <h3 class="fs-13 fw-semibold text-muted mb-0 text-danger">Cần xem lại lý do</h3>
+                                <div class="d-flex align-items-start justify-content-between mb-4">
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <div class="avatar-text avatar-lg bg-soft-danger text-danger rounded">
+                                            <i class="feather-alert-octagon"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fs-4 fw-bold text-dark"><span class="counter">01</span> Đơn</div>
+                                            <h3 class="fs-13 fw-semibold text-muted mb-0">Đơn bị từ chối</h3>
+                                        </div>
                                     </div>
                                 </div>
-                                <a href="javascript:void(0);" class="fs-12 fw-bold text-danger d-flex align-items-center">
-                                    Nhấn để chỉnh sửa lại đơn <i class="feather-arrow-right ms-1"></i>
-                                </a>
+                                <div class="pt-2">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <a href="javascript:void(0);" class="fs-12 fw-bold text-danger">Xem lý do từ chối</a>
+                                        <i class="feather-arrow-right fs-12 text-danger"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
