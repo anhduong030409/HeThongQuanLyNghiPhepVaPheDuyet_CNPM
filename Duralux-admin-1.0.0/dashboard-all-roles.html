@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Hệ thống quản lý nghỉ phép</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #f0f2f5;
+  --surface:   #ffffff;
+  --surface2:  #f7f8fa;
+  --border:    #e8eaed;
+  --text:      #1a1d23;
+  --text-sub:  #4b5563;
+  --text-muted:#9ca3af;
+  --shadow:    0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --blue:      #3b6ef8;
+  --blue-lt:   #eff3ff;
+  --green:     #10b981;
+  --green-lt:  #ecfdf5;
+  --orange:    #f59e0b;
+  --orange-lt: #fffbeb;
+  --red:       #ef4444;
+  --red-lt:    #fef2f2;
+  --purple:    #8b5cf6;
+  --purple-lt: #f5f3ff;
+  --teal:      #06b6d4;
+  --teal-lt:   #ecfeff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; font-size:14px; line-height:1.5; }
+
+/* Role switcher */
+.role-switcher { position:fixed; bottom:20px; right:20px; z-index:999; display:flex; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:6px; box-shadow:var(--shadow-md); }
+.role-btn { padding:7px 16px; border-radius:10px; border:none; cursor:pointer; font-family:'Inter',sans-serif; font-size:12px; font-weight:600; color:var(--text-sub); background:transparent; transition:all 0.18s; }
+.role-btn:hover { background:var(--surface2); color:var(--text); }
+.role-btn.active { background:var(--blue); color:#fff; }
+
+/* Dashboards */
+.dashboard { display:none; padding:24px 28px; max-width:1380px; margin:0 auto; }
+.dashboard.active { display:block; animation:fadeUp 0.3s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+/* Page header */
+.page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px; }
+.breadcrumb { font-size:12px; color:var(--text-muted); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
+.breadcrumb span { color:var(--text-sub); }
+.page-header h1 { font-size:22px; font-weight:700; color:var(--text); letter-spacing:-0.3px; }
+.ph-right { display:flex; align-items:center; gap:10px; margin-top:4px; }
+.date-btn { display:flex; align-items:center; gap:8px; padding:8px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; font-size:13px; font-weight:500; color:var(--text-sub); cursor:pointer; box-shadow:var(--shadow); white-space:nowrap; }
+.filter-btn { display:flex; align-items:center; gap:6px; padding:8px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; font-size:13px; font-weight:500; color:var(--text-sub); cursor:pointer; box-shadow:var(--shadow); }
+.btn-primary { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:var(--blue); color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:opacity 0.15s; }
+.btn-primary:hover { opacity:0.9; }
+
+/* Grid */
+.grid { display:grid; gap:16px; }
+.g4 { grid-template-columns:repeat(4,1fr); }
+.g3 { grid-template-columns:repeat(3,1fr); }
+.g2 { grid-template-columns:repeat(2,1fr); }
+.g-3-1 { grid-template-columns:3fr 1fr; }
+.g-2-1 { grid-template-columns:2fr 1fr; }
+.g-1-2 { grid-template-columns:1fr 2fr; }
+
+/* Card */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow:var(--shadow); position:relative; overflow:hidden; transition:box-shadow 0.2s,transform 0.2s; }
+.card:hover { box-shadow:var(--shadow-md); transform:translateY(-1px); }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.card-title { font-size:14px; font-weight:600; color:var(--text); }
+.card-menu { width:28px; height:28px; border-radius:6px; border:none; background:transparent; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; justify-content:center; font-size:18px; transition:background 0.15s; }
+.card-menu:hover { background:var(--surface2); }
+
+/* Stat card */
+.stat-icon { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.stat-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px; }
+.stat-menu { color:var(--text-muted); cursor:pointer; font-size:20px; line-height:1; }
+.stat-value { font-size:26px; font-weight:700; color:var(--text); line-height:1.1; letter-spacing:-0.5px; }
+.stat-label { font-size:12px; color:var(--text-muted); font-weight:500; margin-top:2px; }
+.stat-footer { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; font-size:12px; }
+
+/* Progress */
+.progress-row { display:flex; flex-direction:column; gap:12px; }
+.progress-meta { display:flex; justify-content:space-between; font-size:12px; color:var(--text-sub); margin-bottom:5px; font-weight:500; }
+.progress-track { height:7px; background:var(--surface2); border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+.progress-fill { height:100%; border-radius:10px; transition:width 0.6s ease; }
+
+/* List */
+.list-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+.list-row:first-child { padding-top:0; }
+.list-row:last-child { border-bottom:none; padding-bottom:0; }
+.avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; letter-spacing:0.5px; }
+.list-info { flex:1; min-width:0; }
+.list-name { font-size:13px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.list-meta { font-size:11px; color:var(--text-muted); }
+
+/* Badges */
+.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; flex-shrink:0; }
+.badge::before { content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.badge-pending  { background:var(--orange-lt); color:#b45309; }
+.badge-pending::before  { background:var(--orange); }
+.badge-approved { background:var(--green-lt);  color:#065f46; }
+.badge-approved::before { background:var(--green); }
+.badge-rejected { background:var(--red-lt);    color:#991b1b; }
+.badge-rejected::before { background:var(--red); }
+.badge-active   { background:var(--blue-lt);   color:#1e40af; }
+.badge-active::before   { background:var(--blue); }
+
+/* Alert */
+.alert { display:flex; align-items:center; gap:10px; padding:11px 16px; border-radius:10px; font-size:13px; font-weight:500; margin-bottom:18px; }
+.alert-warn { background:var(--orange-lt); border:1px solid #fed7aa; color:#92400e; }
+.alert-info  { background:var(--blue-lt);  border:1px solid #bfdbfe; color:#1e40af; }
+.alert a { font-weight:700; text-decoration:underline; cursor:pointer; color:inherit; }
+
+/* Quick links */
+.quick-links { display:flex; flex-direction:column; gap:8px; }
+.quick-link { display:flex; align-items:center; gap:12px; padding:11px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:10px; cursor:pointer; transition:all 0.18s; text-decoration:none; color:var(--text); }
+.quick-link:hover { background:var(--blue-lt); border-color:#bfdbfe; transform:translateX(3px); }
+.ql-icon { width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.ql-info { flex:1; }
+.ql-name { font-size:13px; font-weight:600; color:var(--text); }
+.ql-desc { font-size:11px; color:var(--text-muted); }
+.ql-arrow { color:var(--text-muted); font-size:16px; }
+
+/* Timeline */
+.tl-item { display:flex; gap:12px; padding-bottom:14px; position:relative; }
+.tl-item:last-child { padding-bottom:0; }
+.tl-dot-wrap { display:flex; flex-direction:column; align-items:center; }
+.tl-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+.tl-line { width:2px; flex:1; background:var(--border); margin-top:4px; }
+.tl-item:last-child .tl-line { display:none; }
+.tl-title { font-size:13px; font-weight:500; color:var(--text); }
+.tl-time  { font-size:11px; color:var(--text-muted); margin-top:2px; }
+
+/* Bar chart */
+.bar-chart { display:flex; align-items:flex-end; gap:10px; height:90px; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; }
+.bar-body { width:100%; border-radius:5px 5px 0 0; min-height:4px; }
+.bar-lbl { font-size:10px; color:var(--text-muted); font-weight:500; }
+
+/* Donut */
+.donut-wrap { display:flex; align-items:center; gap:20px; }
+.donut-legend { display:flex; flex-direction:column; gap:9px; }
+.legend-row { display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-sub); }
+.legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.legend-pct { margin-left:auto; padding-left:16px; font-weight:600; color:var(--text); }
+
+/* Calendar */
+.cal-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:13px; font-weight:600; color:var(--text); }
+.cal-nav button { width:26px; height:26px; border-radius:6px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; color:var(--text-sub); font-size:14px; display:flex; align-items:center; justify-content:center; }
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.cal-lbl { text-align:center; font-size:11px; font-weight:600; color:var(--text-muted); padding:4px 0; }
+.cal-day { text-align:center; padding:6px 2px; font-size:12px; color:var(--text-sub); border-radius:6px; cursor:pointer; transition:background 0.12s; }
+.cal-day:hover { background:var(--surface2); }
+.cal-today { background:var(--blue)!important; color:#fff!important; font-weight:700; border-radius:50%!important; }
+.cal-leave { background:#dbeafe; color:var(--blue); font-weight:600; }
+.cal-empty { opacity:0; pointer-events:none; }
+.cal-legend { display:flex; gap:14px; margin-top:10px; padding-top:10px; border-top:1px solid var(--border); }
+.cal-leg-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text-muted); }
+
+/* Service rows */
+.svc-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.svc-row:first-child{padding-top:0} .svc-row:last-child{border-bottom:none;padding-bottom:0}
+
+/* Approve buttons */
+.btn-approve { padding:4px 10px; border-radius:6px; border:1px solid #bbf7d0; background:var(--green-lt); color:#065f46; font-size:11px; font-weight:600; cursor:pointer; }
+.btn-approve:hover { background:#bbf7d0; }
+.btn-reject  { padding:4px 10px; border-radius:6px; border:1px solid #fecaca; background:var(--red-lt);   color:#991b1b; font-size:11px; font-weight:600; cursor:pointer; margin-left:5px; }
+.btn-reject:hover  { background:#fecaca; }
+
+/* Leave request box */
+.req-box { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; }
+.req-title { font-size:14px; font-weight:700; color:var(--text); }
+.req-sub   { font-size:12px; color:var(--text-muted); margin-top:3px; }
+.req-footer { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); display:flex; gap:20px; font-size:12px; color:var(--text-muted); }
+.req-footer strong { color:var(--text-sub); }
+
+@media(max-width:1100px){
+  .g4{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(2,1fr)}
+  .g-3-1,.g-2-1,.g-1-2{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .g4,.g3,.g2{grid-template-columns:1fr}
+  .dashboard{padding:16px}
+  .role-switcher{bottom:10px;right:10px}
+}
+</style>
+</head>
+<body>
+
+<div class="role-switcher">
+  <button class="role-btn active" id="btn-admin"    onclick="switchRole('admin')">🔧 Admin</button>
+  <button class="role-btn"        id="btn-hr"       onclick="switchRole('hr')">👥 HR</button>
+  <button class="role-btn"        id="btn-manager"  onclick="switchRole('manager')">📋 Manager</button>
+  <button class="role-btn"        id="btn-employee" onclick="switchRole('employee')">🙋 Nhân viên</button>
+</div>
+
+
+<!-- ═══════ ADMIN ═══════ -->
+<div id="dash-admin" class="dashboard active">
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">Trang chủ <span>›</span> Dashboard <span>›</span> <span>Quản trị hệ thống</span></div>
+      <h1>Dashboard Admin</h1>
+    </div>
+    <div class="ph-right">
+      <div class="date-btn">📅 09/02/26 – 09/03/26</div>
+      <div class="filter-btn">⚙️ Bộ lọc</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">⚠️ 3 tài khoản chưa được phân quyền đầy đủ. <a>Xem và xử lý ngay →</a></div>
+
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#eff3ff">👤</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">248</div><div class="stat-label">Tổng người dùng</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Người dùng</span><span style="font-size:11px;color:#10b981;font-weight:600">↑ 12 tháng này</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:82%;background:#3b6ef8"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#ecfdf5">✅</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">231</div><div class="stat-label">Đang hoạt động</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Hoạt động</span><span style="font-size:11px;color:#10b981;font-weight:600">93% online</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:93%;background:#10b981"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#f5f3ff">🔐</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">4</div><div class="stat-label">Vai trò hệ thống</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Vai trò</span><span style="font-size:11px;color:#6b7280;font-weight:500">Admin·HR·Manager·NV</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:100%;background:#8b5cf6"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#ecfeff">📊</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">99.8<span style="font-size:18px;font-weight:500">%</span></div><div class="stat-label">Uptime hệ thống</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Uptime</span><span style="font-size:11px;color:#10b981;font-weight:600">30 ngày liên tục</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:99%;background:#06b6d4"></div></div>
+    </div>
+  </div>
+
+  <div class="grid g-1-2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Điều hướng nhanh</div></div>
+      <div class="quick-links">
+        <a class="quick-link" href="#"><div class="ql-icon" style="background:#eff3ff">👤</div><div class="ql-info"><div class="ql-name">Quản lý người dùng</div><div class="ql-desc">Thêm, sửa, vô hiệu hoá tài khoản</div></div><span class="ql-arrow">›</span></a>
+        <a class="quick-link" href="#"><div class="ql-icon" style="background:#f5f3ff">🔐</div><div class="ql-info"><div class="ql-name">Phân quyền & Vai trò</div><div class="ql-desc">Cấu hình permission theo role</div></div><span class="ql-arrow">›</span></a>
+        <a class="quick-link" href="#"><div class="ql-icon" style="background:#f0fdf4">⚙️</div><div class="ql-info"><div class="ql-name">Cấu hình hệ thống</div><div class="ql-desc">Email, thông báo, tích hợp API</div></div><span class="ql-arrow">›</span></a>
+        <a class="quick-link" href="#"><div class="ql-icon" style="background:#ecfeff">📋</div><div class="ql-info"><div class="ql-name">Nhật ký hệ thống</div><div class="ql-desc">Audit log, lịch sử thao tác</div></div><span class="ql-arrow">›</span></a>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr 1fr;gap:16px;align-content:start">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Phân bổ người dùng</div><button class="card-menu">⋯</button></div>
+        <div class="progress-row">
+          <div><div class="progress-meta"><span>Nhân viên</span><span style="color:#3b6ef8;font-weight:700">189</span></div><div class="progress-track"><div class="progress-fill" style="width:76%;background:#3b6ef8"></div></div></div>
+          <div><div class="progress-meta"><span>Quản lý</span><span style="color:#8b5cf6;font-weight:700">38</span></div><div class="progress-track"><div class="progress-fill" style="width:15%;background:#8b5cf6"></div></div></div>
+          <div><div class="progress-meta"><span>HR</span><span style="color:#06b6d4;font-weight:700">16</span></div><div class="progress-track"><div class="progress-fill" style="width:6%;background:#06b6d4"></div></div></div>
+          <div><div class="progress-meta"><span>Admin</span><span style="color:#f59e0b;font-weight:700">5</span></div><div class="progress-track"><div class="progress-fill" style="width:2%;background:#f59e0b"></div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Hoạt động gần đây</div><button class="card-menu">⋯</button></div>
+        <div>
+          <div class="tl-item"><div class="tl-dot-wrap"><div class="tl-dot" style="background:#3b6ef8"></div><div class="tl-line"></div></div><div><div class="tl-title">Thêm user <strong>Nguyễn Văn A</strong></div><div class="tl-time">2 phút trước</div></div></div>
+          <div class="tl-item"><div class="tl-dot-wrap"><div class="tl-dot" style="background:#f59e0b"></div><div class="tl-line"></div></div><div><div class="tl-title">Cập nhật cấu hình SMTP</div><div class="tl-time">1 giờ trước</div></div></div>
+          <div class="tl-item"><div class="tl-dot-wrap"><div class="tl-dot" style="background:#10b981"></div><div class="tl-line"></div></div><div><div class="tl-title">Phân quyền Manager: Trần B</div><div class="tl-time">3 giờ trước</div></div></div>
+          <div class="tl-item"><div class="tl-dot-wrap"><div class="tl-dot" style="background:#8b5cf6"></div></div><div><div class="tl-title">Reset mật khẩu tài khoản #047</div><div class="tl-time">Hôm qua 16:22</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g3">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Trạng thái dịch vụ</div><button class="card-menu">⋯</button></div>
+      <div class="svc-row"><span>🟢 Database chính</span><span class="badge badge-active">Online</span></div>
+      <div class="svc-row"><span>🟢 Email Service</span><span class="badge badge-active">Online</span></div>
+      <div class="svc-row"><span>🟡 Backup Service</span><span class="badge badge-pending">Đang chạy</span></div>
+      <div class="svc-row"><span>🟢 API Gateway</span><span class="badge badge-active">Online</span></div>
+      <div class="svc-row"><span>🟢 Push Notification</span><span class="badge badge-active">Online</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Tài khoản chờ phân quyền</div><button class="card-menu">⋯</button></div>
+      <div class="list-row"><div class="avatar" style="background:#eff3ff;color:#3b6ef8">LH</div><div class="list-info"><div class="list-name">Lê Hoàng Nam</div><div class="list-meta">Dev · Chưa phân role</div></div><span class="badge badge-pending">Chờ</span></div>
+      <div class="list-row"><div class="avatar" style="background:#eff3ff;color:#3b6ef8">PT</div><div class="list-info"><div class="list-name">Phạm Thị Lan</div><div class="list-meta">HR · Chưa phân role</div></div><span class="badge badge-pending">Chờ</span></div>
+      <div class="list-row"><div class="avatar" style="background:#eff3ff;color:#3b6ef8">TM</div><div class="list-info"><div class="list-name">Trương Minh Đức</div><div class="list-meta">Sales · Chưa phân role</div></div><span class="badge badge-pending">Chờ</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Thống kê tháng 3</div><button class="card-menu">⋯</button></div>
+      <div class="progress-row">
+        <div><div class="progress-meta"><span>Đơn nghỉ phép xử lý</span><span style="font-weight:700">842</span></div><div class="progress-track"><div class="progress-fill" style="width:84%;background:#3b6ef8"></div></div></div>
+        <div><div class="progress-meta"><span>Email thông báo gửi</span><span style="font-weight:700">2,140</span></div><div class="progress-track"><div class="progress-fill" style="width:100%;background:#06b6d4"></div></div></div>
+        <div><div class="progress-meta"><span>Đăng nhập trong tháng</span><span style="font-weight:700">1,560</span></div><div class="progress-track"><div class="progress-fill" style="width:60%;background:#8b5cf6"></div></div></div>
+        <div><div class="progress-meta"><span>Hệ thống ổn định</span><span style="font-weight:700;color:#10b981">99.8%</span></div><div class="progress-track"><div class="progress-fill" style="width:99%;background:#10b981"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ HR ═══════ -->
+<div id="dash-hr" class="dashboard">
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">Trang chủ <span>›</span> Dashboard <span>›</span> <span>Nhân sự</span></div>
+      <h1>Dashboard HR</h1>
+    </div>
+    <div class="ph-right">
+      <div class="date-btn">📅 Quý I · 2026</div>
+      <button class="btn-primary">+ Thêm loại phép</button>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#eff3ff">👥</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">227</div><div class="stat-label">Tổng nhân viên</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Nhân viên</span><span style="font-size:11px;color:#10b981;font-weight:600">↑ 8 so với T2</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:85%;background:#3b6ef8"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#fef9c3">🏖️</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">14</div><div class="stat-label">Đang nghỉ phép</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Vắng mặt</span><span style="font-size:11px;color:#6b7280;font-weight:500">6.2% nhân lực</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:6%;background:#f59e0b"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#fef2f2">⏳</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">23</div><div class="stat-label">Đơn chờ xử lý</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Chờ duyệt</span><span style="font-size:11px;color:#ef4444;font-weight:600">↑ 5 so với tuần trước</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:45%;background:#ef4444"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#ecfdf5">📋</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">8</div><div class="stat-label">Loại phép quản lý</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Loại phép</span><span style="font-size:11px;color:#6b7280;font-weight:500">Năm·Ốm·Thai sản…</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:100%;background:#10b981"></div></div>
+    </div>
+  </div>
+
+  <div class="grid g-2-1" style="margin-bottom:16px">
+    <div class="grid" style="gap:16px">
+      <!-- Donut -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Phân bổ loại nghỉ phép — Tháng 3</div><button class="card-menu">⋯</button></div>
+        <div class="donut-wrap">
+          <svg width="110" height="110" viewBox="0 0 110 110">
+            <circle cx="55" cy="55" r="44" fill="none" stroke="#f0f2f5" stroke-width="16"/>
+            <circle cx="55" cy="55" r="44" fill="none" stroke="#3b6ef8" stroke-width="16" stroke-dasharray="175 276" stroke-dashoffset="0" transform="rotate(-90 55 55)"/>
+            <circle cx="55" cy="55" r="44" fill="none" stroke="#10b981" stroke-width="16" stroke-dasharray="83 276" stroke-dashoffset="-175" transform="rotate(-90 55 55)"/>
+            <circle cx="55" cy="55" r="44" fill="none" stroke="#f59e0b" stroke-width="16" stroke-dasharray="18 276" stroke-dashoffset="-258" transform="rotate(-90 55 55)"/>
+            <text x="55" y="51" text-anchor="middle" font-size="18" font-weight="700" fill="#1a1d23">148</text>
+            <text x="55" y="64" text-anchor="middle" font-size="10" fill="#9ca3af">đơn</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-row"><div class="legend-dot" style="background:#3b6ef8"></div><span>Nghỉ năm</span><span class="legend-pct">63%</span></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#10b981"></div><span>Nghỉ ốm</span><span class="legend-pct">30%</span></div>
+            <div class="legend-row"><div class="legend-dot" style="background:#f59e0b"></div><span>Cá nhân</span><span class="legend-pct">7%</span></div>
+          </div>
+          <div style="margin-left:auto;text-align:right">
+            <div style="font-size:11px;color:var(--text-muted)">Tổng T3</div>
+            <div style="font-size:30px;font-weight:800;color:#3b6ef8;letter-spacing:-1px">148</div>
+            <div style="font-size:11px;color:#10b981;font-weight:600">↑ 8% vs T2</div>
+          </div>
+        </div>
+      </div>
+      <!-- Bar chart -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Số ngày nghỉ theo phòng ban — T3</div><button class="card-menu">⋯</button></div>
+        <div class="bar-chart">
+          <div class="bar-col"><div class="bar-body" style="height:80%;background:#3b6ef8;opacity:.9"></div><div class="bar-lbl">Dev</div></div>
+          <div class="bar-col"><div class="bar-body" style="height:55%;background:#3b6ef8;opacity:.7"></div><div class="bar-lbl">Sales</div></div>
+          <div class="bar-col"><div class="bar-body" style="height:40%;background:#3b6ef8;opacity:.6"></div><div class="bar-lbl">Kế toán</div></div>
+          <div class="bar-col"><div class="bar-body" style="height:65%;background:#3b6ef8;opacity:.8"></div><div class="bar-lbl">MKT</div></div>
+          <div class="bar-col"><div class="bar-body" style="height:30%;background:#3b6ef8;opacity:.5"></div><div class="bar-lbl">HC</div></div>
+          <div class="bar-col"><div class="bar-body" style="height:50%;background:#3b6ef8;opacity:.65"></div><div class="bar-lbl">HR</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- Right -->
+    <div class="grid" style="gap:16px;align-content:start">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Điều hướng nhanh</div></div>
+        <div class="quick-links">
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#ecfdf5">📋</div><div class="ql-info"><div class="ql-name">Quản lý loại phép</div><div class="ql-desc">Thêm / chỉnh sửa loại nghỉ phép</div></div><span class="ql-arrow">›</span></a>
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#eff3ff">📜</div><div class="ql-info"><div class="ql-name">Chính sách nghỉ phép</div><div class="ql-desc">Số ngày, quy trình phê duyệt</div></div><span class="ql-arrow">›</span></a>
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#ecfeff">📈</div><div class="ql-info"><div class="ql-name">Báo cáo & Thống kê</div><div class="ql-desc">Xuất báo cáo theo kỳ</div></div><span class="ql-arrow">›</span></a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Cảnh báo chính sách</div><button class="card-menu">⋯</button></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="padding:10px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px"><div style="font-size:12px;font-weight:700;color:#991b1b;margin-bottom:3px">🔴 Phép sắp hết hạn</div><div style="font-size:11px;color:#b91c1c">5 NV còn >15 ngày chưa dùng, hết hạn 31/03</div></div>
+          <div style="padding:10px 12px;background:#fffbeb;border:1px solid #fed7aa;border-radius:8px"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:3px">🟡 Vắng mặt đồng loạt</div><div style="font-size:11px;color:#b45309">Phòng Dev: 3 người nghỉ cùng lúc tuần tới</div></div>
+          <div style="padding:10px 12px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:8px"><div style="font-size:12px;font-weight:700;color:#065f46;margin-bottom:3px">🟢 Cập nhật chính sách</div><div style="font-size:11px;color:#047857">Nghỉ thai sản đã cập nhật theo quy định mới</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Nhân viên dùng nhiều phép nhất — T3</div><button class="card-menu">⋯</button></div>
+      <div class="list-row"><div class="avatar" style="background:#eff3ff;color:#3b6ef8">NV</div><div class="list-info"><div class="list-name">Nguyễn Văn Hùng</div><div class="list-meta">Sales · Nghỉ năm</div></div><span style="font-size:14px;font-weight:700;color:#3b6ef8">8 ngày</span></div>
+      <div class="list-row"><div class="avatar" style="background:#ecfdf5;color:#10b981">TL</div><div class="list-info"><div class="list-name">Trần Thị Lan</div><div class="list-meta">Kế toán · Nghỉ ốm</div></div><span style="font-size:14px;font-weight:700;color:#3b6ef8">6 ngày</span></div>
+      <div class="list-row"><div class="avatar" style="background:#f5f3ff;color:#8b5cf6">PD</div><div class="list-info"><div class="list-name">Phạm Đức Thành</div><div class="list-meta">Dev · Nghỉ cá nhân</div></div><span style="font-size:14px;font-weight:700;color:#3b6ef8">5 ngày</span></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Tỉ lệ dùng phép theo loại (YTD)</div><button class="card-menu">⋯</button></div>
+      <div class="progress-row">
+        <div><div class="progress-meta"><span>Nghỉ năm</span><span style="font-weight:700;color:#3b6ef8">68 / 200 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:34%;background:#3b6ef8"></div></div></div>
+        <div><div class="progress-meta"><span>Nghỉ ốm</span><span style="font-weight:700;color:#10b981">42 / 150 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:28%;background:#10b981"></div></div></div>
+        <div><div class="progress-meta"><span>Nghỉ thai sản</span><span style="font-weight:700;color:#f59e0b">90 / 120 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:75%;background:#f59e0b"></div></div></div>
+        <div><div class="progress-meta"><span>Không lương</span><span style="font-weight:700;color:#ef4444">12 / 50 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:24%;background:#ef4444"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ MANAGER ═══════ -->
+<div id="dash-manager" class="dashboard">
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">Trang chủ <span>›</span> Dashboard <span>›</span> <span>Quản lý</span></div>
+      <h1>Dashboard Manager</h1>
+    </div>
+    <div class="ph-right">
+      <div class="date-btn">📅 09/03/2026</div>
+      <div class="filter-btn">🏢 Phòng Dev</div>
+    </div>
+  </div>
+
+  <div class="alert alert-info">📌 Có <strong>5 đơn nghỉ phép</strong> đang chờ phê duyệt từ bạn. <a>Xem và phê duyệt ngay →</a></div>
+
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#eff3ff">👨‍💼</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">24</div><div class="stat-label">Nhân viên nhóm</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Thành viên</span><span style="font-size:11px;color:#6b7280;font-weight:500">2 vị trí đang tuyển</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:80%;background:#3b6ef8"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#fef9c3">🏖️</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">3</div><div class="stat-label">Nghỉ hôm nay</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Vắng mặt</span><span style="font-size:11px;color:#f59e0b;font-weight:600">12.5% nhóm</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:12%;background:#f59e0b"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#fef2f2">⏳</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">5</div><div class="stat-label">Chờ phê duyệt</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Đơn tồn</span><span style="font-size:11px;color:#ef4444;font-weight:600">Cần xử lý sớm</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:40%;background:#ef4444"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#ecfdf5">✅</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">17</div><div class="stat-label">Đã duyệt T3</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Phê duyệt</span><span style="font-size:11px;color:#10b981;font-weight:600">↑ 3 so với T2</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:70%;background:#10b981"></div></div>
+    </div>
+  </div>
+
+  <div class="grid g-3-1" style="margin-bottom:16px">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Đơn chờ phê duyệt <span style="background:#fef2f2;color:#ef4444;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px">5</span></div>
+        <button class="card-menu">⋯</button>
+      </div>
+      <div class="list-row"><div class="avatar" style="background:#eff3ff;color:#3b6ef8">NT</div><div class="list-info"><div class="list-name">Nguyễn Thành Đạt</div><div class="list-meta">Nghỉ năm · 15–18/03 · 4 ngày</div></div><span class="badge badge-pending" style="margin-right:8px">Chờ duyệt</span><button class="btn-approve">✓ Duyệt</button><button class="btn-reject">✕</button></div>
+      <div class="list-row"><div class="avatar" style="background:#ecfdf5;color:#10b981">LM</div><div class="list-info"><div class="list-name">Lê Minh Tuấn</div><div class="list-meta">Nghỉ ốm · 10/03 · 1 ngày</div></div><span class="badge badge-pending" style="margin-right:8px">Chờ duyệt</span><button class="btn-approve">✓ Duyệt</button><button class="btn-reject">✕</button></div>
+      <div class="list-row"><div class="avatar" style="background:#f5f3ff;color:#8b5cf6">PH</div><div class="list-info"><div class="list-name">Phạm Hoàng Linh</div><div class="list-meta">Nghỉ cá nhân · 20–21/03 · 2 ngày</div></div><span class="badge badge-pending" style="margin-right:8px">Chờ duyệt</span><button class="btn-approve">✓ Duyệt</button><button class="btn-reject">✕</button></div>
+      <div class="list-row"><div class="avatar" style="background:#ecfeff;color:#06b6d4">TV</div><div class="list-info"><div class="list-name">Trần Văn Khoa</div><div class="list-meta">Nghỉ năm · 25–28/03 · 4 ngày</div></div><span class="badge badge-pending" style="margin-right:8px">Chờ duyệt</span><button class="btn-approve">✓ Duyệt</button><button class="btn-reject">✕</button></div>
+      <div class="list-row"><div class="avatar" style="background:#fef9c3;color:#92400e">BN</div><div class="list-info"><div class="list-name">Bùi Ngọc Hà</div><div class="list-meta">Nghỉ không lương · 12–14/03 · 3 ngày</div></div><span class="badge badge-pending" style="margin-right:8px">Chờ duyệt</span><button class="btn-approve">✓ Duyệt</button><button class="btn-reject">✕</button></div>
+    </div>
+    <div class="grid" style="gap:16px;align-content:start">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Điều hướng</div></div>
+        <div class="quick-links">
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#eff3ff">👨‍💼</div><div class="ql-info"><div class="ql-name">Quản lý nhân viên</div><div class="ql-desc">Hồ sơ, phân công</div></div><span class="ql-arrow">›</span></a>
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#ecfdf5">📝</div><div class="ql-info"><div class="ql-name">Quản lý nghỉ phép</div><div class="ql-desc">Lịch sử, trạng thái đơn</div></div><span class="ql-arrow">›</span></a>
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#ecfeff">📅</div><div class="ql-info"><div class="ql-name">Lịch nhóm</div><div class="ql-desc">Ai nghỉ, ai làm việc</div></div><span class="ql-arrow">›</span></a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Nghỉ hôm nay</div></div>
+        <div class="list-row"><div class="avatar" style="background:#eff3ff;color:#3b6ef8">HT</div><div class="list-info"><div class="list-name">Hoàng Thị Thu</div><div class="list-meta">Nghỉ năm · 09–10/03</div></div><span class="badge badge-approved">Đã duyệt</span></div>
+        <div class="list-row"><div class="avatar" style="background:#ecfdf5;color:#10b981">DK</div><div class="list-info"><div class="list-name">Đặng Khắc Huy</div><div class="list-meta">Nghỉ ốm · 09/03</div></div><span class="badge badge-approved">Đã duyệt</span></div>
+        <div class="list-row"><div class="avatar" style="background:#f5f3ff;color:#8b5cf6">VQ</div><div class="list-info"><div class="list-name">Vũ Quang Minh</div><div class="list-meta">Nghỉ cá nhân · 09/03</div></div><span class="badge badge-approved">Đã duyệt</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Số ngày phép còn lại — Các thành viên nhóm</div><button class="card-menu">⋯</button></div>
+    <div class="grid g3" style="gap:12px">
+      <div><div class="progress-meta"><span>Nguyễn Thành Đạt</span><span style="font-weight:700;color:#3b6ef8">8/14 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:57%;background:#3b6ef8"></div></div></div>
+      <div><div class="progress-meta"><span>Lê Minh Tuấn</span><span style="font-weight:700;color:#10b981">12/14 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:86%;background:#10b981"></div></div></div>
+      <div><div class="progress-meta"><span>Phạm Hoàng Linh</span><span style="font-weight:700;color:#ef4444">5/14 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:36%;background:#ef4444"></div></div></div>
+      <div><div class="progress-meta"><span>Trần Văn Khoa</span><span style="font-weight:700;color:#3b6ef8">10/14 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:71%;background:#3b6ef8"></div></div></div>
+      <div><div class="progress-meta"><span>Bùi Ngọc Hà</span><span style="font-weight:700;color:#ef4444">3/14 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:21%;background:#ef4444"></div></div></div>
+      <div><div class="progress-meta"><span>Hoàng Thị Thu</span><span style="font-weight:700;color:#10b981">11/14 ngày</span></div><div class="progress-track"><div class="progress-fill" style="width:79%;background:#10b981"></div></div></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════ EMPLOYEE ═══════ -->
+<div id="dash-employee" class="dashboard">
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">Trang chủ <span>›</span> Dashboard <span>›</span> <span>Nhân viên</span></div>
+      <h1>Xin chào, Nguyễn Văn An 👋</h1>
+    </div>
+    <div class="ph-right">
+      <div class="date-btn">📅 Thứ Hai, 09/03/2026</div>
+      <button class="btn-primary">+ Đăng ký nghỉ phép</button>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#eff3ff">🏝️</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">9</div><div class="stat-label">Phép năm còn lại</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Đã dùng 5 / 14 ngày</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:64%;background:#3b6ef8"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#ecfdf5">🏥</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">10</div><div class="stat-label">Phép ốm còn lại</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Chưa dùng ngày nào</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:100%;background:#10b981"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#fffbeb">⏳</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">1</div><div class="stat-label">Đơn đang xử lý</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Nghỉ 15–18/03 · Chờ duyệt</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:50%;background:#f59e0b"></div></div>
+    </div>
+    <div class="card">
+      <div class="stat-top"><div class="stat-icon" style="background:#ecfdf5">✅</div><span class="stat-menu">⋯</span></div>
+      <div class="stat-value">5</div><div class="stat-label">Đã nghỉ năm nay</div>
+      <div class="stat-footer"><span style="color:var(--text-muted)">Ngày nghỉ đã được duyệt</span></div>
+      <div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:36%;background:#10b981"></div></div>
+    </div>
+  </div>
+
+  <div class="grid g-1-2" style="margin-bottom:16px">
+    <div class="grid" style="gap:16px;align-content:start">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Thao tác nhanh</div></div>
+        <div class="quick-links">
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#eff3ff">✏️</div><div class="ql-info"><div class="ql-name">Đăng ký nghỉ phép</div><div class="ql-desc">Tạo đơn nghỉ mới</div></div><span class="ql-arrow">›</span></a>
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#fffbeb">🔍</div><div class="ql-info"><div class="ql-name">Theo dõi trạng thái</div><div class="ql-desc">Đơn đang chờ phê duyệt</div></div><span class="ql-arrow">›</span></a>
+          <a class="quick-link" href="#"><div class="ql-icon" style="background:#ecfdf5">📂</div><div class="ql-info"><div class="ql-name">Lịch sử nghỉ phép</div><div class="ql-desc">Tất cả đơn đã nộp</div></div><span class="ql-arrow">›</span></a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Đơn hiện tại</div><button class="card-menu">⋯</button></div>
+        <div class="req-box">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div><div class="req-title">Nghỉ năm</div><div class="req-sub">15 – 18 tháng 3 năm 2026 · 4 ngày</div></div>
+            <span class="badge badge-pending">Chờ duyệt</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted)">📝 Lý do: Về thăm gia đình</div>
+          <div class="req-footer">
+            <span>Người duyệt: <strong>Trần Văn Manager</strong></span>
+            <span>Nộp: <strong>08/03/2026</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Calendar -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">Lịch nghỉ phép — Tháng 3/2026</div><button class="card-menu">⋯</button></div>
+      <div class="cal-nav">
+        <button>‹</button><span>Tháng 3, 2026</span><button>›</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-lbl">CN</div><div class="cal-lbl">T2</div><div class="cal-lbl">T3</div><div class="cal-lbl">T4</div><div class="cal-lbl">T5</div><div class="cal-lbl">T6</div><div class="cal-lbl">T7</div>
+        <div class="cal-day cal-empty">·</div><div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div>
+        <div class="cal-day">7</div><div class="cal-day">8</div><div class="cal-day cal-today">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div>
+        <div class="cal-day">14</div><div class="cal-day cal-leave">15</div><div class="cal-day cal-leave">16</div><div class="cal-day cal-leave">17</div><div class="cal-day cal-leave">18</div><div class="cal-day">19</div><div class="cal-day">20</div>
+        <div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div>
+        <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day">31</div><div class="cal-day cal-empty">·</div><div class="cal-day cal-empty">·</div><div class="cal-day cal-empty">·</div>
+      </div>
+      <div class="cal-legend">
+        <div class="cal-leg-item"><div style="width:12px;height:12px;border-radius:3px;background:#dbeafe"></div> Ngày nghỉ</div>
+        <div class="cal-leg-item"><div style="width:12px;height:12px;border-radius:50%;background:#3b6ef8"></div> Hôm nay</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-title">Lịch sử nghỉ phép gần đây</div><button class="card-menu">⋯</button></div>
+    <div class="grid g3" style="gap:0">
+      <div class="list-row"><div class="avatar" style="background:#ecfdf5;color:#10b981">✓</div><div class="list-info"><div class="list-name">Nghỉ Tết Nguyên Đán</div><div class="list-meta">Nghỉ năm · 27/01 – 02/02 · 5 ngày</div></div><span class="badge badge-approved">Đã duyệt</span></div>
+      <div class="list-row"><div class="avatar" style="background:#ecfdf5;color:#10b981">✓</div><div class="list-info"><div class="list-name">Nghỉ ốm</div><div class="list-meta">Nghỉ ốm · 15/02 · 1 ngày</div></div><span class="badge badge-approved">Đã duyệt</span></div>
+      <div class="list-row" style="border:none"><div class="avatar" style="background:#fffbeb;color:#92400e">⏳</div><div class="list-info"><div class="list-name">Nghỉ năm — Về quê</div><div class="list-meta">Nghỉ năm · 15–18/03 · 4 ngày</div></div><span class="badge badge-pending">Chờ duyệt</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchRole(r){
+  document.querySelectorAll('.dashboard').forEach(d=>d.classList.remove('active'));
+  document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dash-'+r).classList.add('active');
+  document.getElementById('btn-'+r).classList.add('active');
+}
+</script>
+</body>
+</html>
