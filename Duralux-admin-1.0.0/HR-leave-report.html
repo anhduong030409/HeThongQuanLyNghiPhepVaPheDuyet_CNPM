@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keyword" content="">
+    <meta name="author" content="theme_ocean">
+    <title>Duralux || HR - Lập Báo Cáo</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/select2-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css">
+</head>
+
+<body>
+    <nav class="nxl-navigation">
+        <div class="navbar-wrapper">
+            <div class="m-header">
+                <a href="index.html" class="b-brand">
+                    <img src="assets/images/logo-full.png" alt="" class="logo logo-lg">
+                    <img src="assets/images/logo-abbr.png" alt="" class="logo logo-sm">
+                </a>
+            </div>
+            <div class="navbar-content">
+                <ul class="nxl-navbar">
+                    <li class="nxl-item nxl-caption">
+                        <label>Danh Mục</label>
+                    </li>
+                    <li class="nxl-item nxl-hasmenu">
+                        <a href="javascript:void(0);" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-airplay"></i></span>
+                            <span class="nxl-mtext">Dashboards</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="nxl-item nxl-hasmenu">
+                        <a href="javascript:void(0);" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-users"></i></span>
+                            <span class="nxl-mtext">Nhân viên</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="nxl-item nxl-hasmenu">
+                        <a href="javascript:void(0);" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-send"></i></span>
+                            <span class="nxl-mtext">Quản lý</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="nxl-item nxl-hasmenu active nxl-trigger">
+                        <a href="javascript:void(0);" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-user-check"></i></span>
+                            <span class="nxl-mtext">Quản Lý HR</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        </a>
+                        <ul class="nxl-submenu" style="display: block;">
+                            <li class="nxl-item"><a class="nxl-link" href="#">Quản lý loại phép</a></li>
+                            <li class="nxl-item"><a class="nxl-link" href="#">Theo dõi thống kê</a></li>
+                            <li class="nxl-item active"><a class="nxl-link" href="#">Lập báo cáo</a></li>
+                        </ul>
+                    </li>
+                    <li class="nxl-item nxl-hasmenu">
+                        <a href="javascript:void(0);" class="nxl-link">
+                            <span class="nxl-micon"><i class="feather-settings"></i></span>
+                            <span class="nxl-mtext">Quản trị hệ thống</span><span class="nxl-arrow"><i class="feather-chevron-right"></i></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header class="nxl-header">
+        <div class="header-wrapper">
+            <div class="header-left d-flex align-items-center gap-4">
+                <a href="javascript:void(0);" class="nxl-head-mobile-toggler" id="mobile-collapse">
+                    <div class="hamburger hamburger--arrowturn">
+                        <div class="hamburger-box"><div class="hamburger-inner"></div></div>
+                    </div>
+                </a>
+                <div class="nxl-navigation-toggle">
+                    <a href="javascript:void(0);" id="menu-mini-button"><i class="feather-align-left"></i></a>
+                </div>
+            </div>
+            <div class="header-right ms-auto">
+                <div class="d-flex align-items-center">
+                    <div class="dropdown nxl-h-item nxl-header-search">
+                        <a href="javascript:void(0);" class="nxl-head-link me-0" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                            <i class="feather-search"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end nxl-h-dropdown nxl-search-dropdown">
+                            <div class="input-group search-form">
+                                <span class="input-group-text"><i class="feather-search fs-6 text-muted"></i></span>
+                                <input type="text" class="form-control search-input-field" placeholder="Tìm kiếm....">
+                                <span class="input-group-text"><button type="button" class="btn-close"></button></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nxl-h-item dark-light-theme">
+                        <a href="javascript:void(0);" class="nxl-head-link me-0 dark-button"><i class="feather-moon"></i></a>
+                        <a href="javascript:void(0);" class="nxl-head-link me-0 light-button" style="display: none"><i class="feather-sun"></i></a>
+                    </div>
+                    <div class="dropdown nxl-h-item">
+                        <a href="javascript:void(0);" class="nxl-head-link me-0" data-bs-toggle="dropdown" role="button" data-bs-auto-close="outside">
+                            <i class="feather-bell"></i>
+                            <span class="badge bg-danger nxl-h-badge">5</span>
+                        </a>
+                    </div>
+                    <div class="dropdown nxl-h-item">
+                        <a href="javascript:void(0);" data-bs-toggle="dropdown" role="button" data-bs-auto-close="outside">
+                            <img src="assets/images/avatar/1.png" alt="user-image" class="img-fluid user-avtar me-0">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end nxl-h-dropdown nxl-user-dropdown">
+                            <div class="dropdown-header">
+                                <div class="d-flex align-items-center">
+                                    <img src="assets/images/avatar/1.png" alt="user-image" class="img-fluid user-avtar">
+                                    <div>
+                                        <h6 class="text-dark mb-0">Quản Trị Nhân Sự</h6>
+                                        <span class="fs-12 fw-medium text-muted">HR Manager</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item"><i class="feather-log-out"></i><span>Đăng xuất</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="nxl-container">
+        <div class="nxl-content">
+            <div class="page-header">
+                <div class="page-header-left d-flex align-items-center">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Lập Báo Cáo</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">HR</a></li>
+                        <li class="breadcrumb-item">Lập báo cáo</li>
+                    </ul>
+                </div>
+                <div class="page-header-right ms-auto">
+                    <div class="page-header-right-items">
+                        <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+                            <a href="javascript:void(0);" class="btn btn-success">
+                                <i class="feather-file-text me-2"></i>
+                                <span>Xuất Excel</span>
+                            </a>
+                            <a href="javascript:void(0);" class="btn btn-danger">
+                                <i class="feather-printer me-2"></i>
+                                <span>Xuất PDF</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="main-content">
+                
+                <ul class="nav nav-tabs mb-4 border-bottom">
+                    <li class="nav-item">
+                        <a class="nav-link text-muted pb-3" href="#"><i class="feather-list me-2"></i>Quản lý loại phép</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-muted pb-3" href="#"><i class="feather-bar-chart-2 me-2"></i>Theo dõi thống kê</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active fw-bold pb-3 text-primary" href="#"><i class="feather-file-text me-2"></i>Lập báo cáo</a>
+                    </li>
+                </ul>
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card stretch stretch-full border-top border-4 border-primary border-opacity-50">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Tiêu Chí Lọc Báo Cáo</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-4">
+                                    <div class="col-lg-3 col-md-6">
+                                        <label class="form-label fw-medium">Loại báo cáo</label>
+                                        <select class="form-select">
+                                            <option>Báo cáo tổng hợp phép năm</option>
+                                            <option>Báo cáo chi tiết nghỉ phép</option>
+                                            <option>Báo cáo tồn phép nhân viên</option>
+                                            <option>Danh sách nghỉ không lương</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <label class="form-label fw-medium">Phòng ban</label>
+                                        <select class="form-select">
+                                            <option>Tất cả phòng ban</option>
+                                            <option>Phòng IT</option>
+                                            <option>Phòng Marketing</option>
+                                            <option>Phòng Kế Toán</option>
+                                            <option>Phòng Hành Chính</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <label class="form-label fw-medium">Từ ngày</label>
+                                        <input type="date" class="form-control" value="2026-01-01">
+                                    </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <label class="form-label fw-medium">Đến ngày</label>
+                                        <input type="date" class="form-control" value="2026-12-31">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="button" class="btn btn-primary px-4"><i class="feather-filter me-2"></i>Tạo Dữ Liệu</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card stretch stretch-full">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Xem trước: Báo Cáo Tổng Hợp Phép Năm (Năm 2026)</h5>
+                                <span class="badge bg-soft-primary text-primary px-3 py-2 fs-12">Cập nhật lúc: 10:30 AM</span>
+                            </div>
+                            <div class="card-body custom-card-action p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered align-middle mb-0 text-center">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th class="text-start">NHÂN VIÊN</th>
+                                                <th>PHÒNG BAN</th>
+                                                <th>TỔNG PHÉP ĐƯỢC CẤP</th>
+                                                <th>PHÉP ĐÃ DÙNG</th>
+                                                <th>PHÉP ĐANG CHỜ DUYỆT</th>
+                                                <th>PHÉP CÒN LẠI</th>
+                                                <th class="text-start">GHI CHÚ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="text-start">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <div class="avatar-image avatar-sm">
+                                                            <img src="assets/images/avatar/1.png" alt="" class="img-fluid">
+                                                        </div>
+                                                        <div>
+                                                            <span class="d-block fw-bold text-dark">Alexandra Della</span>
+                                                            <span class="fs-12 text-muted">Mã: NV001</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Marketing</td>
+                                                <td><span class="fw-bold text-dark">12.0</span></td>
+                                                <td><span class="fw-bold text-danger">4.0</span></td>
+                                                <td><span class="fw-bold text-warning">0.0</span></td>
+                                                <td><span class="badge bg-soft-success text-success fs-12">8.0 ngày</span></td>
+                                                <td class="text-start text-muted fs-12">Nghỉ 1 ngày ốm (Tháng 3)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <div class="avatar-image avatar-sm">
+                                                            <img src="assets/images/avatar/2.png" alt="" class="img-fluid">
+                                                        </div>
+                                                        <div>
+                                                            <span class="d-block fw-bold text-dark">Curtis Green</span>
+                                                            <span class="fs-12 text-muted">Mã: NV002</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>IT</td>
+                                                <td><span class="fw-bold text-dark">12.0</span></td>
+                                                <td><span class="fw-bold text-danger">10.5</span></td>
+                                                <td><span class="fw-bold text-warning">1.5</span></td>
+                                                <td><span class="badge bg-soft-danger text-danger fs-12">0.0 ngày</span></td>
+                                                <td class="text-start text-danger fs-12 fw-medium">Sắp hết phép năm</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <div class="avatar-image avatar-sm">
+                                                            <img src="assets/images/avatar/3.png" alt="" class="img-fluid">
+                                                        </div>
+                                                        <div>
+                                                            <span class="d-block fw-bold text-dark">Marianne Audrey</span>
+                                                            <span class="fs-12 text-muted">Mã: NV003</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Kế toán</td>
+                                                <td><span class="fw-bold text-dark">15.0</span></td>
+                                                <td><span class="fw-bold text-danger">2.0</span></td>
+                                                <td><span class="fw-bold text-warning">0.0</span></td>
+                                                <td><span class="badge bg-soft-success text-success fs-12">13.0 ngày</span></td>
+                                                <td class="text-start text-muted fs-12">Đã cộng 3 ngày thâm niên</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <div class="avatar-image avatar-sm">
+                                                            <img src="assets/images/avatar/4.png" alt="" class="img-fluid">
+                                                        </div>
+                                                        <div>
+                                                            <span class="d-block fw-bold text-dark">Kenneth Hune</span>
+                                                            <span class="fs-12 text-muted">Mã: NV004</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>Hành chính</td>
+                                                <td><span class="fw-bold text-dark">12.0</span></td>
+                                                <td><span class="fw-bold text-danger">0.0</span></td>
+                                                <td><span class="fw-bold text-warning">0.0</span></td>
+                                                <td><span class="badge bg-soft-success text-success fs-12">12.0 ngày</span></td>
+                                                <td class="text-start text-muted fs-12">Chưa sử dụng phép</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="bg-gray-100 fw-bold text-dark">
+                                            <tr>
+                                                <td colspan="2" class="text-end">TỔNG CỘNG:</td>
+                                                <td>51.0</td>
+                                                <td class="text-danger">16.5</td>
+                                                <td class="text-warning">1.5</td>
+                                                <td class="text-success">33.0</td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <span class="fs-12 text-muted">Hiển thị 1 đến 4 của 45 nhân viên</span>
+                                <ul class="pagination mb-0">
+                                    <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">...</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">Sau</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        
+        <footer class="footer">
+            <p class="fs-11 text-muted fw-medium text-uppercase mb-0 copyright">
+                <span>Copyright ©</span>
+                <script>document.write(new Date().getFullYear());</script>
+            </p>
+        </footer>
+        </main>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="proposalSent"></div>
+    <div class="modal fade-scale" id="searchModal" tabindex="-1"></div>
+    <div class="modal fade-scale" id="languageSelectModal" tabindex="-1"></div>
+    <div class="theme-customizer"></div>
+
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="assets/vendors/js/select2.min.js"></script>
+    <script src="assets/vendors/js/select2-active.min.js"></script>
+    <script src="assets/js/common-init.min.js"></script>
+    <script src="assets/js/theme-customizer-init.min.js"></script>
+    </body>
+
+</html>
