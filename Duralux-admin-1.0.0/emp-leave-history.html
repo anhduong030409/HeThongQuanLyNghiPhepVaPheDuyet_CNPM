@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="keyword" content="" />
+    <meta name="author" content="flexilecode" />
+    <!--! The above 6 meta tags *must* come first in the head; any other head content must come *after* these tags !-->
+    <!--! BEGIN: Apps Title-->
+    <title>LMS || Leave Management System</title>
+    <!--! END:  Apps Title-->
+    <!--! BEGIN: Favicon-->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico" />
+    <!--! END: Favicon-->
+    <!--! BEGIN: Bootstrap CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
+    <!--! END: Bootstrap CSS-->
+    <!--! BEGIN: Vendors CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/daterangepicker.min.css" />
+    <!--! END: Vendors CSS-->
+    <!--! BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
+    <!--! END: Custom CSS-->
+    <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
+    <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
+    <!--[if lt IE 9]>
+			<script src="https:oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https:oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+</head>
+
+<body>
+    <!--! ================================================================ !-->
+    <!--! [Start] Navigation Manu !-->
+    <!--! ================================================================ !-->
+    <div id="navigation"></div>
+    <!--! ================================================================ !-->
+    <!--! [End]  Navigation Manu !-->
+    <!--! ================================================================ !-->
+    <!--! ================================================================ !-->
+    <!--! [Start] Header !-->
+    <!--! ================================================================ !-->
+    <div id="header"></div>
+    <!--! ================================================================ !-->
+    <!--! [End] Header !-->
+    <!--! ================================================================ !-->
+    <!--! ================================================================ !-->
+    <!--! [Start] Main Content !-->
+    <!--! ================================================================ !-->
+    <main class="nxl-container">
+        <div class="nxl-content">
+            <!-- [ page-header ] start -->
+            <div class="page-header">
+                <div class="page-header-left d-flex align-items-center">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Nhân viên</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item">Lịch sử nghỉ phép</li>
+                    </ul>
+                </div>
+                <div class="page-header-right ms-auto">
+                    <div class="page-header-right-items">
+                        <div class="d-flex d-md-none">
+                            <a href="javascript:void(0)" class="page-header-right-close-toggle">
+                                <i class="feather-arrow-left me-2"></i>
+                                <span>Back</span>
+                            </a>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+                            <div id="reportrange" class="reportrange-picker d-flex align-items-center">
+                                <span class="reportrange-picker-field"></span>
+                            </div>
+                            <div class="dropdown filter-dropdown">
+                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10"
+                                    data-bs-auto-close="outside">
+                                    <i class="feather-filter me-2"></i>
+                                    <span>Filter</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <div class="dropdown-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="Role"
+                                                checked="checked" />
+                                            <label class="custom-control-label c-pointer" for="Role">Role</label>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="Team"
+                                                checked="checked" />
+                                            <label class="custom-control-label c-pointer" for="Team">Team</label>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="Email"
+                                                checked="checked" />
+                                            <label class="custom-control-label c-pointer" for="Email">Email</label>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="Member"
+                                                checked="checked" />
+                                            <label class="custom-control-label c-pointer" for="Member">Member</label>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-item">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="Recommendation"
+                                                checked="checked" />
+                                            <label class="custom-control-label c-pointer"
+                                                for="Recommendation">Recommendation</label>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="javascript:void(0);" class="dropdown-item">
+                                        <i class="feather-plus me-3"></i>
+                                        <span>Create New</span>
+                                    </a>
+                                    <a href="javascript:void(0);" class="dropdown-item">
+                                        <i class="feather-filter me-3"></i>
+                                        <span>Manage Filter</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-md-none d-flex align-items-center">
+                        <a href="javascript:void(0)" class="page-header-right-open-toggle">
+                            <i class="feather-align-right fs-20"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- [ page-header ] end -->
+            <!-- [ Main Content ] start -->
+            <div class="main-content">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-lg-4 col-md-6">
+                                        <label class="form-label fw-bold fs-12 text-muted">TÌM KIẾM</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-white border-end-0"><i
+                                                    class="feather-search"></i></span>
+                                            <input type="text" class="form-control border-start-0 ps-0"
+                                                placeholder="Nhập mã đơn hoặc lý do...">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-md-3">
+                                        <label class="form-label fw-bold fs-12 text-muted">NĂM</label>
+                                        <select class="form-select">
+                                            <option value="2026" selected>2026</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2024">2024</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-3">
+                                        <label class="form-label fw-bold fs-12 text-muted">TRẠNG THÁI</label>
+                                        <select class="form-select">
+                                            <option value="all">Tất cả trạng thái</option>
+                                            <option value="approved">Đã phê duyệt</option>
+                                            <option value="rejected">Bị từ chối</option>
+                                            <option value="cancelled">Đã hủy đơn</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-12 d-flex gap-2">
+                                        <button class="btn btn-primary w-100">
+                                            <i class="feather-filter me-2"></i>Áp dụng
+                                        </button>
+                                        <button class="btn btn-outline-success w-100">
+                                            <i class="feather-download me-2"></i>Xuất Excel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0 fw-bold text-dark">Lịch sử nghỉ phép chi tiết</h5>
+                                <div class="text-muted fs-12">Hiển thị 1-10 trên 80 bản ghi</div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th class="ps-4">Mã đơn</th>
+                                                <th>Loại nghỉ</th>
+                                                <th>Thời gian</th>
+                                                <th>Số ngày</th>
+                                                <th>Lý do</th>
+                                                <th>Trạng thái</th>
+                                                <th class="text-end pe-4">Chi tiết</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="ps-4 fw-bold">#LR-2026-008</td>
+                                                <td>Nghỉ phép năm</td>
+                                                <td>15/01/2026 - 16/01/2026</td>
+                                                <td>2.0</td>
+                                                <td class="text-truncate" style="max-width: 200px;">Về quê thăm gia đình
+                                                    định kỳ</td>
+                                                <td><span class="badge bg-soft-success text-success w-100">Đã phê
+                                                        duyệt</span></td>
+                                                <td class="text-end pe-4">
+                                                    <button class="btn btn-sm btn-icon btn-light"><i
+                                                            class="feather-eye"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4 fw-bold">#LR-2026-005</td>
+                                                <td>Nghỉ bù</td>
+                                                <td>10/01/2026 (Sáng)</td>
+                                                <td>0.5</td>
+                                                <td class="text-truncate" style="max-width: 200px;">Giải quyết việc
+                                                    riêng cá nhân</td>
+                                                <td><span class="badge bg-soft-danger text-danger w-100">Bị từ
+                                                        chối</span></td>
+                                                <td class="text-end pe-4">
+                                                    <button class="btn btn-sm btn-icon btn-light"
+                                                        title="Xem lý do từ chối"><i
+                                                            class="feather-help-circle text-danger"></i></button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4 fw-bold">#LR-2025-099</td>
+                                                <td>Nghỉ phép năm</td>
+                                                <td>28/12/2025 - 31/12/2025</td>
+                                                <td>4.0</td>
+                                                <td class="text-truncate" style="max-width: 200px;">Nghỉ lễ cuối năm
+                                                </td>
+                                                <td><span class="badge bg-soft-success text-success w-100">Đã phê
+                                                        duyệt</span></td>
+                                                <td class="text-end pe-4">
+                                                    <button class="btn btn-sm btn-icon btn-light"><i
+                                                            class="feather-eye"></i></button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
+                                <p class="mb-0 fs-12 text-muted">Hiển thị <b>1-10</b> trên <b>80</b> bản ghi</p>
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm mb-0 gap-1">
+                                        <li class="page-item disabled">
+                                            <a class="page-link border-0 rounded-pill px-3" href="#"><i
+                                                    class="feather-chevron-left"></i></a>
+                                        </li>
+                                        <li class="page-item active">
+                                            <a class="page-link border-0 rounded-pill px-3" href="#">1</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link border-0 rounded-pill px-3 text-dark" href="#">2</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link border-0 rounded-pill px-3 text-dark" href="#">3</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link border-0 rounded-pill px-3 text-dark" href="#"><i
+                                                    class="feather-chevron-right"></i></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ Main Content ] end -->
+        </div>
+        <!-- [ Footer ] start -->
+        <footer class="footer">
+            <p class="fs-11 text-muted fw-medium text-uppercase mb-0 copyright">
+                <span>Copyright ©</span>
+                <script>
+                    document.write(new Date().getFullYear());
+                </script>
+            </p>
+            <p><span>By: <a target="_blank" href="https://wrapbootstrap.com/user/theme_ocean"
+                        target="_blank">theme_ocean</a></span> • <span>Distributed by: <a target="_blank"
+                        href="https://themewagon.com" target="_blank">ThemeWagon</a></span></p>
+            <div class="d-flex align-items-center gap-4">
+                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Help</a>
+                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Terms</a>
+                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Privacy</a>
+            </div>
+        </footer>
+        <!-- [ Footer ] end -->
+    </main>
+    <!--! ================================================================ !-->
+    <!--! [End] Main Content !-->
+    <!--! ================================================================ !-->
+    <!--! ================================================================ !-->
+    <!--! BEGIN: Theme Customizer !-->
+    <!--! ================================================================ !-->
+    <div id="theme-customizer"></div>
+    <!--! ================================================================ !-->
+    <!--! [End] Theme Customizer !-->
+    <!--! ================================================================ !-->
+    <!--! ================================================================ !-->
+    <!--! Footer Script !-->
+    <!--! ================================================================ !-->
+    <!--! BEGIN: Vendors JS !-->
+    <script src="load-layout.js"></script>
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <!-- vendors.min.js {always must need to be top} -->
+    <script src="assets/vendors/js/daterangepicker.min.js"></script>
+    <script src="assets/vendors/js/apexcharts.min.js"></script>
+    <script src="assets/vendors/js/circle-progress.min.js"></script>
+    <!--! END: Vendors JS !-->
+    <!--! BEGIN: Apps Init  !-->
+    <script src="assets/js/common-init.min.js"></script>
+    <script src="assets/js/dashboard-init.min.js"></script>
+    <!--! END: Apps Init !-->
+    <!--! BEGIN: Theme Customizer  !-->
+    <script src="assets/js/theme-customizer-init.min.js"></script>
+    <!--! END: Theme Customizer !-->
+</body>
+
+</html>
