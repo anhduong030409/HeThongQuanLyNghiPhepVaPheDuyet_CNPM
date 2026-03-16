@@ -1,83 +1,83 @@
 const API_URL = "http://localhost:82/HeThongQuanLyNghiPhepVaPheDuyet_CNPM/backend/api";
 
-async function callAPI(endpoint, method = "GET", body = null) {
-    const options = {
-        method: method,
-        headers: { "Content-Type": "application/json" }
-    };
-    if (body) options.body = JSON.stringify(body);
-    try {
-        const res  = await fetch(`${API_URL}/${endpoint}`, options);
-        const data = await res.json();
-        return data;
-    } catch (error) {
-        return { status: "error", message: "Loi ket noi server" };
-    }
-}
+// ===== TOKEN =====
+function saveToken(token) { localStorage.setItem("token", token); }
+function getToken()       { return localStorage.getItem("token"); }
+function removeToken()    { localStorage.removeItem("token"); }
 
 // ===== USER =====
 function saveUser(user)   { localStorage.setItem("user", JSON.stringify(user)); }
 function getUser()        { return JSON.parse(localStorage.getItem("user")); }
 function removeUser()     { localStorage.removeItem("user"); }
 
+// ===== AUTH =====
 function checkLogin() {
-    const user = getUser();
-    if (!user) {
-        window.location.href = "/HETHONGQUANLYNGHIPHEPV/frontend/Duralux-admin-1.0.0/auth-login.html";
+    const token = getToken();
+    if (!token) {
+        window.location.href = "auth-login.html";
         return null;
     }
-    return user;
+    return getUser();
 }
 
-// Kiem tra quyen truy cap
 function checkRole(allowedRoles) {
     const user = checkLogin();
-    if (!allowedRoles.includes(user.role)) {
+    if (!user || !allowedRoles.includes(user.role)) {
         window.location.href = "dashboard.html";
         return null;
     }
     return user;
 }
 
-// ===== LEAVE BALANCE =====
+function logout() {
+    removeToken();
+    removeUser();
+    window.location.href = "auth-login.html";
+}
+
+// ===== CALL API =====
+async function callAPI(endpoint, method = "GET", body = null) {
+    const options = {
+        method: method,
+        headers: {
+            "Content-Type":  "application/json",
+            "Authorization": "Bearer " + (getToken() || "")
+        }
+    };
+    if (body) options.body = JSON.stringify(body);
+    try {
+        const res  = await fetch(`${API_URL}/${endpoint}`, options);
+        const data = await res.json();
+        if (res.status === 401) { logout(); return null; }
+        return data;
+    } catch (error) {
+        return { status: "error", message: "Loi ket noi server" };
+    }
+}
+
+// ===== LEAVE =====
 async function getLeaveBalance(user_id) {
     return await callAPI(`leave/balance.php?user_id=${user_id}`);
 }
 
-// ===== LEAVE TYPES =====
 async function getLeaveTypes() {
     return await callAPI("leave/type.php");
 }
 
 // ===== NOTIFICATIONS =====
-async function getNotifications(user_id) {
-    return await callAPI(`notifications.php?user_id=${user_id}`);
-}
-
-async function markAsRead(id, user_id) {
-    return await callAPI(`notifications.php?user_id=${user_id}`, "POST", { id });
-}
-
-async function markAllAsRead(user_id) {
-    return await callAPI(`notifications.php?user_id=${user_id}`, "POST", {});
-}
-
-// ===== LOAD THONG BAO TREN HEADER =====
 async function loadNotifications() {
     const user = getUser();
     if (!user) return;
 
-    const res = await getNotifications(user.id);
-    if (res.status !== "success") return;
+    const res = await callAPI(`notifications.php?user_id=${user.id}`);
+    if (!res || res.status !== "success") return;
 
-    // Hien so thong bao chua doc
     const badge = document.getElementById("notif-badge");
     if (badge) {
-        badge.innerText  = res.unread_count;
+        badge.innerText     = res.unread_count;
         badge.style.display = res.unread_count > 0 ? "inline" : "none";
     }
 
-    // Hien danh sach thong bao
     const list = document.getElementById("notif-list");
     if (list) {
         list.innerHTML = "";
@@ -92,19 +92,13 @@ async function loadNotifications() {
         });
     }
 }
-```
 
----
+async function markAsRead(id, user_id) {
+    await callAPI(`notifications.php?user_id=${user_id}`, "POST", { id });
+    loadNotifications();
+}
 
-## Tổng hợp toàn bộ API
-```
-// backend/api/
-// ├── auth/
-// │   ├── login.php          → POST - dang nhap
-// │   └── logout.php         → POST - dang xuat
-// ├── leave/
-// │   ├── request.php        → GET/POST - don nghi phep
-// │   ├── approve.php        → POST - duyet don
-// │   ├── balance.php        → GET - so ngay con lai
-// │   └── type.php           → GET - loai nghi phep
-// └── notifications.php      → GET/POST - thong bao
+async function markAllAsRead(user_id) {
+    await callAPI(`notifications.php?user_id=${user_id}`, "POST", {});
+    loadNotifications();
+}
