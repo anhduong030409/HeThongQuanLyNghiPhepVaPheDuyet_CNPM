@@ -2,29 +2,33 @@
 require_once '../../config/cors.php';
 require_once '../../config/database.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
-$email = $data['email'] ?? '';
+$data     = json_decode(file_get_contents("php://input"), true);
+$email    = $data['email']    ?? '';
 $password = MD5($data['password'] ?? '');
 
-$sql = "SELECT * FROM nhan_vien WHERE email = ? AND password = ?";
+$sql = "SELECT u.*, r.name as role_name, d.name as dept_name
+        FROM users u
+        JOIN roles r       ON u.role_id = r.id
+        LEFT JOIN departments d ON u.department_id = d.id
+        WHERE u.email = ? AND u.password_hash = ? AND u.is_active = 1";
+
 $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, "ss", $email, $password);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-$user = mysqli_fetch_assoc($result);
+$user   = mysqli_fetch_assoc($result);
 
 if ($user) {
-    session_start();
-    $_SESSION['user'] = $user;
     echo json_encode([
-        "status"  => "success",
-        "message" => "Dang nhap thanh cong",
-        "data"    => [
-            "id"       => $user['id'],
-            "ho_ten"   => $user['ho_ten'],
-            "email"    => $user['email'],
-            "vai_tro"  => $user['vai_tro'],
-            "phong_ban"=> $user['phong_ban']
+        "status" => "success",
+        "data"   => [
+            "id"          => $user['id'],
+            "full_name"   => $user['full_name'],
+            "email"       => $user['email'],
+            "role"        => $user['role_name'],
+            "department"  => $user['dept_name'],
+            "manager_id"  => $user['manager_id'],
+            "avatar_url"  => $user['avatar_url']
         ]
     ]);
 } else {

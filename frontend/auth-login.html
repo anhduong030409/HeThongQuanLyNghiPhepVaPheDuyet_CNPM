@@ -9,10 +9,9 @@
 
     <style>
         :root {
-            --primary-color: #3483ff; /* Màu xanh đồng bộ với nút Gửi đơn của bạn */
+            --primary-color: #3483ff;
             --bg-light: #f4f7fa;
         }
-
         body {
             background-color: var(--bg-light);
             height: 100vh;
@@ -21,39 +20,34 @@
             justify-content: center;
             font-family: 'Inter', sans-serif;
         }
-
         .login-card {
             max-width: 400px;
             width: 100%;
             border-radius: 12px;
             border: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
-
         .avatar-text {
             width: 60px;
             height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(52, 131, 255, 0.1);
+            background: rgba(52,131,255,0.1);
             color: var(--primary-color);
             border-radius: 50%;
             margin: 0 auto 1.5rem;
         }
-
         .form-control {
             padding: 0.6rem 1rem;
             border-radius: 8px;
             background-color: #f8f9fa;
         }
-
         .form-control:focus {
             background-color: #fff;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(52, 131, 255, 0.1);
+            box-shadow: 0 0 0 0.25rem rgba(52,131,255,0.1);
         }
-
         .btn-primary {
             background-color: var(--primary-color);
             border: none;
@@ -62,20 +56,26 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-
         .btn-primary:hover {
             background-color: #2866cc;
             transform: translateY(-1px);
         }
-
         .input-group-text {
             background-color: #f8f9fa;
             border-right: none;
             color: #6c757d;
         }
+        .form-control { border-left: none; }
 
-        .form-control {
-            border-left: none;
+        /* Alert error */
+        .alert-error {
+            display: none;
+            background-color: #fff2f2;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -87,15 +87,25 @@
             <div class="avatar-text">
                 <i data-feather="lock"></i>
             </div>
-            <h4 class="fw-bold text-dark">DURALUX</h4> <p class="text-muted small">Hệ thống quản lý nghỉ phép nhân viên</p>
+            <h4 class="fw-bold text-dark">DURALUX</h4>
+            <p class="text-muted small">Hệ thống quản lý nghỉ phép nhân viên</p>
         </div>
 
-        <form action="dashboard.html" class="mt-4">
+        <!-- Thong bao loi -->
+        <div class="alert-error mb-3" id="error-msg">
+            <i data-feather="alert-circle" style="width:14px"></i>
+            <span id="error-text">Sai email hoặc mật khẩu!</span>
+        </div>
+
+        <form class="mt-4" id="login-form">
             <div class="mb-3">
-                <label class="form-label fw-semibold fs-13">Tên đăng nhập</label>
+                <label class="form-label fw-semibold fs-13">Email</label>
                 <div class="input-group">
-                    <span class="input-group-text"><i data-feather="user" style="width: 16px;"></i></span>
-                    <input type="text" class="form-control" placeholder="Mã nhân viên..." required>
+                    <span class="input-group-text">
+                        <i data-feather="user" style="width:16px"></i>
+                    </span>
+                    <input type="email" id="email" class="form-control"
+                           placeholder="example@gmail.com" required>
                 </div>
             </div>
 
@@ -105,30 +115,107 @@
                     <a href="#" class="text-primary text-decoration-none small">Quên mật khẩu?</a>
                 </div>
                 <div class="input-group">
-                    <span class="input-group-text"><i data-feather="key" style="width: 16px;"></i></span>
-                    <input type="password" class="form-control" placeholder="••••••••" required>
+                    <span class="input-group-text">
+                        <i data-feather="key" style="width:16px"></i>
+                    </span>
+                    <input type="password" id="password" class="form-control"
+                           placeholder="••••••••" required>
                 </div>
             </div>
 
             <div class="mb-4 form-check">
                 <input type="checkbox" class="form-check-input" id="remember">
-                <label class="form-check-label small text-muted" for="remember">Ghi nhớ đăng nhập</label>
+                <label class="form-check-label small text-muted" for="remember">
+                    Ghi nhớ đăng nhập
+                </label>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 mb-3">
-                ĐĂNG NHẬP <i data-feather="arrow-right" class="ms-2" style="width: 16px;"></i>
+            <button type="submit" class="btn btn-primary w-100 mb-3" id="btn-login">
+                ĐĂNG NHẬP
+                <i data-feather="arrow-right" class="ms-2" style="width:16px"></i>
             </button>
         </form>
 
         <div class="text-center border-top pt-3">
-            <p class="text-muted small mb-0">Hỗ trợ: <a href="#" class="text-dark fw-bold text-decoration-none">IT Helpdesk</a></p>
+            <p class="text-muted small mb-0">
+                Hỗ trợ: <a href="#" class="text-dark fw-bold text-decoration-none">IT Helpdesk</a>
+            </p>
         </div>
     </div>
 </div>
 
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="../assets/js/api.js"></script>
 <script>
-    // Kích hoạt icon Feather
     feather.replace();
+
+    // Neu da dang nhap roi thi chuyen thang dashboard
+    if (getUser()) {
+        window.location.href = "dashboard.html";
+    }
+
+    document.getElementById("login-form").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const email    = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const remember = document.getElementById("remember").checked;
+        const btnLogin = document.getElementById("btn-login");
+        const errorMsg = document.getElementById("error-msg");
+
+        // An thong bao loi cu
+        errorMsg.style.display = "none";
+
+        // Hien loading
+        btnLogin.disabled    = true;
+        btnLogin.innerHTML   = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Đang đăng nhập...
+        `;
+
+        const res = await callAPI("auth/login.php", "POST", { email, password });
+
+        if (res.status === "success") {
+            // Luu user
+            saveUser(res.data);
+
+            // Ghi nho dang nhap
+            if (remember) {
+                localStorage.setItem("remember_email", email);
+            }
+
+            // Chuyen sang dashboard theo role
+            const role = res.data.role;
+            if (role === "hr" || role === "admin") {
+                window.location.href = "dashboard.html";
+            } else if (role === "manager") {
+                window.location.href = "dashboard.html";
+            } else {
+                window.location.href = "dashboard.html";
+            }
+
+        } else {
+            // Hien thong bao loi
+            errorMsg.style.display = "block";
+            document.getElementById("error-text").innerText = res.message;
+            feather.replace();
+
+            // Reset nut
+            btnLogin.disabled  = false;
+            btnLogin.innerHTML = `
+                ĐĂNG NHẬP
+                <i data-feather="arrow-right" class="ms-2" style="width:16px"></i>
+            `;
+            feather.replace();
+        }
+    });
+
+    // Tu dong dien email neu co luu
+    const savedEmail = localStorage.getItem("remember_email");
+    if (savedEmail) {
+        document.getElementById("email").value = savedEmail;
+        document.getElementById("remember").checked = true;
+    }
 </script>
 
 </body>
