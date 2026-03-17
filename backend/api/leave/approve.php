@@ -2,69 +2,128 @@
 require_once '../../config/cors.php';
 require_once '../../config/database.php';
 require_once '../../config/auth.php';
-$payload = requireRole(['manager', 'hr']);
 
-$data          = json_decode(file_get_contents("php://input"), true);
-$request_id    = $data['request_id'];
-$approver_id   = $data['approver_id'];
-$decision      = $data['decision'];    // 'approved' hoac 'rejected'
-$comment       = $data['comment'] ?? '';
-$approval_level = $data['approval_level']; // 1=Manager, 2=HR
+$payload = requireRole(['admin', 'hr', 'manager']);
+$method  = $_SERVER['REQUEST_METHOD'];
 
-// Them vao bang duyet
-$sql = "INSERT INTO leave_approvals
-        (request_id, approver_id, approval_level, decision, comment)
-        VALUES (?, ?, ?, ?, ?)";
-$stmt = mysqli_prepare($conn, $sql);
-mysqli_stmt_bind_param($stmt, "iiiss",
-    $request_id, $approver_id, $approval_level, $decision, $comment);
-mysqli_stmt_execute($stmt);
+// ===== GET - lay danh sach don cho duyet =====
+if ($method === 'GET') {
+    $status = $_GET['status'] ?? 'pending';
 
-// Cap nhat trang thai don
-if ($decision === 'rejected') {
-    $status = 'rejected';
-} else if ($approval_level == 2) {
-    $status = 'approved'; // HR duyet = hoan tat
-} else {
-    $status = 'pending';  // Manager duyet -> cho HR
+    // Manager chi thay don cua nhan vien trong phong ban minh
+    // HR/Admin thay tat ca
+    if ($payload['role'] === 'manager') {
+        $sql = "SELECT r.*, t.name as leave_type_name,
+                       u.full_name, u.email, u.department_id
+                FROM leave_requests r
+                JOIN leave_types t ON r.leave_type_id = t.id
+                JOIN users u ON r.user_id = u.id
+                JOIN users m ON m.id = ? AND m.department_id = u.department_id
+                WHERE r.status = ?
+                ORDER BY r.submitted_at ASC";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "is", $payload['id'], $status);
+    } else {
+        $sql = "SELECT r.*, t.name as leave_type_name,
+                       u.full_name, u.email
+                FROM leave_requests r
+                JOIN leave_types t ON r.leave_type_id = t.id
+                JOIN users u ON r.user_id = u.id
+                WHERE r.status = ?
+                ORDER BY r.submitted_at ASC";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $status);
+    }
+
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $list   = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $list[] = $row;
+    }
+    echo json_encode(["status" => "success", "data" => $list]);
+    exit;
 }
 
-$sql_update = "UPDATE leave_requests SET status = ? WHERE id = ?";
-$stmt_update = mysqli_prepare($conn, $sql_update);
-mysqli_stmt_bind_param($stmt_update, "si", $status, $request_id);
-mysqli_stmt_execute($stmt_update);
+// ===== POST - duyet hoac tu choi =====
+if ($method === 'POST') {
+    $data       = json_decode(file_get_contents("php://input"), true);
+    $request_id = $data['request_id'] ?? 0;
+    $decision   = $data['decision']   ?? ''; // approved | rejected
+    $comment    = $data['comment']    ?? '';
 
-// Neu approved hoan toan -> tru so ngay
-if ($status === 'approved') {
-    $sql_req = "SELECT user_id, leave_type_id, total_days FROM leave_requests WHERE id = ?";
-    $stmt_req = mysqli_prepare($conn, $sql_req);
-    mysqli_stmt_bind_param($stmt_req, "i", $request_id);
-    mysqli_stmt_execute($stmt_req);
-    $req = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_req));
+    if (!$request_id || !in_array($decision, ['approved', 'rejected'])) {
+        http_response_code(400);
+        echo json_encode(["status" => "error", "message" => "Thieu thong tin"]);
+        exit;
+    }
 
-    $sql_bal = "UPDATE leave_balances
-                SET used_days = used_days + ?
-                WHERE user_id = ? AND leave_type_id = ? AND year = YEAR(CURDATE())";
-    $stmt_bal = mysqli_prepare($conn, $sql_bal);
-    mysqli_stmt_bind_param($stmt_bal, "dii",
-        $req['total_days'], $req['user_id'], $req['leave_type_id']);
-    mysqli_stmt_execute($stmt_bal);
+    // Lay thong tin don
+    $stmt_get = mysqli_prepare($conn,
+        "SELECT * FROM leave_requests WHERE id = ? AND status = 'pending'"
+    );
+    mysqli_stmt_bind_param($stmt_get, "i", $request_id);
+    mysqli_stmt_execute($stmt_get);
+    $request = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_get));
+
+    if (!$request) {
+        http_response_code(400);
+        echo json_encode(["status" => "error", "message" => "Don khong ton tai hoac da xu ly"]);
+        exit;
+    }
+
+    // Cap nhat trang thai don
+    $stmt = mysqli_prepare($conn,
+        "UPDATE leave_requests SET status=?
+         WHERE id=?"
+    );
+    mysqli_stmt_bind_param($stmt, "si", $decision, $request_id);
+    mysqli_stmt_execute($stmt);
+
+    // Neu duyet → tru used_days trong leave_balances
+    if ($decision === 'approved') {
+        $stmt_bal = mysqli_prepare($conn,
+            "UPDATE leave_balances
+             SET used_days = used_days + ?
+             WHERE user_id = ? AND leave_type_id = ?
+             AND year = YEAR(?)"
+        );
+        mysqli_stmt_bind_param($stmt_bal, "diis",
+            $request['total_days'],
+            $request['user_id'],
+            $request['leave_type_id'],
+            $request['start_date']
+        );
+        mysqli_stmt_execute($stmt_bal);
+    }
+
+    // Tao thong bao cho nhan vien
+    $msg = $decision === 'approved'
+        ? "Don nghi phep cua ban da duoc duyet"
+        : "Don nghi phep cua ban bi tu choi. Ly do: " . $comment;
+
+    $stmt_notif = mysqli_prepare($conn,
+        "INSERT INTO notifications (user_id, request_id, type, message)
+         VALUES (?, ?, ?, ?)"
+    );
+    mysqli_stmt_bind_param($stmt_notif, "iiss",
+        $request['user_id'], $request_id, $decision, $msg
+    );
+    mysqli_stmt_execute($stmt_notif);
+
+    // Ghi vao leave_approvals
+    $level = $payload['role'] === 'manager' ? 1 : 2;
+    $stmt_appr = mysqli_prepare($conn,
+        "INSERT INTO leave_approvals
+         (request_id, approver_id, approval_level, decision, comment, decided_at)
+         VALUES (?, ?, ?, ?, ?, NOW())"
+    );
+    mysqli_stmt_bind_param($stmt_appr, "iiiss",
+        $request_id, $payload['id'], $level, $decision, $comment
+    );
+    mysqli_stmt_execute($stmt_appr);
+
+    echo json_encode(["status" => "success", "message" => "Da xu ly don"]);
+    exit;
 }
-
-// Tao thong bao
-$sql_notif = "SELECT user_id FROM leave_requests WHERE id = ?";
-$stmt_notif = mysqli_prepare($conn, $sql_notif);
-mysqli_stmt_bind_param($stmt_notif, "i", $request_id);
-mysqli_stmt_execute($stmt_notif);
-$req_user = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_notif));
-
-$msg = $decision === 'approved' ? "Don nghi phep da duoc duyet" : "Don nghi phep bi tu choi";
-$sql_n = "INSERT INTO notifications (user_id, request_id, type, message)
-          VALUES (?, ?, ?, ?)";
-$stmt_n = mysqli_prepare($conn, $sql_n);
-mysqli_stmt_bind_param($stmt_n, "iiss",
-    $req_user['user_id'], $request_id, $decision, $msg);
-mysqli_stmt_execute($stmt_n);
-
-echo json_encode(["status" => "success", "message" => "Cap nhat thanh cong"]);
 ?>

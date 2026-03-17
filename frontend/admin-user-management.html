@@ -77,39 +77,46 @@
                                 <span class="reportrange-picker-field"></span>
                             </div>
                             <div class="dropdown filter-dropdown">
-                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10" data-bs-auto-close="outside">
+                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10"
+                                    data-bs-auto-close="outside">
                                     <i class="feather-filter me-2"></i>
                                     <span>Filter</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Role" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Role"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Role">Role</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Team" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Team"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Team">Team</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Email" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Email"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Email">Email</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Member" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Member"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Member">Member</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Recommendation" checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Recommendation">Recommendation</label>
+                                            <input type="checkbox" class="custom-control-input" id="Recommendation"
+                                                checked="checked" />
+                                            <label class="custom-control-label c-pointer"
+                                                for="Recommendation">Recommendation</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-divider"></div>
@@ -137,147 +144,147 @@
             <div class="main-content">
                 <div class="row">
 
-    <!-- Thanh công cụ -->
-    <div class="col-12 mb-4">
-        <div class="card">
-            <div class="card-body d-flex justify-content-between align-items-center">
+                    <!-- Thanh công cụ -->
+                    <div class="col-12 mb-4">
+                        <div class="card">
+                            <div class="card-body d-flex justify-content-between align-items-center">
 
-                <div class="d-flex gap-2">
-                    <input type="text" class="form-control" placeholder="Tìm kiếm người dùng...">
+                                <div class="d-flex gap-2">
+                                    <input type="text" class="form-control" placeholder="Tìm kiếm người dùng...">
 
-                    <select class="form-select">
-                        <option value="">Tất cả vai trò</option>
-                        <option>Quản trị viên (Admin)</option>
-                        <option>Nhân sự (HR)</option>
-                        <option>Quản lý (Manager)</option>
-                        <option>Nhân viên (Employee)</option>
-                    </select>
+                                    <select class="form-select">
+                                        <option value="">Tất cả vai trò</option>
+                                        <option>Quản trị viên (Admin)</option>
+                                        <option>Nhân sự (HR)</option>
+                                        <option>Quản lý (Manager)</option>
+                                        <option>Nhân viên (Employee)</option>
+                                    </select>
+                                </div>
+
+                                <button class="btn btn-primary">
+                                    <i class="feather-user-plus me-2"></i>
+                                    Thêm người dùng
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Bảng người dùng -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Quản lý người dùng</h5>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+
+                                    <table class="table table-hover">
+
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Mã</th>
+                                                <th>Họ tên</th>
+                                                <th>Email</th>
+                                                <th>Phòng ban</th>
+                                                <th>Vai trò</th>
+                                                <th>Trạng thái</th>
+                                                <th class="text-center py-3">Thao tác</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                            <tr>
+                                                <td>#001</td>
+                                                <td>John Smith</td>
+                                                <td>john@company.com</td>
+                                                <td>Công nghệ thông tin</td>
+                                                <td><span class="badge bg-danger">Admin</span></td>
+                                                <td><span class="badge bg-success">Hoạt động</span></td>
+                                                <td class="text-center py-3">
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        <button class="btn btn-sm btn-outline-primary">
+                                                            <i class="feather-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger">
+                                                            <i class="feather-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>#002</td>
+                                                <td>Anna Lee</td>
+                                                <td>anna@company.com</td>
+                                                <td>Nhân sự</td>
+                                                <td><span class="badge bg-info">HR</span></td>
+                                                <td><span class="badge bg-success">Hoạt động</span></td>
+                                                <td class="text-center">
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        <button class="btn btn-sm btn-outline-primary">
+                                                            <i class="feather-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger">
+                                                            <i class="feather-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>#003</td>
+                                                <td>Michael Brown</td>
+                                                <td>michael@company.com</td>
+                                                <td>Kinh doanh</td>
+                                                <td><span class="badge bg-warning text-dark">Manager</span></td>
+                                                <td><span class="badge bg-success">Hoạt động</span></td>
+                                                <td class="text-center">
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        <button class="btn btn-sm btn-outline-primary">
+                                                            <i class="feather-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger">
+                                                            <i class="feather-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>#004</td>
+                                                <td>David Wilson</td>
+                                                <td>david@company.com</td>
+                                                <td>Marketing</td>
+                                                <td><span class="badge bg-secondary">Nhân viên</span></td>
+                                                <td><span class="badge bg-success">Hoạt động</span></td>
+                                                <td class="text-center py-3 ">
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        <button class="btn btn-sm btn-outline-primary">
+                                                            <i class="feather-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger">
+                                                            <i class="feather-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <button class="btn btn-primary">
-                    <i class="feather-user-plus me-2"></i>
-                    Thêm người dùng
-                </button>
-
             </div>
-        </div>
-    </div>
-
-
-    <!-- Bảng người dùng -->
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Quản lý người dùng</h5>
-            </div>
-
-            <div class="card-body">
-                <div class="table-responsive">
-
-                    <table class="table table-hover">
-
-                        <thead class="table-light">
-                            <tr>
-                                <th>Mã</th>
-                                <th>Họ tên</th>
-                                <th>Email</th>
-                                <th>Phòng ban</th>
-                                <th>Vai trò</th>
-                                <th>Trạng thái</th>
-                                <th class="text-center py-3">Thao tác</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-                                <td>#001</td>
-                                <td>John Smith</td>
-                                <td>john@company.com</td>
-                                <td>Công nghệ thông tin</td>
-                                <td><span class="badge bg-danger">Admin</span></td>
-                                <td><span class="badge bg-success">Hoạt động</span></td>
-                                <td class="text-center py-3">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="feather-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="feather-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>#002</td>
-                                <td>Anna Lee</td>
-                                <td>anna@company.com</td>
-                                <td>Nhân sự</td>
-                                <td><span class="badge bg-info">HR</span></td>
-                                <td><span class="badge bg-success">Hoạt động</span></td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="feather-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="feather-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>#003</td>
-                                <td>Michael Brown</td>
-                                <td>michael@company.com</td>
-                                <td>Kinh doanh</td>
-                                <td><span class="badge bg-warning text-dark">Manager</span></td>
-                                <td><span class="badge bg-success">Hoạt động</span></td>
-                                <td class="text-center">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="feather-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="feather-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>#004</td>
-                                <td>David Wilson</td>
-                                <td>david@company.com</td>
-                                <td>Marketing</td>
-                                <td><span class="badge bg-secondary">Nhân viên</span></td>
-                                <td><span class="badge bg-success">Hoạt động</span></td>
-                                <td class="text-center py-3 ">
-                                    <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="feather-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="feather-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-                
-                </div>  
             <!-- [ Main Content ] end -->
         </div>
         <!-- [ Footer ] start -->
@@ -288,7 +295,9 @@
                     document.write(new Date().getFullYear());
                 </script>
             </p>
-            <p><span>By: <a target="_blank" href="https://wrapbootstrap.com/user/theme_ocean" target="_blank">theme_ocean</a></span> • <span>Distributed by: <a target="_blank" href="https://themewagon.com" target="_blank">ThemeWagon</a></span></p>
+            <p><span>By: <a target="_blank" href="https://wrapbootstrap.com/user/theme_ocean"
+                        target="_blank">theme_ocean</a></span> • <span>Distributed by: <a target="_blank"
+                        href="https://themewagon.com" target="_blank">ThemeWagon</a></span></p>
             <div class="d-flex align-items-center gap-4">
                 <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Help</a>
                 <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Terms</a>
@@ -319,12 +328,258 @@
     <script src="assets/vendors/js/circle-progress.min.js"></script>
     <!--! END: Vendors JS !-->
     <!--! BEGIN: Apps Init  !-->
-    <script src="assets/js/common-init.min.js"></script>
     <script src="assets/js/dashboard-init.min.js"></script>
     <!--! END: Apps Init !-->
     <!--! BEGIN: Theme Customizer  !-->
     <script src="assets/js/theme-customizer-init.min.js"></script>
     <!--! END: Theme Customizer !-->
+
+    <div class="modal fade" id="modalUser" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Thêm người dùng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="userId">
+                    <div class="mb-3">
+                        <label class="form-label">Họ tên <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="fullName" placeholder="Nhập họ tên">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email" placeholder="Nhập email">
+                    </div>
+                    <div class="mb-3" id="passwordField">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" placeholder="Mặc định: 123456">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" id="phone" placeholder="Nhập số điện thoại">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Vai trò <span class="text-danger">*</span></label>
+                        <select class="form-select" id="roleId">
+                            <option value="1">Admin</option>
+                            <option value="2">HR</option>
+                            <option value="3">Manager</option>
+                            <option value="4" selected>Employee</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phòng ban</label>
+                        <select class="form-select" id="departmentId">
+                            <option value="">-- Chọn phòng ban --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
+                    <button class="btn btn-primary" onclick="saveUser()">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Toast thông báo -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+        <div id="toastBox" class="toast align-items-center border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold" id="toastMsg"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(message, type = 'success') {
+            const toastBox = document.getElementById('toastBox');
+            const toastMsg = document.getElementById('toastMsg');
+
+            toastMsg.innerText = message;
+            toastBox.className = `toast align-items-center border-0 text-white ${type === 'success' ? 'bg-success' : 'bg-danger'
+                }`;
+
+            const toast = new bootstrap.Toast(toastBox, { delay: 3000 });
+            toast.show();
+        }
+    </script>
+
+
+
+    <script>
+        const API = '../backend/api/users';
+        const token = localStorage.getItem('token');
+
+        // Load phòng ban vào select
+        async function loadDepartments() {
+            const res = await fetch('../backend/api/departments/list.php', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const json = await res.json();
+            const sel = document.getElementById('departmentId');
+            sel.innerHTML = '<option value="">-- Chọn phòng ban --</option>';
+            (json.data || []).forEach(d => {
+                sel.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+            });
+        }
+
+        // Load danh sách nhân viên
+        async function loadUsers() {
+            const res = await fetch(`${API}/list.php`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const json = await res.json();
+            if (json.status !== 'success') return;
+
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            json.data.forEach(u => {
+                tbody.innerHTML += `
+            <tr>
+                <td>#${String(u.id).padStart(3, '0')}</td>
+                <td>${u.full_name}</td>
+                <td>${u.email}</td>
+                <td>${u.dept_name ?? '---'}</td>
+                <td>${renderRole(u.role_name)}</td>
+                <td>${u.is_active == 1
+                        ? '<span class="badge bg-success">Hoạt động</span>'
+                        : '<span class="badge bg-secondary">Vô hiệu</span>'}</td>
+                <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-sm btn-outline-primary"
+                            onclick='openEdit(${JSON.stringify(u)})'>
+                            <i class="feather-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger"
+                            onclick="disableUser(${u.id})">
+                            <i class="feather-slash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>`;
+            });
+        }
+
+
+        function renderRole(role) {
+            const map = {
+                admin: '<span class="badge bg-danger">Admin</span>',
+                hr: '<span class="badge bg-info">HR</span>',
+                manager: '<span class="badge bg-warning text-dark">Manager</span>',
+                employee: '<span class="badge bg-secondary">Nhân viên</span>'
+            };
+            return map[role] ?? `<span class="badge bg-secondary">${role}</span>`;
+        }
+
+        // Mở modal thêm
+        async function openAdd() {
+            document.getElementById('modalTitle').innerText = 'Thêm người dùng';
+            document.getElementById('userId').value = '';
+            document.getElementById('fullName').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('email').disabled = false;
+            document.getElementById('password').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('roleId').value = '4';
+            document.getElementById('passwordField').style.display = 'block';
+
+            await loadDepartments();
+            document.getElementById('departmentId').value = '';
+            new bootstrap.Modal(document.getElementById('modalUser')).show();
+        }
+
+        // Mở modal sửa
+        async function openEdit(u) {
+            document.getElementById('modalTitle').innerText = 'Sửa người dùng';
+            document.getElementById('userId').value = u.id;
+            document.getElementById('fullName').value = u.full_name;
+            document.getElementById('email').value = u.email;
+            document.getElementById('email').disabled = true;
+            document.getElementById('phone').value = u.phone ?? '';
+            document.getElementById('passwordField').style.display = 'none';
+
+            const roleMap = { admin: 1, hr: 2, manager: 3, employee: 4 };
+            document.getElementById('roleId').value = roleMap[u.role_name] ?? 4;
+
+            await loadDepartments();
+            setTimeout(() => {
+                document.getElementById('departmentId').value = u.department_id ?? '';
+            }, 100);
+
+            new bootstrap.Modal(document.getElementById('modalUser')).show();
+        }
+
+        // Lưu thêm/sửa
+        async function saveUser() {
+            const id = document.getElementById('userId').value;
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const roleId = parseInt(document.getElementById('roleId').value);
+            const deptId = document.getElementById('departmentId').value || null;
+
+            if (!fullName || !email) {
+                alert('Vui lòng nhập đầy đủ họ tên và email!');
+                return;
+            }
+
+            let url, body;
+            if (id) {
+                url = `${API}/update.php`;
+                body = { id: parseInt(id), full_name: fullName, phone, role_id: roleId, department_id: deptId, is_active: 1 };
+            } else {
+                url = `${API}/create.php`;
+                body = {
+                    full_name: fullName, email, phone, role_id: roleId, department_id: deptId,
+                    password: document.getElementById('password').value || '123456'
+                };
+            }
+
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const json = await res.json();
+
+            if (json.status === 'success') {
+                bootstrap.Modal.getInstance(document.getElementById('modalUser')).hide();
+                showToast(id ? 'Cập nhật thành công!' : 'Thêm người dùng thành công!', 'success');
+                loadUsers();
+            } else {
+                showToast(json.message, 'error');
+            }
+
+
+        }
+
+        // Vô hiệu hóa
+        async function disableUser(id) {
+            if (!confirm('Vô hiệu hóa người dùng này?')) return;
+            const res = await fetch(`${API}/delete.php`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            const json = await res.json();
+            if (json.status === 'success') {
+                showToast('Đã vô hiệu hóa người dùng!', 'success'); 
+                loadUsers();
+            } else {
+                showToast(json.message, 'error'); 
+            }
+        }
+
+        // Gắn nút Thêm người dùng
+        document.querySelector('.btn-primary').addEventListener('click', openAdd);
+
+        // Khởi chạy
+        loadDepartments();
+        loadUsers();
+    </script>
 </body>
 
 </html>

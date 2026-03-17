@@ -59,7 +59,7 @@
     <main class="nxl-container">
         <div class="nxl-content">
             <!-- [ page-header ] start -->
-        <div class="page-header">
+            <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
                     <div class="page-header-title">
                         <h5 class="m-b-10">HR Dashboard</h5>
@@ -86,16 +86,19 @@
                 </div>
             </div>
             <div class="main-content">
-                
+
                 <ul class="nav nav-tabs mb-4 border-bottom">
                     <li class="nav-item">
-                        <a class="nav-link active fw-bold pb-3 text-primary" href="#"><i class="feather-list me-2"></i>Quản lý loại phép</a>
+                        <a class="nav-link active fw-bold pb-3 text-primary" href="#"><i
+                                class="feather-list me-2"></i>Quản lý loại phép</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-muted pb-3" href="hr-leave-statistical.html"><i class="feather-bar-chart-2 me-2"></i>Theo dõi thống kê</a>
+                        <a class="nav-link text-muted pb-3" href="hr-leave-statistical.html"><i
+                                class="feather-bar-chart-2 me-2"></i>Theo dõi thống kê</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-muted pb-3" href="hr-leave-report.html"><i class="feather-file-text me-2"></i>Lập báo cáo</a>
+                        <a class="nav-link text-muted pb-3" href="hr-leave-report.html"><i
+                                class="feather-file-text me-2"></i>Lập báo cáo</a>
                     </li>
                 </ul>
 
@@ -106,39 +109,63 @@
                                 <h5 class="card-title mb-0">Thêm / Sửa Loại Phép</h5>
                             </div>
                             <div class="card-body">
-                                <div class="mb-4">
-                                    <label class="form-label">Mã loại phép <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" placeholder="VD: LP01" value="LP01">
+                                <div id="editNote" class="alert alert-warning d-flex gap-2 align-items-start mb-4"
+                                    style="display:none!important">
+                                    <i class="feather-alert-triangle mt-1"></i>
+                                    <div>
+                                        <div class="fw-bold">Lưu ý khi sửa loại phép</div>
+                                        <ul class="mb-0 ps-3 mt-1 small">
+                                            <li>Thay đổi số ngày <b>không ảnh hưởng</b> đến số ngày phép hiện tại của
+                                                nhân viên.</li>
+                                            <li>Số ngày mới sẽ được áp dụng khi <b>reset đầu năm</b>.</li>
+                                            <li>Nếu muốn áp dụng ngay, HR cần chỉnh tay từng nhân viên.</li>
+                                        </ul>
+                                    </div>
                                 </div>
+                                <!-- Bỏ field Mã loại phép -->
                                 <div class="mb-4">
                                     <label class="form-label">Tên loại phép <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" placeholder="VD: Phép năm" value="Phép năm">
+                                    <input type="text" id="ltName" class="form-control" placeholder="VD: Phép năm">
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label">Số ngày mặc định / Năm <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control" value="12" min="0">
+                                    <label class="form-label">Số ngày tối đa / Năm <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" id="ltMaxDays" class="form-control" value="0" min="0">
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Tính lương</label>
-                                    <select class="form-control">
-                                        <option value="1" selected>Có hưởng lương</option>
+                                    <select id="ltIsPaid" class="form-control">
+                                        <option value="1">Có hưởng lương</option>
                                         <option value="0">Không hưởng lương</option>
                                     </select>
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label">Trạng thái</label>
-                                    <div class="form-check form-switch form-switch-sm ps-5">
-                                        <input class="form-check-input c-pointer" type="checkbox" id="statusSwitch" checked>
-                                        <label class="form-check-label fw-500 text-dark c-pointer" for="statusSwitch">Đang kích hoạt</label>
-                                    </div>
+                                    <label class="form-label">Yêu cầu giấy tờ</label>
+                                    <select id="ltRequiresDoc" class="form-control">
+                                        <option value="0">Không yêu cầu</option>
+                                        <option value="1">Có yêu cầu</option>
+                                    </select>
                                 </div>
                                 <div class="mb-4">
-                                    <label class="form-label">Mô tả quy định</label>
-                                    <textarea class="form-control" rows="4" placeholder="Nhập mô tả quy định..."></textarea>
+                                    <label class="form-label">Số ngày được chuyển sang năm sau</label>
+                                    <input type="number" id="ltCarryOver" class="form-control" value="0" min="0">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Trạng thái</label>
+                                    <div class="form-check form-switch form-switch-sm ps-5">
+                                        <input class="form-check-input c-pointer" type="checkbox" id="statusSwitch"
+                                            checked>
+                                        <label class="form-check-label fw-500 text-dark c-pointer"
+                                            for="statusSwitch">Đang kích hoạt</label>
+                                    </div>
                                 </div>
                                 <div class="d-flex gap-2 mt-4">
-                                    <a href="javascript:void(0);" class="btn btn-primary w-50"><i class="feather-save me-2"></i>Lưu thông tin</a>
-                                    <a href="javascript:void(0);" class="btn btn-light w-50 border">Hủy bỏ</a>
+                                    <a href="javascript:void(0);" class="btn btn-primary w-50"
+                                        onclick="saveLeaveType()">
+                                        <i class="feather-save me-2"></i>Lưu thông tin
+                                    </a>
+                                    <a href="javascript:void(0);" class="btn btn-light w-50 border"
+                                        onclick="resetForm()">Hủy bỏ</a>
                                 </div>
                             </div>
                         </div>
@@ -149,7 +176,8 @@
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="card-title mb-0">Danh Sách Loại Phép</h5>
                                 <div class="input-group search-form w-auto">
-                                    <span class="input-group-text bg-transparent"><i class="feather-search fs-6 text-muted"></i></span>
+                                    <span class="input-group-text bg-transparent"><i
+                                            class="feather-search fs-6 text-muted"></i></span>
                                     <input type="text" class="form-control" placeholder="Tìm kiếm loại phép...">
                                 </div>
                             </div>
@@ -178,8 +206,12 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <a href="javascript:void(0);" class="avatar-text avatar-md text-primary" title="Sửa"><i class="feather-edit"></i></a>
-                                                    <a href="javascript:void(0);" class="avatar-text avatar-md text-danger" title="Xóa"><i class="feather-trash-2"></i></a>
+                                                    <a href="javascript:void(0);"
+                                                        class="avatar-text avatar-md text-primary" title="Sửa"><i
+                                                            class="feather-edit"></i></a>
+                                                    <a href="javascript:void(0);"
+                                                        class="avatar-text avatar-md text-danger" title="Xóa"><i
+                                                            class="feather-trash-2"></i></a>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -193,8 +225,12 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <a href="javascript:void(0);" class="avatar-text avatar-md text-primary" title="Sửa"><i class="feather-edit"></i></a>
-                                                    <a href="javascript:void(0);" class="avatar-text avatar-md text-danger" title="Xóa"><i class="feather-trash-2"></i></a>
+                                                    <a href="javascript:void(0);"
+                                                        class="avatar-text avatar-md text-primary" title="Sửa"><i
+                                                            class="feather-edit"></i></a>
+                                                    <a href="javascript:void(0);"
+                                                        class="avatar-text avatar-md text-danger" title="Xóa"><i
+                                                            class="feather-trash-2"></i></a>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -208,8 +244,12 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <a href="javascript:void(0);" class="avatar-text avatar-md text-primary" title="Sửa"><i class="feather-edit"></i></a>
-                                                    <a href="javascript:void(0);" class="avatar-text avatar-md text-danger" title="Xóa"><i class="feather-trash-2"></i></a>
+                                                    <a href="javascript:void(0);"
+                                                        class="avatar-text avatar-md text-primary" title="Sửa"><i
+                                                            class="feather-edit"></i></a>
+                                                    <a href="javascript:void(0);"
+                                                        class="avatar-text avatar-md text-danger" title="Xóa"><i
+                                                            class="feather-trash-2"></i></a>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -223,8 +263,12 @@
                                                     </div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <a href="javascript:void(0);" class="avatar-text avatar-md text-primary" title="Sửa"><i class="feather-edit"></i></a>
-                                                    <a href="javascript:void(0);" class="avatar-text avatar-md text-danger" title="Xóa"><i class="feather-trash-2"></i></a>
+                                                    <a href="javascript:void(0);"
+                                                        class="avatar-text avatar-md text-primary" title="Sửa"><i
+                                                            class="feather-edit"></i></a>
+                                                    <a href="javascript:void(0);"
+                                                        class="avatar-text avatar-md text-danger" title="Xóa"><i
+                                                            class="feather-trash-2"></i></a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -244,418 +288,30 @@
                 </div>
             </div>
             <!-- [ page-header ] end -->
-     
-        <!-- [ Footer ] start -->
-        <footer class="footer">
-            <p class="fs-11 text-muted fw-medium text-uppercase mb-0 copyright">
-                <span>Copyright ©</span>
-                <script>
-                    document.write(new Date().getFullYear());
-                </script>
-            </p>
-            <p><span>By: <a target="_blank" href="https://wrapbootstrap.com/user/theme_ocean" target="_blank">theme_ocean</a></span> • <span>Distributed by: <a target="_blank" href="https://themewagon.com" target="_blank">ThemeWagon</a></span></p>
-            <div class="d-flex align-items-center gap-4">
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Help</a>
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Terms</a>
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Privacy</a>
-            </div>
-        </footer>
-        <!-- [ Footer ] end -->
+
+            <!-- [ Footer ] start -->
+            <footer class="footer">
+                <p class="fs-11 text-muted fw-medium text-uppercase mb-0 copyright">
+                    <span>Copyright ©</span>
+                    <script>
+                        document.write(new Date().getFullYear());
+                    </script>
+                </p>
+                <p><span>By: <a target="_blank" href="https://wrapbootstrap.com/user/theme_ocean"
+                            target="_blank">theme_ocean</a></span> • <span>Distributed by: <a target="_blank"
+                            href="https://themewagon.com" target="_blank">ThemeWagon</a></span></p>
+                <div class="d-flex align-items-center gap-4">
+                    <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Help</a>
+                    <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Terms</a>
+                    <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Privacy</a>
+                </div>
+            </footer>
+            <!-- [ Footer ] end -->
     </main>
     <!--! ================================================================ !-->
     <!--! [End] Main Content !-->
     <!--! ================================================================ !-->
     <!--! ================================================================ !-->
-    <!--! [Start] Sent Proposal l !-->
-    <!--! ================================================================ !-->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="proposalSent">
-        <div class="offcanvas-header ht-80 px-4 border-bottom border-gray-5">
-            <div>
-                <h2 class="fs-16 fw-bold text-truncate-1-line">Sent Proposal</h2>
-                <small class="fs-12 text-muted">Sent proposal to your client's</small>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="py-3 px-4 d-flex justify-content-between align-items-center border-bottom border-bottom-dashed border-gray-5 bg-gray-100">
-            <div>
-                <span class="fw-bold text-dark">Date:</span>
-                <span class="fs-11 fw-medium text-muted">25 MAY, 2023</span>
-            </div>
-            <div>
-                <span class="fw-bold text-dark">Proposal No:</span>
-                <span class="fs-12 fw-bold text-primary c-pointer">#NXL369852</span>
-            </div>
-        </div>
-        <div class="offcanvas-body">
-            <div class="form-group mb-4">
-                <label class="form-label">From: <span class="text-danger">*</span></label>
-                <input type="email" class="form-control" value="wrapcode.info@gmail.com" placeholder="Clients..." readonly="" required>
-            </div>
-            <div class="form-group mb-4">
-                <label class="form-label">To: <span class="text-danger">*</span></label>
-                <input class="form-control" name="tomailcontent" value="wrapcode.info@gmail.com" placeholder="To..." required>
-            </div>
-            <div class="form-group mb-4">
-                <label class="form-label">Subject: <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" placeholder="Subject..." required>
-            </div>
-            <div class="form-group mb-4">
-                <label class="form-label">URL: </label>
-                <input type="url" class="form-control" placeholder="URL...">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Messages:</label>
-                <div data-editor-target="editor" class="ht-200"></div>
-            </div>
-        </div>
-        <div class="px-4 gap-2 d-flex align-items-center ht-80 border border-end-0 border-gray-2">
-            <a href="javascript:void(0);" class="btn btn-primary w-50" data-alert-target="#alertMessage">Sent Proposal</a>
-            <a href="javascript:void(0);" class="btn btn-danger w-50" data-bs-dismiss="offcanvas">Cancel</a>
-        </div>
-    </div>
-    <!--! ================================================================ !-->
-    <!--! [End] Sent Proposal !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! [Start] Search Modal !-->
-    <!--! ================================================================ !-->
-    <div class="modal fade-scale" id="searchModal" aria-hidden="true" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-top modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header search-form py-0">
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <i class="feather-search fs-4 text-muted"></i>
-                        </span>
-                        <input type="text" class="form-control search-input-field" placeholder="Search...">
-                        <span class="input-group-text">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </span>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="searching-for mb-5">
-                        <h4 class="fs-13 fw-normal text-gray-600 mb-3">I'm searching for...</h4>
-                        <div class="row g-1">
-                            <div class="col-md-4 col-xl-2">
-                                <a href="javascript:void(0);" class="d-flex align-items-center gap-2 px-3 lh-lg border rounded-pill">
-                                    <i class="feather-compass"></i>
-                                    <span>Recent</span>
-                                </a>
-                            </div>
-                            <div class="col-md-4 col-xl-2">
-                                <a href="javascript:void(0);" class="d-flex align-items-center gap-2 px-3 lh-lg border rounded-pill">
-                                    <i class="feather-command"></i>
-                                    <span>Command</span>
-                                </a>
-                            </div>
-                            <div class="col-md-4 col-xl-2">
-                                <a href="javascript:void(0);" class="d-flex align-items-center gap-2 px-3 lh-lg border rounded-pill">
-                                    <i class="feather-users"></i>
-                                    <span>Peoples</span>
-                                </a>
-                            </div>
-                            <div class="col-md-4 col-xl-2">
-                                <a href="javascript:void(0);" class="d-flex align-items-center gap-2 px-3 lh-lg border rounded-pill">
-                                    <i class="feather-file"></i>
-                                    <span>Files</span>
-                                </a>
-                            </div>
-                            <div class="col-md-4 col-xl-2">
-                                <a href="javascript:void(0);" class="d-flex align-items-center gap-2 px-3 lh-lg border rounded-pill">
-                                    <i class="feather-video"></i>
-                                    <span>Medias</span>
-                                </a>
-                            </div>
-                            <div class="col-md-4 col-xl-2">
-                                <a href="javascript:void(0);" class="d-flex align-items-center gap-2 px-3 lh-lg border rounded-pill">
-                                    <span>More</span>
-                                    <i class="feather-chevron-down"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="recent-result mb-5">
-                        <h4 class="fs-13 fw-normal text-gray-600 mb-3">Recnet <span class="badge small bg-gray-200 rounded ms-1 text-dark">3</span></h4>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-airplay fs-5"></i>
-                                <div class="fs-13 fw-semibold">CRM dashboard redesign</div>
-                            </a>
-                            <a href="javascript:void(0);" class="badge border rounded text-dark">/<i class="feather-command ms-1 fs-12"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-file-plus fs-5"></i>
-                                <div class="fs-13 fw-semibold">Create new eocument</div>
-                            </a>
-                            <a href="javascript:void(0);" class="badge border rounded text-dark">N /<i class="feather-command ms-1 fs-12"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-user-plus fs-5"></i>
-                                <div class="fs-13 fw-semibold">Invite project colleagues</div>
-                            </a>
-                            <a href="javascript:void(0);" class="badge border rounded text-dark">P /<i class="feather-command ms-1 fs-12"></i></a>
-                        </div>
-                    </div>
-                    <div class="command-result mb-5">
-                        <h4 class="fs-13 fw-normal text-gray-600 mb-3">Command <span class="badge small bg-gray-200 rounded ms-1 text-dark">5</span></h4>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-user fs-5"></i>
-                                <div class="fs-13 fw-semibold">My profile</div>
-                            </a>
-                            <a href="javascript:void(0);" class="badge border rounded text-dark">P /<i class="feather-command ms-1 fs-12"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-users fs-5"></i>
-                                <div class="fs-13 fw-semibold">Team profile</div>
-                            </a>
-                            <a href="javascript:void(0);" class="badge border rounded text-dark">T /<i class="feather-command ms-1 fs-12"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-user-plus fs-5"></i>
-                                <div class="fs-13 fw-semibold">Invite colleagues</div>
-                            </a>
-                            <a href="javascript:void(0);" class="badge border rounded text-dark">I /<i class="feather-command ms-1 fs-12"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-briefcase fs-5"></i>
-                                <div class="fs-13 fw-semibold">Create new project</div>
-                            </a>
-                            <a href="javascript:void(0);" class="badge border rounded text-dark">CP /<i class="feather-command ms-1 fs-12"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-life-buoy fs-5"></i>
-                                <div class="fs-13 fw-semibold">Support center</div>
-                            </a>
-                            <a href="javascript:void(0);" class="badge border rounded text-dark">SC /<i class="feather-command ms-1 fs-12"></i></a>
-                        </div>
-                    </div>
-                    <div class="file-result mb-4">
-                        <h4 class="fs-13 fw-normal text-gray-600 mb-3">Files <span class="badge small bg-gray-200 rounded ms-1 text-dark">3</span></h4>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-folder-plus fs-5"></i>
-                                <div class="fs-13 fw-semibold">CRM Desing Project <span class="fs-12 fw-normal text-muted">(56.74 MB)</span></div>
-                            </a>
-                            <a href="javascript:void(0);" class="file-download"><i class="feather-download"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-folder-plus fs-5"></i>
-                                <div class="fs-13 fw-semibold">Admin Dashboard Project <span class="fs-12 fw-normal text-muted">(46.83 MB)</span></div>
-                            </a>
-                            <a href="javascript:void(0);" class="file-download"><i class="feather-download"></i></a>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between">
-                            <a href="javascript:void(0);" class="d-flex align-items-start gap-3">
-                                <i class="feather-folder-plus fs-5"></i>
-                                <div class="fs-13 fw-semibold">CRM Dashboard Project <span class="fs-12 fw-normal text-muted">(68.59 MB)</span></div>
-                            </a>
-                            <a href="javascript:void(0);" class="file-download"><i class="feather-download"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--! ================================================================ !-->
-    <!--! [End] Search Modal !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! [Start] Language Select !-->
-    <!--! ================================================================ !-->
-    <div class="modal fade-scale" id="languageSelectModal" aria-hidden="true" aria-labelledby="languageSelectModalLabel" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="languageSelectModalLabel">Select Language</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/sa.svg" alt="" class="img-fluid"></div>
-                                <span>Arabic </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/bd.svg" alt="" class="img-fluid"></div>
-                                <span>Bengali </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/ch.svg" alt="" class="img-fluid"></div>
-                                <span>Chinese </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/hr.svg" alt="" class="img-fluid"></div>
-                                <span>Croatian </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/dk.svg" alt="" class="img-fluid"></div>
-                                <span>Danish </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/nl.svg" alt="" class="img-fluid"></div>
-                                <span>Dutch </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select active">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/us.svg" alt="" class="img-fluid"></div>
-                                <span>English </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/fi.svg" alt="" class="img-fluid"></div>
-                                <span>Filipino </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/fr.svg" alt="" class="img-fluid"></div>
-                                <span>French </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/de.svg" alt="" class="img-fluid"></div>
-                                <span>German </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/il.svg" alt="" class="img-fluid"></div>
-                                <span>Hebrew </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/in.svg" alt="" class="img-fluid"></div>
-                                <span>Hindi </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/id.svg" alt="" class="img-fluid"></div>
-                                <span>Indonesian </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/it.svg" alt="" class="img-fluid"></div>
-                                <span>Italian </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/jp.svg" alt="" class="img-fluid"></div>
-                                <span>Japanese </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/kr.svg" alt="" class="img-fluid"></div>
-                                <span>Korean </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/ir.svg" alt="" class="img-fluid"></div>
-                                <span>Persian </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/pt.svg" alt="" class="img-fluid"></div>
-                                <span>Portuguese </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/ru.svg" alt="" class="img-fluid"></div>
-                                <span>Russian </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/es.svg" alt="" class="img-fluid"></div>
-                                <span>Spanish </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/sv.svg" alt="" class="img-fluid"></div>
-                                <span>Swedish </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/tr.svg" alt="" class="img-fluid"></div>
-                                <span>Turkish </span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/pk.svg" alt="" class="img-fluid"></div>
-                                <span>Urdo</span>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 language_select">
-                            <a href="javascript:void(0);" class="d-flex align-items-center gap-2">
-                                <div class="avatar-image avatar-sm"><img src="assets/vendors/img/flags/1x1/vi.svg" alt="" class="img-fluid"></div>
-                                <span>Vietnamese</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--! ================================================================ !-->
-    <!--! [End] Language Select !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! BEGIN: Downloading Toast !-->
-    <!--! ================================================================ !-->
-    <div class="position-fixed" style="right: 5px; bottom: 5px; z-index: 999999">
-        <div id="toast" class="toast bg-black hide" data-bs-delay="3000" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header px-3 bg-transparent d-flex align-items-center justify-content-between border-bottom border-light border-opacity-10">
-                <div class="text-white mb-0 mr-auto">Downloading...</div>
-                <a href="javascript:void(0)" class="ms-2 mb-1 close fw-normal" data-bs-dismiss="toast" aria-label="Close">
-                    <span class="text-white">&times;</span>
-                </a>
-            </div>
-            <div class="toast-body p-3 text-white">
-                <h6 class="fs-13 text-white">Project.zip</h6>
-                <span class="text-light fs-11">4.2mb of 5.5mb</span>
-            </div>
-            <div class="toast-footer p-3 pt-0 border-top border-light border-opacity-10">
-                <div class="progress mt-3" style="height: 5px">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated w-75 bg-dark" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--! ================================================================ !-->
-    <!--! END: Downloading Toast !-->
     <!--! ================================================================ !-->
     <!--! ================================================================ !-->
     <!--! BEGIN: Theme Customizer !-->
@@ -686,9 +342,9 @@
     <script src="assets/js/theme-customizer-init.min.js"></script>
     <!--! END: Theme Customizer !-->
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var i = 1;
-            $("#add_row").click(function() {
+            $("#add_row").click(function () {
                 b = i - 1;
                 $("#addr" + i)
                     .html($("#addr" + b).html())
@@ -697,23 +353,23 @@
                 $("#tab_logic").append('<tr id="addr' + (i + 1) + '"></tr>');
                 i++;
             });
-            $("#delete_row").click(function() {
+            $("#delete_row").click(function () {
                 if (i > 1) {
                     $("#addr" + (i - 1)).html("");
                     i--;
                 }
                 calc();
             });
-            $("#tab_logic tbody").on("keyup change", function() {
+            $("#tab_logic tbody").on("keyup change", function () {
                 calc();
             });
-            $("#tax").on("keyup change", function() {
+            $("#tax").on("keyup change", function () {
                 calc_total();
             });
         });
 
         function calc() {
-            $("#tab_logic tbody tr").each(function(i, element) {
+            $("#tab_logic tbody tr").each(function (i, element) {
                 var html = $(this).html();
                 if (html != "") {
                     var qty = $(this).find(".qty").val();
@@ -728,7 +384,7 @@
 
         function calc_total() {
             total = 0;
-            $(".total").each(function() {
+            $(".total").each(function () {
                 total += parseInt($(this).val());
             });
             $("#sub_total").val(total.toFixed(2));
@@ -736,6 +392,166 @@
             $("#tax_amount").val(tax_sum.toFixed(2));
             $("#total_amount").val((tax_sum + total).toFixed(2));
         }
+    </script>
+
+    <!-- Toast -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+        <div id="toastBox" class="toast align-items-center border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold" id="toastMsg"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = '../backend/api/leave/type.php';
+        const token = localStorage.getItem('token');
+        let editingId = null;
+
+        function showToast(message, type = 'success') {
+            const toastBox = document.getElementById('toastBox');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = message;
+            toastBox.className = `toast align-items-center border-0 text-white ${type === 'success' ? 'bg-success' : 'bg-danger'}`;
+            new bootstrap.Toast(toastBox, { delay: 3000 }).show();
+        }
+
+        // ===== LOAD DANH SÁCH =====
+        async function loadLeaveTypes() {
+            const res = await fetch(`${API}?action=list`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const json = await res.json();
+            if (json.status !== 'success') return;
+
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            json.data.forEach((lt, i) => {
+                tbody.innerHTML += `
+        <tr>
+            <td><span class="fw-bold text-primary">LP${String(lt.id).padStart(2, '0')}</span></td>
+            <td><span class="fw-bold text-dark">${lt.name}</span></td>
+            <td>${lt.max_days_per_year}</td>
+            <td>${lt.is_paid == 1
+                        ? '<span class="badge bg-soft-success text-success">Có</span>'
+                        : '<span class="badge bg-soft-danger text-danger">Không</span>'}</td>
+            <td>
+                <div class="form-check form-switch ps-5">
+                    <input class="form-check-input" type="checkbox" ${lt.is_active == 1 ? 'checked' : ''}
+                        onchange="toggleActive(${lt.id}, this.checked)">
+                </div>
+            </td>
+            <td class="text-end">
+                <a href="javascript:void(0);" class="avatar-text avatar-md text-primary" onclick='fillForm(${JSON.stringify(lt)})'>
+                    <i class="feather-edit"></i>
+                </a>
+                <a href="javascript:void(0);" class="avatar-text avatar-md text-danger" onclick="deleteType(${lt.id})">
+                    <i class="feather-trash-2"></i>
+                </a>
+            </td>
+        </tr>`;
+            });
+
+            // Cap nhat so luong
+            document.querySelector('.card-footer .fs-12').innerText =
+                `Hiển thị 1 đến ${json.data.length} của ${json.data.length} loại phép`;
+        }
+
+        // ===== ĐIỀN FORM KHI CLICK SỬA =====
+        function fillForm(lt) {
+            editingId = lt.id;
+            document.querySelector('.card-title').innerText = 'Sửa Loại Phép';
+            document.getElementById('ltName').value = lt.name;
+            document.getElementById('ltMaxDays').value = lt.max_days_per_year;
+            document.getElementById('ltIsPaid').value = lt.is_paid;
+            document.getElementById('ltRequiresDoc').value = lt.requires_document;
+            document.getElementById('ltCarryOver').value = lt.carry_over_days;
+            document.getElementById('statusSwitch').checked = lt.is_active == 1;
+            // Hiện lưu ý
+            document.getElementById('editNote').style.display = 'block';
+
+            // Scroll lên form
+            document.querySelector('.card-title').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ===== RESET FORM =====
+        function resetForm() {
+            editingId = null;
+            document.querySelector('.card-title').innerText = 'Thêm / Sửa Loại Phép';
+            document.getElementById('ltName').value = '';
+            document.getElementById('ltMaxDays').value = 0;
+            document.getElementById('ltIsPaid').value = 1;
+            document.getElementById('ltRequiresDoc').value = 0;
+            document.getElementById('ltCarryOver').value = 0;
+            document.getElementById('statusSwitch').checked = true;
+        }
+
+        // ===== LƯU =====
+        async function saveLeaveType() {
+            const body = {
+                name: document.getElementById('ltName').value.trim(),
+                max_days_per_year: parseInt(document.getElementById('ltMaxDays').value),
+                is_paid: parseInt(document.getElementById('ltIsPaid').value),
+                requires_document: parseInt(document.getElementById('ltRequiresDoc').value),
+                carry_over_days: parseInt(document.getElementById('ltCarryOver').value),
+                is_active: document.getElementById('statusSwitch').checked ? 1 : 0
+            };
+
+            if (!body.name) {
+                showToast('Vui lòng nhập tên loại phép!', 'error');
+                return;
+            }
+
+            const action = editingId ? 'update' : 'create';
+            if (editingId) body.id = editingId;
+
+            const res = await fetch(`${API}?action=${action}`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const json = await res.json();
+
+            if (json.status === 'success') {
+                showToast(editingId ? 'Cập nhật thành công!' : 'Tạo loại phép thành công!', 'success');
+                resetForm();
+                loadLeaveTypes();
+            } else {
+                showToast(json.message, 'error');
+            }
+        }
+
+        // ===== VÔ HIỆU HÓA =====
+        async function deleteType(id) {
+            if (!confirm('Vô hiệu hóa loại phép này?')) return;
+            const res = await fetch(`${API}?action=delete`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            const json = await res.json();
+            if (json.status === 'success') {
+                showToast('Đã vô hiệu hóa!', 'success');
+                loadLeaveTypes();
+            } else {
+                showToast(json.message, 'error');
+            }
+        }
+
+        // ===== TOGGLE ACTIVE =====
+        async function toggleActive(id, checked) {
+            const res = await fetch(`${API}?action=update`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, is_active: checked ? 1 : 0 })
+            });
+            const json = await res.json();
+            if (json.status !== 'success') showToast(json.message, 'error');
+        }
+
+        loadLeaveTypes();
     </script>
 </body>
 

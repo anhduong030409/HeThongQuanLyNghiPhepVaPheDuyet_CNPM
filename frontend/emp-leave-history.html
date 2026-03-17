@@ -336,6 +336,164 @@
     <!--! BEGIN: Theme Customizer  !-->
     <script src="assets/js/theme-customizer-init.min.js"></script>
     <!--! END: Theme Customizer !-->
+    <!-- Modal xem chi tiết -->
+    <div class="modal fade" id="modalDetail" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết đơn nghỉ phép</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalDetailBody"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                    <button class="btn btn-danger d-none" id="btnCancel" onclick="cancelRequest()">
+                        <i class="feather-x me-2"></i>Hủy đơn
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = '../backend/api/leave/request.php';
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        let currentRequestId = null;
+
+        // ===== LOAD DANH SÁCH =====
+        async function loadHistory() {
+            const res = await fetch(`${API}?user_id=${user.id}`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const json = await res.json();
+            if (json.status !== 'success') return;
+
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            if (json.data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Chưa có đơn nào</td></tr>`;
+                return;
+            }
+
+            json.data.forEach(r => {
+                const statusBadge = renderStatus(r.status);
+                const dateRange = r.start_date === r.end_date
+                    ? formatDate(r.start_date)
+                    : `${formatDate(r.start_date)} - ${formatDate(r.end_date)}`;
+
+                tbody.innerHTML += `
+        <tr>
+            <td class="ps-4 fw-bold">#LR-${r.id}</td>
+            <td>${r.leave_type_name}</td>
+            <td>${dateRange}</td>
+            <td>${r.total_days}</td>
+            <td class="text-truncate" style="max-width:200px">${r.reason}</td>
+            <td>${statusBadge}</td>
+            <td class="text-end pe-4">
+                <button class="btn btn-sm btn-icon btn-light" onclick='showDetail(${JSON.stringify(r)})'>
+                    <i class="feather-eye"></i>
+                </button>
+            </td>
+        </tr>`;
+            });
+
+            // Cap nhat so ban ghi
+            document.querySelector('.card-title + div').innerText =
+                `Hiển thị ${json.data.length} bản ghi`;
+        }
+
+        function renderStatus(status) {
+            const map = {
+                pending: '<span class="badge bg-soft-warning text-warning w-100">Chờ duyệt</span>',
+                approved: '<span class="badge bg-soft-success text-success w-100">Đã phê duyệt</span>',
+                rejected: '<span class="badge bg-soft-danger text-danger w-100">Bị từ chối</span>',
+                cancelled: '<span class="badge bg-soft-secondary text-secondary w-100">Đã hủy</span>'
+            };
+            return map[status] ?? status;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        }
+
+        // ===== XEM CHI TIẾT =====
+        function showDetail(r) {
+            currentRequestId = r.id;
+            const btnCancel = document.getElementById('btnCancel');
+
+            // Chi hien nut huy neu don dang cho duyet
+            btnCancel.classList.toggle('d-none', r.status !== 'pending');
+
+            document.getElementById('modalDetailBody').innerHTML = `
+    <div class="row g-3">
+        <div class="col-6">
+            <div class="fs-12 text-muted">Mã đơn</div>
+            <div class="fw-bold">#LR-${r.id}</div>
+        </div>
+        <div class="col-6">
+            <div class="fs-12 text-muted">Trạng thái</div>
+            <div>${renderStatus(r.status)}</div>
+        </div>
+        <div class="col-6">
+            <div class="fs-12 text-muted">Loại nghỉ</div>
+            <div>${r.leave_type_name}</div>
+        </div>
+        <div class="col-6">
+            <div class="fs-12 text-muted">Số ngày</div>
+            <div>${r.total_days} ngày</div>
+        </div>
+        <div class="col-6">
+            <div class="fs-12 text-muted">Từ ngày</div>
+            <div>${formatDate(r.start_date)}</div>
+        </div>
+        <div class="col-6">
+            <div class="fs-12 text-muted">Đến ngày</div>
+            <div>${formatDate(r.end_date)}</div>
+        </div>
+        <div class="col-12">
+            <div class="fs-12 text-muted">Lý do</div>
+            <div>${r.reason}</div>
+        </div>
+        ${r.status === 'rejected' ? `
+        <div class="col-12">
+            <div class="fs-12 text-muted">Lý do từ chối</div>
+            <div class="text-danger">${r.cancel_reason ?? '---'}</div>
+        </div>` : ''}
+        <div class="col-12">
+            <div class="fs-12 text-muted">Ngày gửi</div>
+            <div>${formatDate(r.submitted_at)}</div>
+        </div>
+    </div>`;
+
+            new bootstrap.Modal(document.getElementById('modalDetail')).show();
+        }
+
+        // ===== HỦY ĐƠN =====
+        async function cancelRequest() {
+            if (!confirm('Bạn chắc chắn muốn hủy đơn này?')) return;
+
+            const res = await fetch(`${API}?action=cancel`, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: currentRequestId })
+            });
+            const json = await res.json();
+
+            if (json.status === 'success') {
+                bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
+                loadHistory();
+            } else {
+                alert(json.message);
+            }
+        }
+
+        // ===== KHỞI CHẠY =====
+        loadHistory();
+    </script>
 </body>
 
 </html>

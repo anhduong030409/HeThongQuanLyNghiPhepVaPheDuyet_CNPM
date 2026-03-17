@@ -29,11 +29,7 @@ function checkRole(allowedRoles) {
     return user;
 }
 
-function logout() {
-    removeToken();
-    removeUser();
-    window.location.href = "auth-login.html";
-}
+// ==== LOGOUT ben file load-layout.js ======
 
 // ===== CALL API =====
 async function callAPI(endpoint, method = "GET", body = null) {
