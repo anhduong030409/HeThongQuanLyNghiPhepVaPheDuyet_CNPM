@@ -25,6 +25,7 @@
     <!--! BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css">
     <!--! END: Custom CSS-->
+    <script src="assets/js/api.js"></script>
     <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
     <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
     <!--[if lt IE 9]>
@@ -80,7 +81,7 @@
                                 <div>
                                     <small class="text-muted d-block fs-10 fw-bold text-uppercase">Tổng nhân
                                         viên</small>
-                                    <h4 class="fw-bold mb-0">128</h4>
+                                    <h4 class="fw-bold mb-0" id="stat-total">--</h4>
                                 </div>
                             </div>
                         </div>
@@ -94,8 +95,8 @@
                                     <i class="feather-user-check"></i>
                                 </div>
                                 <div>
-                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Đang làm việc</small>
-                                    <h4 class="fw-bold mb-0">115</h4>
+                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Đang hoạt động</small>
+                                    <h4 class="fw-bold mb-0" id="stat-active">--</h4>
                                 </div>
                             </div>
                         </div>
@@ -109,8 +110,8 @@
                                     <i class="feather-clock"></i>
                                 </div>
                                 <div>
-                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Nghỉ phép</small>
-                                    <h4 class="fw-bold mb-0">08</h4>
+                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Tạm khóa</small>
+                                    <h4 class="fw-bold mb-0" id="stat-inactive">--</h4>
                                 </div>
                             </div>
                         </div>
@@ -124,8 +125,8 @@
                                     <i class="feather-user-plus"></i>
                                 </div>
                                 <div>
-                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Tuyển mới</small>
-                                    <h4 class="fw-bold mb-0">05</h4>
+                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Tuyển mới (tháng này)</small>
+                                    <h4 class="fw-bold mb-0" id="stat-new">--</h4>
                                 </div>
                             </div>
                         </div>
@@ -147,41 +148,12 @@
                                     <th class="text-end px-4">HÀNH ĐỘNG</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <script>
-                                    const users = [
-                                        { n: "Nguyễn Văn A", e: "vana@gmail.com", c: "Trưởng phòng", p: "Kỹ thuật", d: "12/05/2022", s: "Hoạt động", cl: "success" },
-                                        { n: "Trần Thị B", e: "thib@gmail.com", c: "Kế toán", p: "Tài chính", d: "10/01/2023", s: "Hoạt động", cl: "success" },
-                                        { n: "Lê Văn C", e: "vanc@gmail.com", c: "HR", p: "Nhân sự", d: "15/03/2023", s: "Nghỉ phép", cl: "warning" },
-                                        { n: "Phạm Hoàng D", e: "hoangd@gmail.com", c: "Giám sát", p: "Kinh doanh", d: "20/06/2022", s: "Hoạt động", cl: "success" },
-                                        { n: "Hoàng Anh E", e: "anhe@gmail.com", c: "Thực tập", p: "Kỹ thuật", d: "01/02/2024", s: "Thử việc", cl: "info" },
-                                        { n: "Đặng Văn F", e: "vanf@gmail.com", c: "Kho", p: "Hậu cần", d: "12/11/2022", s: "Hoạt động", cl: "success" },
-                                        { n: "Bùi Thị G", e: "thig@gmail.com", c: "Lễ tân", p: "Hành chính", d: "05/01/2024", s: "Hoạt động", cl: "success" },
-                                        { n: "Ngô Văn H", e: "vanh@gmail.com", c: "Bảo vệ", p: "Hành chính", d: "10/08/2021", s: "Tạm nghỉ", cl: "danger" },
-                                        { n: "Lý Thị I", e: "thii@gmail.com", c: "Designer", p: "Marketing", d: "22/09/2023", s: "Hoạt động", cl: "success" },
-                                        { n: "Đỗ Văn K", e: "vank@gmail.com", c: "Dev", p: "Kỹ thuật", d: "18/12/2023", s: "Hoạt động", cl: "success" }
-                                    ];
-                                    users.forEach(u => {
-                                        document.write(`
-                                        <tr>
-                                            <td class="px-4">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-text avatar-md bg-soft-primary text-primary rounded-circle me-3 fw-bold">${u.n.split(' ').pop().substring(0, 2).toUpperCase()}</div>
-                                                    <div><span class="text-dark fw-bold d-block">${u.n}</span><small class="text-muted">${u.e}</small></div>
-                                                </div>
-                                            </td>
-                                            <td>${u.c}</td><td>${u.p}</td><td>${u.d}</td>
-                                            <td><span class="badge bg-soft-${u.cl} text-${u.cl}">${u.s}</span></td>
-                                            <td class="text-end px-4">
-                                                <div class="hstack gap-2 justify-content-end">
-                                                    <button class="btn btn-sm btn-light-brand"><i class="feather-edit-3"></i></button>
-                                                    <button class="btn btn-sm btn-light-danger"><i class="feather-trash-2"></i></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    `);
-                                    });
-                                </script>
+                            <tbody id="users-tbody">
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted py-4">
+                                        <span class="spinner-border spinner-border-sm me-2"></span> Đang tải dữ liệu...
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -225,9 +197,116 @@
         <script src="assets/js/common-init.min.js"></script>
         <script src="assets/js/apps-chat-init.min.js"></script>
         <!--! END: Apps Init !-->
-        <!--! BEGIN: Theme Customizer  !-->
-        
-        <!--! END: Theme Customizer !-->
+        <!--! END: Apps Init !-->
+
+        <script>
+            // 1. Phân quyền truy cập
+            const currentUser = checkRole(['admin', 'director', 'manager']);
+            if (!currentUser) throw new Error('Không có quyền truy cập');
+
+            // 2. Hàm tải danh sách nhân viên
+            async function loadUsers() {
+                const tbody = document.getElementById('users-tbody');
+                
+                try {
+                    const res = await callAPI('users/list.php');
+                    
+                    if (!res || res.status !== 'success') {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Lỗi tải dữ liệu</td></tr>';
+                        return;
+                    }
+
+                    if (res.data.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Không có nhân viên nào</td></tr>';
+                        return;
+                    }
+
+                    let html = '';
+                    let statTotal = res.data.length;
+                    let statActive = 0;
+                    let statInactive = 0;
+                    let statNew = 0;
+
+                    const now = new Date();
+                    // check for "this month"
+                    const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+                    res.data.forEach(u => {
+                        const name = u.full_name || 'Chưa thiết lập';
+                        const initial = name.split(' ').pop().substring(0, 2).toUpperCase();
+                        
+                        // Map màu sắc để phân biệt role
+                        const roleColors = {
+                            'admin': 'danger',
+                            'director': 'primary',
+                            'manager': 'warning',
+                            'hr': 'info',
+                            'employee': 'success'
+                        };
+                        const color = roleColors[u.role_name] || roleColors[u.role] || 'secondary';
+
+                        // Xử lý Ngày gia nhập (created_at)
+                        let joinDate = '---';
+                        if (u.created_at) {
+                            const d = new Date(u.created_at);
+                            joinDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                            
+                            // Tuyển mới: gia nhập trong THÁNG NÀY
+                            const uMonthStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                            if (uMonthStr === currentMonthStr) {
+                                statNew++;
+                            }
+                        }
+
+                        // Xử lý Trạng thái
+                        const isActive = parseInt(u.is_active) === 1;
+                        if (isActive) statActive++;
+                        else statInactive++;
+
+                        const statusStr = isActive ? 'Hoạt động' : 'Tạm khóa';
+                        const statusColor = isActive ? 'success' : 'danger';
+                        
+                        html += `
+                        <tr>
+                            <td class="px-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-text avatar-md bg-soft-${color} text-${color} rounded-circle me-3 fw-bold">${initial}</div>
+                                    <div>
+                                        <span class="text-dark fw-bold d-block">${name}</span>
+                                        <small class="text-muted">${u.email || ''}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-soft-${color} text-${color}">${u.role_display || u.role_name}</span></td>
+                            <td>${u.dept_name || (u.department_id ? 'Phòng ID: ' + u.department_id : '--')}</td>
+                            <td>${joinDate}</td>
+                            <td><span class="badge bg-soft-${statusColor} text-${statusColor}">${statusStr}</span></td>
+                            <td class="text-end px-4">
+                                <div class="hstack gap-2 justify-content-end">
+                                    <button class="btn btn-sm btn-light-brand" onclick="alert('Tính năng đang phát triển!')"><i class="feather-edit-3"></i></button>
+                                    <button class="btn btn-sm btn-light-danger" onclick="alert('Không thể xóa')"><i class="feather-trash-2"></i></button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+
+                    tbody.innerHTML = html;
+
+                    // Render Stats
+                    document.getElementById('stat-total').innerText = statTotal < 10 ? '0' + statTotal : statTotal;
+                    document.getElementById('stat-active').innerText = statActive < 10 ? '0' + statActive : statActive;
+                    document.getElementById('stat-inactive').innerText = statInactive < 10 ? '0' + statInactive : statInactive;
+                    document.getElementById('stat-new').innerText = statNew < 10 ? '0' + statNew : statNew;
+
+                } catch (error) {
+                    console.error("Lỗi:", error);
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Không thể kết nối API</td></tr>';
+                }
+            }
+
+            // Gọi hàm render list
+            loadUsers();
+        </script>
 </body>
 
 </html>

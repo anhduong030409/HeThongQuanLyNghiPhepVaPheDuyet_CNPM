@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/select2.min.css">
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/select2-theme.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css">
+    <script src="assets/js/api.js"></script>
 </head>
 
 <body>
@@ -28,7 +29,7 @@
     <!--! ================================================================ !-->
     <!--! [Start] Header !-->
     <!--! ================================================================ !-->
-     <div id="header"></div>
+    <div id="header"></div>
     <!--! ================================================================ !-->
     <!--! [End] Header !-->
     <!--! ================================================================ !-->
@@ -62,7 +63,8 @@
 
                 <ul class="nav nav-tabs mb-4 border-bottom">
                     <li class="nav-item">
-                        <a class="nav-link text-muted pb-3" href="hr-leave-type.html"><i class="feather-list me-2"></i>Quản lý loại
+                        <a class="nav-link text-muted pb-3" href="hr-leave-type.html"><i
+                                class="feather-list me-2"></i>Quản lý loại
                             phép</a>
                     </li>
                     <li class="nav-item">
@@ -70,7 +72,8 @@
                                 class="feather-bar-chart-2 me-2"></i>Theo dõi thống kê</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-muted pb-3" href="hr-leave-report.html"><i class="feather-file-text me-2"></i>Lập báo
+                        <a class="nav-link text-muted pb-3" href="hr-leave-report.html"><i
+                                class="feather-file-text me-2"></i>Lập báo
                             cáo</a>
                     </li>
                 </ul>
@@ -84,7 +87,7 @@
                                         <div class="avatar-text avatar-sm bg-soft-primary text-primary rounded mb-2">
                                             <i class="feather-umbrella"></i>
                                         </div>
-                                        <h4 class="fw-bold mb-1">125 Đơn</h4>
+                                        <h4 class="fw-bold mb-1" id="stat-total">--</h4>
                                         <p class="fs-12 text-muted fw-medium mb-0">Tổng số đơn trong tháng</p>
                                     </div>
                                 </div>
@@ -99,7 +102,7 @@
                                         <div class="avatar-text avatar-sm bg-soft-warning text-warning rounded mb-2">
                                             <i class="feather-clock"></i>
                                         </div>
-                                        <h4 class="fw-bold mb-1 text-warning">15 Đơn</h4>
+                                        <h4 class="fw-bold mb-1 text-warning" id="stat-pending">--</h4>
                                         <p class="fs-12 text-muted fw-medium mb-0">Đang chờ phê duyệt</p>
                                     </div>
                                 </div>
@@ -114,7 +117,7 @@
                                         <div class="avatar-text avatar-sm bg-soft-success text-success rounded mb-2">
                                             <i class="feather-check-circle"></i>
                                         </div>
-                                        <h4 class="fw-bold mb-1 text-success">102 Đơn</h4>
+                                        <h4 class="fw-bold mb-1 text-success" id="stat-approved">--</h4>
                                         <p class="fs-12 text-muted fw-medium mb-0">Đã được chấp thuận</p>
                                     </div>
                                 </div>
@@ -129,7 +132,7 @@
                                         <div class="avatar-text avatar-sm bg-soft-danger text-danger rounded mb-2">
                                             <i class="feather-alert-circle"></i>
                                         </div>
-                                        <h4 class="fw-bold mb-1 text-danger">08 Đơn</h4>
+                                        <h4 class="fw-bold mb-1 text-danger" id="stat-rejected">--</h4>
                                         <p class="fs-12 text-muted fw-medium mb-0">Đơn bị từ chối</p>
                                     </div>
                                 </div>
@@ -177,155 +180,13 @@
                                                 <th class="text-end">THAO TÁC</th>
                                             </tr>
                                         </thead>
-
-                                        <tbody>
-
-                                            <!-- Row 1 -->
+                                        <tbody id="requests-tbody">
                                             <tr>
-                                                <td>
-                                                    <span class="d-block fw-bold text-dark">Nghỉ phép năm</span>
-                                                    <span class="fs-12 text-primary">#LR-2026-001</span>
-                                                </td>
-
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <div class="avatar-image avatar-sm">
-                                                            <img src="assets/images/avatar/1.png" class="img-fluid">
-                                                        </div>
-                                                        <span class="fw-medium">Nguyễn Văn A</span>
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <span class="d-block">15/03/2026 - 16/03/2026</span>
-                                                    <span class="fs-12 text-muted">Gửi lúc: 10/03/2026</span>
-                                                </td>
-
-                                                <td>
-                                                    <span class="badge bg-soft-secondary text-dark">2.0 ngày</span>
-                                                </td>
-
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-2 fs-12 fw-medium">
-                                                        <span class="text-success">
-                                                            <i class="feather-check-circle me-1"></i>Trưởng phòng
-                                                        </span>
-
-                                                        <i class="feather-chevron-right text-muted"></i>
-
-                                                        <span class="text-warning">
-                                                            <i class="feather-clock me-1"></i>Nhân sự (HR)
-                                                        </span>
-                                                    </div>
-                                                </td>
-
-                                                <td class="text-end">
-                                                    <button class="btn btn-sm btn-success me-1">
-                                                        <i class="feather-check"></i>
-                                                    </button>
-
-                                                    <button class="btn btn-sm btn-danger">
-                                                        <i class="feather-x"></i>
-                                                    </button>
+                                                <td colspan="6" class="text-center text-muted py-4">
+                                                    <span class="spinner-border spinner-border-sm me-2"></span> Đang tải
+                                                    dữ liệu...
                                                 </td>
                                             </tr>
-
-                                            <!-- Row 2 -->
-                                            <tr>
-                                                <td>
-                                                    <span class="d-block fw-bold text-dark">Nghỉ việc riêng</span>
-                                                    <span class="fs-12 text-primary">#LR-2026-005</span>
-                                                </td>
-
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <div class="avatar-image avatar-sm">
-                                                            <img src="assets/images/avatar/2.png" class="img-fluid">
-                                                        </div>
-                                                        <span class="fw-medium">Trần Thị B</span>
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <span class="d-block">20/03/2026 (Sáng)</span>
-                                                    <span class="fs-12 text-muted">Gửi lúc: 11/03/2026</span>
-                                                </td>
-
-                                                <td>
-                                                    <span class="badge bg-soft-secondary text-dark">0.5 ngày</span>
-                                                </td>
-
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-2 fs-12 fw-medium">
-                                                        <span class="text-warning">
-                                                            <i class="feather-clock me-1"></i>Trưởng phòng
-                                                        </span>
-
-                                                        <i class="feather-chevron-right text-muted"></i>
-
-                                                        <span class="text-muted">
-                                                            <i class="feather-circle me-1"></i>Nhân sự (HR)
-                                                        </span>
-                                                    </div>
-                                                </td>
-
-                                                <td class="text-end">
-                                                    <span class="fs-12 text-muted me-2 fst-italic">
-                                                        Chờ TP duyệt
-                                                    </span>
-
-                                                    <button class="btn btn-sm btn-light border">
-                                                        <i class="feather-eye"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Row 3 -->
-                                            <tr>
-                                                <td>
-                                                    <span class="d-block fw-bold text-dark">Nghỉ ốm</span>
-                                                    <span class="fs-12 text-primary">#LR-2026-008</span>
-                                                </td>
-
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <div class="avatar-image avatar-sm">
-                                                            <img src="assets/images/avatar/3.png" class="img-fluid">
-                                                        </div>
-                                                        <span class="fw-medium">Lê Văn C</span>
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <span class="d-block">05/03/2026 - 06/03/2026</span>
-                                                    <span class="fs-12 text-muted">Gửi lúc: 01/03/2026</span>
-                                                </td>
-
-                                                <td>
-                                                    <span class="badge bg-soft-secondary text-dark">2.0 ngày</span>
-                                                </td>
-
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-2 fs-12 fw-medium">
-                                                        <span class="text-success">
-                                                            <i class="feather-check-circle me-1"></i>Trưởng phòng
-                                                        </span>
-
-                                                        <i class="feather-chevron-right text-muted"></i>
-
-                                                        <span class="text-success">
-                                                            <i class="feather-check-circle me-1"></i>Nhân sự (HR)
-                                                        </span>
-                                                    </div>
-                                                </td>
-
-                                                <td class="text-end">
-                                                    <button class="btn btn-sm btn-light border">
-                                                        <i class="feather-eye"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-
                                         </tbody>
                                     </table>
 
@@ -341,7 +202,7 @@
     <!--! ================================================================ !-->
     <!--! BEGIN: Theme Customizer !-->
     <!--! ================================================================ !-->
-    
+
     <!--! ================================================================ !-->
     <!--! [End] Theme Customizer !-->
     <!--! ================================================================ !-->
@@ -356,8 +217,105 @@
     <script src="assets/js/common-init.min.js"></script>
     <script src="assets/js/dashboard-init.min.js"></script>
     <!--! END: Apps Init !-->
-    <!--! BEGIN: Theme Customizer  !-->
-    
-    <!--! END: Theme Customizer !-->
 
+    <script>
+        const currentUser = checkRole(['admin', 'director', 'hr']);
+        if (!currentUser) throw new Error('Không có quyền');
+
+        async function loadData() {
+            const tbody = document.getElementById('requests-tbody');
+
+            try {
+                const res = await callAPI('leave/request.php');
+
+                if (!res || res.status !== 'success') {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Lỗi tải dữ liệu</td></tr>';
+                    return;
+                }
+
+                let statTotal = 0;
+                let statPending = 0;
+                let statApproved = 0;
+                let statRejected = 0;
+                let html = '';
+
+                const now = new Date();
+                const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+                res.data.forEach(r => {
+                    // Logic thống kê
+                    const isNew = r.created_at && r.created_at.startsWith(currentMonthStr);
+                    if (isNew) statTotal++;
+
+                    if (r.status === 'pending') statPending++;
+                    else if (r.status === 'approved') statApproved++;
+                    else if (r.status === 'rejected') statRejected++;
+
+                    // Format ngày tháng hiển thị
+                    const createdDate = r.created_at ? r.created_at.split(' ')[0].split('-').reverse().join('/') : '--';
+                    const startFmt = r.start_date ? r.start_date.split('-').reverse().join('/') : '--';
+                    const endFmt = r.end_date ? r.end_date.split('-').reverse().join('/') : '--';
+                    const dRange = r.start_date === r.end_date ? startFmt : `${startFmt} - ${endFmt}`;
+
+                    // Workflow badge
+                    let flowBadge = '';
+                    if (r.status === 'approved') flowBadge = '<span class="text-success"><i class="feather-check-circle me-1"></i>Đã phê duyệt</span>';
+                    else if (r.status === 'rejected') flowBadge = '<span class="text-danger"><i class="feather-x-circle me-1"></i>Đã từ chối</span>';
+                    else if (r.status === 'cancelled') flowBadge = '<span class="text-secondary"><i class="feather-slash me-1"></i>Đã hủy</span>';
+                    else flowBadge = '<span class="text-warning"><i class="feather-clock me-1"></i>Đang chờ xét duyệt</span>';
+
+                    let leaveSummary = r.is_combined ? `Nhiều loại phép ghép` : `${r.leave_type_name || 'Không rõ'}`;
+                    const initial = r.full_name ? r.full_name.split(' ').pop().substring(0, 2).toUpperCase() : 'NV';
+                    const reqId = r.id.toString().padStart(4, '0');
+
+                    html += `
+                    <tr>
+                        <td>
+                            <span class="d-block fw-bold text-dark">${leaveSummary}</span>
+                            <span class="fs-12 text-primary">#LR-2024-${reqId}</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="avatar-text avatar-sm bg-soft-primary text-primary rounded-circle fw-bold">${initial}</div>
+                                <div><span class="d-block fw-medium">${r.full_name || '---'}</span></div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="d-block">${dRange}</span>
+                            <span class="fs-12 text-muted">Gửi lúc: ${createdDate}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-soft-secondary text-dark">${r.total_days} ngày</span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2 fs-12 fw-medium">
+                                ${flowBadge}
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-light border" onclick="window.location.href='manager-QLNghiPhep.html'">
+                                <i class="feather-eye"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+                });
+
+                if (res.data.length === 0) {
+                    html = '<tr><td colspan="6" class="text-center text-muted py-4">Không có đơn nghỉ phép nào</td></tr>';
+                }
+                tbody.innerHTML = html;
+
+                document.getElementById('stat-total').innerText = statTotal < 10 ? '0' + statTotal : statTotal;
+                document.getElementById('stat-pending').innerText = statPending < 10 ? '0' + statPending : statPending;
+                document.getElementById('stat-approved').innerText = statApproved < 10 ? '0' + statApproved : statApproved;
+                document.getElementById('stat-rejected').innerText = statRejected < 10 ? '0' + statRejected : statRejected;
+
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Có lỗi xảy ra khi gọi dữ liệu</td></tr>';
+            }
+        }
+
+        loadData();
+    </script>
 </body>
