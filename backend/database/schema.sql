@@ -138,3 +138,6 @@ INSERT INTO leave_balances (user_id, leave_type_id, year, total_days, used_days)
 (3, 2, 2026,  5, 0),
 (4, 1, 2026, 12, 0),
 (4, 2, 2026,  5, 0);
+
+
+

@@ -24,6 +24,7 @@
     <!--! END: Vendors CSS-->
     <!--! BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
+    <script src="assets/js/api.js"></script>
     <!--! END: Custom CSS-->
     <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
     <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
@@ -356,28 +357,25 @@
     </div>
 
     <script>
-        const API = '../backend/api/leave/request.php';
-        const token = localStorage.getItem('token');
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const currentUser = checkRole(['admin', 'hr', 'manager', 'employee']);
+        if (!currentUser) throw new Error('Khong co quyen');
+
         let currentRequestId = null;
 
         // ===== LOAD DANH SÁCH =====
         async function loadHistory() {
-            const res = await fetch(`${API}?user_id=${user.id}`, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const json = await res.json();
-            if (json.status !== 'success') return;
+            const res = await callAPI(`leave/request.php?user_id=${currentUser.id}`);
+            if (!res || res.status !== 'success') return;
 
             const tbody = document.querySelector('tbody');
             tbody.innerHTML = '';
 
-            if (json.data.length === 0) {
+            if (res.data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Chưa có đơn nào</td></tr>`;
                 return;
             }
 
-            json.data.forEach(r => {
+            res.data.forEach(r => {
                 const statusBadge = renderStatus(r.status);
                 const dateRange = r.start_date === r.end_date
                     ? formatDate(r.start_date)
@@ -400,8 +398,10 @@
             });
 
             // Cap nhat so ban ghi
-            document.querySelector('.card-title + div').innerText =
-                `Hiển thị ${json.data.length} bản ghi`;
+            const countDisplay = document.querySelector('.card-title + div');
+            if (countDisplay) {
+                countDisplay.innerText = `Hiển thị ${res.data.length} bản ghi`;
+            }
         }
 
         function renderStatus(status) {
@@ -476,18 +476,13 @@
         async function cancelRequest() {
             if (!confirm('Bạn chắc chắn muốn hủy đơn này?')) return;
 
-            const res = await fetch(`${API}?action=cancel`, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: currentRequestId })
-            });
-            const json = await res.json();
+            const res = await callAPI(`leave/request.php?action=cancel`, 'POST', { id: currentRequestId });
 
-            if (json.status === 'success') {
+            if (res && res.status === 'success') {
                 bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
                 loadHistory();
             } else {
-                alert(json.message);
+                alert(res?.message || 'Lỗi khi hủy đơn');
             }
         }
 

@@ -5,71 +5,35 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <meta name="author" content="theme_ocean">
-    <!--! The above 6 meta tags *must* come first in the head; any other head content must come *after* these tags !-->
-    <!--! BEGIN: Apps Title-->
     <title>Quản Lý Nghỉ Phép</title>
-    <!--! END:  Apps Title-->
-    <!--! BEGIN: Favicon-->
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <!--! END: Favicon-->
-    <!--! BEGIN: Bootstrap CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
-    <!--! END: Bootstrap CSS-->
-    <!--! BEGIN: Vendors CSS-->
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/select2-theme.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/tagify.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/tagify-data.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/quill.min.css">
-    <!--! END: Vendors CSS-->
-    <!--! BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css">
-    <!--! END: Custom CSS-->
-    <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
-    <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
-    <!--[if lt IE 9]>
-			<script src="https:oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-			<script src="https:oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
+    <script src="assets/js/api.js"></script>
 </head>
 
 <body>
-    <!--! ================================================================ !-->
-    <!--! [Start] Navigation Manu !-->
-    <!--! ================================================================ !-->
     <div id="navigation"></div>
-    <!--! ================================================================ !-->
-    <!--! [End]  Navigation Manu !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! [Start] Header !-->
-    <!--! ================================================================ !-->
     <div id="header"></div>
-    <!--! ================================================================ !-->
-    <!--! [End] Header !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! [Start] Main Content !-->
-    <!--! ================================================================ !-->
-    <main class="nxl-container apps-container apps-notes">
+
+    <main class="nxl-container apps-container">
         <div class="nxl-content">
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
                     <div class="page-header-title">
-                        <h5 class="m-b-5">Danh sách nghỉ phép</h5>
+                        <h5 class="m-b-5">Danh sách nghỉ phép chờ duyệt</h5>
                     </div>
                 </div>
                 <div class="page-header-right ms-auto">
                     <div class="d-flex align-items-center gap-2">
-                        <div class="dropdown">
-                            <a href="javascript:void(0);" class="btn btn-light-brand" data-bs-toggle="dropdown">
-                                <i class="feather-filter me-2"></i> Lọc trạng thái
-                            </a>
-                        </div>
+                        <select class="form-select form-select-sm" id="statusFilter" onchange="loadRequests()"
+                            style="width:160px">
+                            <option value="pending">Chờ duyệt</option>
+                            <option value="approved">Đã duyệt</option>
+                            <option value="rejected">Đã từ chối</option>
+                            <option value="">Tất cả</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -83,78 +47,23 @@
                                     <table class="table table-hover mb-0">
                                         <thead class="thead-light">
                                             <tr>
-                                                <th class="text-center" style="width: 50px;">STT</th>
+                                                <th class="text-center" style="width:50px">STT</th>
                                                 <th>Tên nhân viên</th>
                                                 <th>Email</th>
+                                                <th>Loại phép</th>
                                                 <th>Thời gian</th>
-                                                <th>Bắt đầu từ</th>
+                                                <th>Ngày nghỉ</th>
                                                 <th>Lý do</th>
                                                 <th class="text-center">Thao tác</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <!-- TBODY TRỐNG — JS sẽ render vào đây -->
+                                        <tbody id="request-tbody">
                                             <tr>
-                                                <td class="text-center">1</td>
-                                                <td class="fw-bold text-dark">Anh 3</td>
-                                                <td>anhbabao@gmail.com</td>
-                                                <td><span class="badge bg-soft-info text-info">3 ngày</span></td>
-                                                <td>07/03/2026</td>
-                                                <td>Ốm</td>
-                                                <td class="text-center">
-                                                    <div class="hstack gap-2 justify-content-center">
-                                                        <button class="btn btn-sm btn-success">Duyệt</button>
-                                                        <button class="btn btn-sm btn-warning text-white">Từ
-                                                            chối</button>
-                                                    </div>
+                                                <td colspan="8" class="text-center text-muted py-4">
+                                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                                    Đang tải...
                                                 </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">2</td>
-                                                <td class="fw-bold text-dark">Chị 4</td>
-                                                <td>chituthuc@gmail.com</td>
-                                                <td><span class="badge bg-soft-info text-info">14 ngày</span></td>
-                                                <td>03/03/2026</td>
-                                                <td>Nghỉ đẻ</td>
-                                                <td class="text-center">
-                                                    <div class="hstack gap-2 justify-content-center">
-                                                        <button class="btn btn-sm btn-success">Duyệt</button>
-                                                        <button class="btn btn-sm btn-warning text-white">Từ
-                                                            chối</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">3</td>
-                                                <td class="fw-bold text-dark">Cô 7</td>
-                                                <td>cobayquanba@gmail.com</td>
-                                                <td><span class="badge bg-soft-info text-info">5 ngày</span></td>
-                                                <td>25/03/2026</td>
-                                                <td>Phép năm</td>
-                                                <td class="text-center">
-                                                    <div class="hstack gap-2 justify-content-center">
-                                                        <button class="btn btn-sm btn-success">Duyệt</button>
-                                                        <button class="btn btn-sm btn-warning text-white">Từ
-                                                            chối</button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr style="height: 50px;">
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr style="height: 50px;">
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -166,38 +75,9 @@
             </div>
         </div>
     </main>
-    <!--! ================================================================ !-->
-    <!--! [End] Main Content !-->
-    <!--! ================================================================ !-->
 
-    <!--! ================================================================ !-->
-    <!--! BEGIN: Theme Customizer !-->
-    <!--! ================================================================ !-->
     <div id="theme-customizer"></div>
 
-    <!--! ================================================================ !-->
-    <!--! [End] Theme Customizer !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! Footer Script !-->
-    <!--! ================================================================ !-->
-    <!--! BEGIN: Vendors JS !-->
-    <script src="load-layout.js"></script>
-    <script src="assets/vendors/js/vendors.min.js"></script>
-    <!-- vendors.min.js {always must need to be top} -->
-    <script src="assets/vendors/js/select2.min.js"></script>
-    <script src="assets/vendors/js/select2-active.min.js"></script>
-    <script src="assets/vendors/js/tagify.min.js"></script>
-    <script src="assets/vendors/js/tagify-data.min.js"></script>
-    <script src="assets/vendors/js/quill.min.js"></script>
-    <!--! END: Vendors JS !-->
-    <!--! BEGIN: Apps Init  !-->
-    <script src="assets/js/common-init.min.js"></script>
-    <script src="assets/js/apps-email-init.min.js"></script>
-    <!--! END: Apps Init !-->
-    <!--! BEGIN: Theme Customizer  !-->
-    <script src="assets/js/theme-customizer-init.min.js"></script>
-    <!--! END: Theme Customizer !-->
     <!-- Modal từ chối -->
     <div class="modal fade" id="modalReject" tabindex="-1">
         <div class="modal-dialog">
@@ -213,14 +93,30 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-bs-dismiss="modal">Hủy</button>
-                    <button class="btn btn-warning text-white" onclick="confirmReject()">Xác nhận từ chối</button>
+                    <button class="btn btn-warning text-white" onclick="confirmReject()">
+                        Xác nhận từ chối
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal chi tiết đơn ghép phép -->
+    <div class="modal fade" id="modalDetail" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết phân bổ phép</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalDetailBody">
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Toast -->
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+    <div class="position-fixed top-0 end-0 p-3" style="z-index:9999">
         <div id="toastBox" class="toast align-items-center border-0" role="alert">
             <div class="d-flex">
                 <div class="toast-body fw-semibold" id="toastMsg"></div>
@@ -229,18 +125,27 @@
         </div>
     </div>
 
+    <script src="load-layout.js"></script>
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="assets/js/common-init.min.js"></script>
+    <script src="assets/js/theme-customizer-init.min.js"></script>
+
     <script>
-        const API = '../backend/api/leave/approve.php';
-        const token = localStorage.getItem('token');
+        const currentUser = checkRole(['admin', 'director', 'hr', 'manager']);
+        if (!currentUser) throw new Error('Khong co quyen');
+
         let rejectingId = null;
 
+        // ================================================================
+        // Helpers
+        // ================================================================
         function showToast(message, type = 'success') {
-            const toastBox = document.getElementById('toastBox');
-            const toastMsg = document.getElementById('toastMsg');
-            toastMsg.innerText = message;
-            toastBox.className = `toast align-items-center border-0 text-white 
-        ${type === 'success' ? 'bg-success' : 'bg-danger'}`;
-            new bootstrap.Toast(toastBox, { delay: 3000 }).show();
+            const box = document.getElementById('toastBox');
+            const msg = document.getElementById('toastMsg');
+            msg.innerText = message;
+            box.className = `toast align-items-center border-0 text-white
+                ${type === 'success' ? 'bg-success' : 'bg-danger'}`;
+            new bootstrap.Toast(box, { delay: 3000 }).show();
         }
 
         function formatDate(dateStr) {
@@ -249,66 +154,148 @@
             return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
         }
 
-        // ===== LOAD DANH SÁCH =====
+        function statusBadge(status) {
+            const map = {
+                pending: 'bg-soft-warning text-warning',
+                approved: 'bg-soft-success text-success',
+                rejected: 'bg-soft-danger text-danger',
+                cancelled: 'bg-soft-secondary text-secondary',
+            };
+            const label = {
+                pending: 'Chờ duyệt', approved: 'Đã duyệt',
+                rejected: 'Từ chối', cancelled: 'Đã hủy'
+            };
+            return `<span class="badge ${map[status] || ''}">${label[status] || status}</span>`;
+        }
+
+        // ================================================================
+        // Render cột "Loại phép" — xử lý cả đơn 1 loại lẫn đơn ghép
+        // ================================================================
+        function renderLeaveTypeCell(r) {
+            // Đơn ghép: is_combined = true, có mảng items
+            if (r.is_combined && r.items && r.items.length > 0) {
+                const summary = r.items
+                    .map(i => `${i.leave_type_name} (${i.days_used}n)`)
+                    .join(' + ');
+                return `
+                    <div class="fs-13">${summary}</div>
+                    <a href="javascript:void(0)" class="fs-11 text-primary"
+                        onclick="showDetail(${r.id}, ${JSON.stringify(r.items).replace(/"/g, '&quot;')})">
+                        Xem chi tiết
+                    </a>`;
+            }
+            // Đơn thường: 1 loại phép
+            return `<span class="badge bg-soft-info text-info">${r.leave_type_name || '---'}</span>`;
+        }
+
+        // ================================================================
+        // Modal chi tiết đơn ghép
+        // ================================================================
+        function showDetail(requestId, items) {
+            let rows = items.map((item, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${item.leave_type_name}</td>
+                    <td><strong>${item.days_used}</strong> ngày</td>
+                </tr>`).join('');
+
+            document.getElementById('modalDetailBody').innerHTML = `
+                <table class="table table-sm">
+                    <thead class="table-light">
+                        <tr><th>#</th><th>Loại phép</th><th>Số ngày</th></tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                    <tfoot>
+                        <tr class="fw-bold">
+                            <td colspan="2">Tổng</td>
+                            <td>${items.reduce((s, i) => s + parseFloat(i.days_used), 0)} ngày</td>
+                        </tr>
+                    </tfoot>
+                </table>`;
+            new bootstrap.Modal(document.getElementById('modalDetail')).show();
+        }
+
+        // ================================================================
+        // Load danh sách đơn
+        // ================================================================
         async function loadRequests() {
-            const res = await fetch(`${API}?status=pending`, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const json = await res.json();
-            if (json.status !== 'success') return;
+            const status = document.getElementById('statusFilter').value;
+            const tbody = document.getElementById('request-tbody');
 
-            const tbody = document.querySelector('tbody');
-            tbody.innerHTML = '';
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">
+                <span class="spinner-border spinner-border-sm me-2"></span>Đang tải...</td></tr>`;
 
-            if (json.data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">
-            Không có đơn nào cần duyệt</td></tr>`;
+            const endpoint = status
+                ? `leave/request.php?status=${status}`
+                : 'leave/request.php';
+
+            const json = await callAPI(endpoint);
+
+            if (!json || json.status !== 'success') {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">
+                    Lỗi tải dữ liệu</td></tr>`;
                 return;
             }
 
-            json.data.forEach((r, i) => {
+            if (json.data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">
+                    Không có đơn nào</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = json.data.map((r, i) => {
                 const dateRange = r.start_date === r.end_date
                     ? formatDate(r.start_date)
-                    : `${formatDate(r.start_date)} - ${formatDate(r.end_date)}`;
+                    : `${formatDate(r.start_date)} – ${formatDate(r.end_date)}`;
 
-                tbody.innerHTML += `
-        <tr>
-            <td class="text-center">${i + 1}</td>
-            <td class="fw-bold text-dark">${r.full_name}</td>
-            <td>${r.email}</td>
-            <td><span class="badge bg-soft-info text-info">${r.total_days} ngày</span></td>
-            <td>${dateRange}</td>
-            <td>${r.reason}</td>
-            <td class="text-center">
-                <div class="hstack gap-2 justify-content-center">
-                    <button class="btn btn-sm btn-success"
-                        onclick="approve(${r.id})">Duyệt</button>
-                    <button class="btn btn-sm btn-warning text-white"
-                        onclick="openReject(${r.id})">Từ chối</button>
-                </div>
-            </td>
-        </tr>`;
-            });
+                const isPending = r.status === 'pending';
+
+                return `
+                <tr>
+                    <td class="text-center">${i + 1}</td>
+                    <td class="fw-bold text-dark">${r.full_name || currentUser.full_name}</td>
+                    <td class="text-muted fs-13">${r.email || ''}</td>
+                    <td>${renderLeaveTypeCell(r)}</td>
+                    <td><span class="badge bg-soft-info text-info">${r.total_days} ngày</span></td>
+                    <td class="fs-13">${dateRange}</td>
+                    <td class="fs-13">${r.reason}</td>
+                    <td class="text-center">
+                        ${isPending ? `
+                        <div class="hstack gap-2 justify-content-center">
+                            <button class="btn btn-sm btn-success" onclick="approve(${r.id})">
+                                Duyệt
+                            </button>
+                            <button class="btn btn-sm btn-warning text-white"
+                                onclick="openReject(${r.id})">
+                                Từ chối
+                            </button>
+                        </div>` : statusBadge(r.status)}
+                    </td>
+                </tr>`;
+            }).join('');
         }
 
-        // ===== DUYỆT =====
+        // ================================================================
+        // Duyệt đơn
+        // ================================================================
         async function approve(id) {
-            if (!confirm('Duyệt đơn này?')) return;
-            const res = await fetch(API, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ request_id: id, decision: 'approved', comment: '' })
+            if (!confirm('Duyệt đơn nghỉ phép này?')) return;
+            const res = await callAPI('leave/approve.php', 'POST', {
+                request_id: id,
+                decision: 'approved',
+                comment: ''
             });
-            const json = await res.json();
-            if (json.status === 'success') {
+            if (res && res.status === 'success') {
                 showToast('Đã duyệt đơn!', 'success');
                 loadRequests();
             } else {
-                showToast(json.message, 'error');
+                showToast(res?.message || 'Có lỗi xảy ra', 'error');
             }
         }
 
-        // ===== TỪ CHỐI =====
+        // ================================================================
+        // Từ chối đơn
+        // ================================================================
         function openReject(id) {
             rejectingId = id;
             document.getElementById('rejectComment').value = '';
@@ -317,24 +304,25 @@
 
         async function confirmReject() {
             const comment = document.getElementById('rejectComment').value.trim();
-            if (!comment) { alert('Vui lòng nhập lý do từ chối!'); return; }
-
-            const res = await fetch(API, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ request_id: rejectingId, decision: 'rejected', comment })
+            if (!comment) {
+                alert('Vui lòng nhập lý do từ chối!');
+                return;
+            }
+            const res = await callAPI('leave/approve.php', 'POST', {
+                request_id: rejectingId,
+                decision: 'rejected',
+                comment: comment
             });
-            const json = await res.json();
-            if (json.status === 'success') {
+            if (res && res.status === 'success') {
                 bootstrap.Modal.getInstance(document.getElementById('modalReject')).hide();
                 showToast('Đã từ chối đơn!', 'success');
                 loadRequests();
             } else {
-                showToast(json.message, 'error');
+                showToast(res?.message || 'Có lỗi xảy ra', 'error');
             }
         }
 
-        // Khoi chay
+        // Khởi chạy
         loadRequests();
     </script>
 </body>

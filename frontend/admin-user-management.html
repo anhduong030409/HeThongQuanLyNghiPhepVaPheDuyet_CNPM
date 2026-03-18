@@ -5,55 +5,21 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="" />
-    <meta name="keyword" content="" />
-    <meta name="author" content="flexilecode" />
-    <!--! The above 6 meta tags *must* come first in the head; any other head content must come *after* these tags !-->
-    <!--! BEGIN: Apps Title-->
     <title>LMS || Leave Management System</title>
-    <!--! END:  Apps Title-->
-    <!--! BEGIN: Favicon-->
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico" />
-    <!--! END: Favicon-->
-    <!--! BEGIN: Bootstrap CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
-    <!--! END: Bootstrap CSS-->
-    <!--! BEGIN: Vendors CSS-->
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/daterangepicker.min.css" />
-    <!--! END: Vendors CSS-->
-    <!--! BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
-    <!--! END: Custom CSS-->
-    <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
-    <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
-    <!--[if lt IE 9]>
-			<script src="https:oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-			<script src="https:oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
+    <script src="assets/js/api.js"></script>
 </head>
 
 <body>
-    <!--! ================================================================ !-->
-    <!--! [Start] Navigation Manu !-->
-    <!--! ================================================================ !-->
     <div id="navigation"></div>
-    <!--! ================================================================ !-->
-    <!--! [End]  Navigation Manu !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! [Start] Header !-->
-    <!--! ================================================================ !-->
     <div id="header"></div>
-    <!--! ================================================================ !-->
-    <!--! [End] Header !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! [Start] Main Content !-->
-    <!--! ================================================================ !-->
+
     <main class="nxl-container">
         <div class="nxl-content">
-            <!-- [ page-header ] start -->
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
                     <div class="page-header-title">
@@ -61,115 +27,30 @@
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item">User Management</li>
+                        <li class="breadcrumb-item">Quản lý người dùng</li>
                     </ul>
                 </div>
-                <div class="page-header-right ms-auto">
-                    <div class="page-header-right-items">
-                        <div class="d-flex d-md-none">
-                            <a href="javascript:void(0)" class="page-header-right-close-toggle">
-                                <i class="feather-arrow-left me-2"></i>
-                                <span>Back</span>
-                            </a>
-                        </div>
-                        <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-                            <div id="reportrange" class="reportrange-picker d-flex align-items-center">
-                                <span class="reportrange-picker-field"></span>
-                            </div>
-                            <div class="dropdown filter-dropdown">
-                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10"
-                                    data-bs-auto-close="outside">
-                                    <i class="feather-filter me-2"></i>
-                                    <span>Filter</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Role"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Role">Role</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Team"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Team">Team</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Email"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Email">Email</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Member"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Member">Member</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Recommendation"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer"
-                                                for="Recommendation">Recommendation</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-divider"></div>
-                                    <a href="javascript:void(0);" class="dropdown-item">
-                                        <i class="feather-plus me-3"></i>
-                                        <span>Create New</span>
-                                    </a>
-                                    <a href="javascript:void(0);" class="dropdown-item">
-                                        <i class="feather-filter me-3"></i>
-                                        <span>Manage Filter</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-md-none d-flex align-items-center">
-                        <a href="javascript:void(0)" class="page-header-right-open-toggle">
-                            <i class="feather-align-right fs-20"></i>
-                        </a>
-                    </div>
-                </div>
             </div>
-            <!-- [ page-header ] end -->
-            <!-- [ Main Content ] start -->
+
             <div class="main-content">
                 <div class="row">
-
                     <!-- Thanh công cụ -->
                     <div class="col-12 mb-4">
                         <div class="card">
                             <div class="card-body d-flex justify-content-between align-items-center">
-
                                 <div class="d-flex gap-2">
-                                    <input type="text" class="form-control" placeholder="Tìm kiếm người dùng...">
-
-                                    <select class="form-select">
+                                    <input type="text" class="form-control" id="searchInput"
+                                        placeholder="Tìm kiếm người dùng..." oninput="filterUsers()">
+                                    <select class="form-select" id="filterRole" onchange="filterUsers()">
                                         <option value="">Tất cả vai trò</option>
-                                        <option>Quản trị viên (Admin)</option>
-                                        <option>Nhân sự (HR)</option>
-                                        <option>Quản lý (Manager)</option>
-                                        <option>Nhân viên (Employee)</option>
                                     </select>
                                 </div>
-
-                                <button class="btn btn-primary">
-                                    <i class="feather-user-plus me-2"></i>
-                                    Thêm người dùng
+                                <button class="btn btn-primary" id="btnAdd">
+                                    <i class="feather-user-plus me-2"></i>Thêm người dùng
                                 </button>
-
                             </div>
                         </div>
                     </div>
-
 
                     <!-- Bảng người dùng -->
                     <div class="col-12">
@@ -177,163 +58,49 @@
                             <div class="card-header">
                                 <h5>Quản lý người dùng</h5>
                             </div>
-
                             <div class="card-body">
                                 <div class="table-responsive">
-
                                     <table class="table table-hover">
-
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Mã</th>
                                                 <th>Họ tên</th>
                                                 <th>Email</th>
                                                 <th>Phòng ban</th>
+                                                <th>Quản lý trực tiếp</th>
                                                 <th>Vai trò</th>
                                                 <th>Trạng thái</th>
-                                                <th class="text-center py-3">Thao tác</th>
+                                                <th class="text-center">Thao tác</th>
                                             </tr>
                                         </thead>
-
-                                        <tbody>
-
+                                        <tbody id="user-tbody">
                                             <tr>
-                                                <td>#001</td>
-                                                <td>John Smith</td>
-                                                <td>john@company.com</td>
-                                                <td>Công nghệ thông tin</td>
-                                                <td><span class="badge bg-danger">Admin</span></td>
-                                                <td><span class="badge bg-success">Hoạt động</span></td>
-                                                <td class="text-center py-3">
-                                                    <div class="d-flex justify-content-center gap-2">
-                                                        <button class="btn btn-sm btn-outline-primary">
-                                                            <i class="feather-edit"></i>
-                                                        </button>
-                                                        <button class="btn btn-sm btn-outline-danger">
-                                                            <i class="feather-trash"></i>
-                                                        </button>
-                                                    </div>
+                                                <td colspan="8" class="text-center text-muted py-4">
+                                                    <span class="spinner-border spinner-border-sm me-2"></span>Đang
+                                                    tải...
                                                 </td>
                                             </tr>
-
-                                            <tr>
-                                                <td>#002</td>
-                                                <td>Anna Lee</td>
-                                                <td>anna@company.com</td>
-                                                <td>Nhân sự</td>
-                                                <td><span class="badge bg-info">HR</span></td>
-                                                <td><span class="badge bg-success">Hoạt động</span></td>
-                                                <td class="text-center">
-                                                    <div class="d-flex justify-content-center gap-2">
-                                                        <button class="btn btn-sm btn-outline-primary">
-                                                            <i class="feather-edit"></i>
-                                                        </button>
-                                                        <button class="btn btn-sm btn-outline-danger">
-                                                            <i class="feather-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>#003</td>
-                                                <td>Michael Brown</td>
-                                                <td>michael@company.com</td>
-                                                <td>Kinh doanh</td>
-                                                <td><span class="badge bg-warning text-dark">Manager</span></td>
-                                                <td><span class="badge bg-success">Hoạt động</span></td>
-                                                <td class="text-center">
-                                                    <div class="d-flex justify-content-center gap-2">
-                                                        <button class="btn btn-sm btn-outline-primary">
-                                                            <i class="feather-edit"></i>
-                                                        </button>
-                                                        <button class="btn btn-sm btn-outline-danger">
-                                                            <i class="feather-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>#004</td>
-                                                <td>David Wilson</td>
-                                                <td>david@company.com</td>
-                                                <td>Marketing</td>
-                                                <td><span class="badge bg-secondary">Nhân viên</span></td>
-                                                <td><span class="badge bg-success">Hoạt động</span></td>
-                                                <td class="text-center py-3 ">
-                                                    <div class="d-flex justify-content-center gap-2">
-                                                        <button class="btn btn-sm btn-outline-primary">
-                                                            <i class="feather-edit"></i>
-                                                        </button>
-                                                        <button class="btn btn-sm btn-outline-danger">
-                                                            <i class="feather-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
                                         </tbody>
-
                                     </table>
-
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-            <!-- [ Main Content ] end -->
         </div>
-        <!-- [ Footer ] start -->
+
         <footer class="footer">
             <p class="fs-11 text-muted fw-medium text-uppercase mb-0 copyright">
                 <span>Copyright ©</span>
-                <script>
-                    document.write(new Date().getFullYear());
-                </script>
+                <script>document.write(new Date().getFullYear());</script>
             </p>
-            <p><span>By: <a target="_blank" href="https://wrapbootstrap.com/user/theme_ocean"
-                        target="_blank">theme_ocean</a></span> • <span>Distributed by: <a target="_blank"
-                        href="https://themewagon.com" target="_blank">ThemeWagon</a></span></p>
-            <div class="d-flex align-items-center gap-4">
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Help</a>
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Terms</a>
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Privacy</a>
-            </div>
         </footer>
-        <!-- [ Footer ] end -->
     </main>
-    <!--! ================================================================ !-->
-    <!--! [End] Main Content !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! BEGIN: Theme Customizer !-->
-    <!--! ================================================================ !-->
-    <div id="theme-customizer"></div>
-    <!--! ================================================================ !-->
-    <!--! [End] Theme Customizer !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! Footer Script !-->
-    <!--! ================================================================ !-->
-    <!--! BEGIN: Vendors JS !-->
-    <script src="load-layout.js"></script>
-    <script src="assets/vendors/js/vendors.min.js"></script>
-    <!-- vendors.min.js {always must need to be top} -->
-    <script src="assets/vendors/js/daterangepicker.min.js"></script>
-    <script src="assets/vendors/js/apexcharts.min.js"></script>
-    <script src="assets/vendors/js/circle-progress.min.js"></script>
-    <!--! END: Vendors JS !-->
-    <!--! BEGIN: Apps Init  !-->
-    <script src="assets/js/dashboard-init.min.js"></script>
-    <!--! END: Apps Init !-->
-    <!--! BEGIN: Theme Customizer  !-->
-    <script src="assets/js/theme-customizer-init.min.js"></script>
-    <!--! END: Theme Customizer !-->
 
+    <div id="theme-customizer"></div>
+
+    <!-- Modal thêm/sửa người dùng -->
     <div class="modal fade" id="modalUser" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -343,6 +110,7 @@
                 </div>
                 <div class="modal-body">
                     <input type="hidden" id="userId">
+
                     <div class="mb-3">
                         <label class="form-label">Họ tên <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="fullName" placeholder="Nhập họ tên">
@@ -359,19 +127,30 @@
                         <label class="form-label">Số điện thoại</label>
                         <input type="text" class="form-control" id="phone" placeholder="Nhập số điện thoại">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Vai trò <span class="text-danger">*</span></label>
-                        <select class="form-select" id="roleId">
-                            <option value="1">Admin</option>
-                            <option value="2">HR</option>
-                            <option value="3">Manager</option>
-                            <option value="4" selected>Employee</option>
-                        </select>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Vai trò <span class="text-danger">*</span></label>
+                            <select class="form-select" id="roleId" onchange="onRoleChange()">
+                                <!-- Load động từ DB -->
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Phòng ban</label>
+                            <select class="form-select" id="departmentId">
+                                <option value="">-- Chọn phòng ban --</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Phòng ban</label>
-                        <select class="form-select" id="departmentId">
-                            <option value="">-- Chọn phòng ban --</option>
+
+                    <!-- Dropdown Manager — ẩn/hiện theo role -->
+                    <div class="mb-3" id="managerField">
+                        <label class="form-label">
+                            Quản lý trực tiếp
+                            <span class="text-muted fs-12">(người sẽ duyệt đơn nghỉ phép)</span>
+                        </label>
+                        <select class="form-select" id="managerId">
+                            <option value="">-- Chọn quản lý --</option>
                         </select>
                     </div>
                 </div>
@@ -382,8 +161,9 @@
             </div>
         </div>
     </div>
-    <!-- Toast thông báo -->
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+
+    <!-- Toast -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index:9999">
         <div id="toastBox" class="toast align-items-center border-0" role="alert">
             <div class="d-flex">
                 <div class="toast-body fw-semibold" id="toastMsg"></div>
@@ -392,89 +172,173 @@
         </div>
     </div>
 
+    <script src="load-layout.js"></script>
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="assets/vendors/js/daterangepicker.min.js"></script>
+    <script src="assets/vendors/js/apexcharts.min.js"></script>
+    <script src="assets/vendors/js/circle-progress.min.js"></script>
+    <script src="assets/js/common-init.min.js"></script>
+    <script src="assets/js/dashboard-init.min.js"></script>
+    <script src="assets/js/theme-customizer-init.min.js"></script>
+
     <script>
+        const currentUser = checkRole(['admin']);
+        if (!currentUser) throw new Error('Khong co quyen');
+
+        let allUsers = [];
+
+        // ================================================================
+        // Helpers
+        // ================================================================
         function showToast(message, type = 'success') {
-            const toastBox = document.getElementById('toastBox');
-            const toastMsg = document.getElementById('toastMsg');
-
-            toastMsg.innerText = message;
-            toastBox.className = `toast align-items-center border-0 text-white ${type === 'success' ? 'bg-success' : 'bg-danger'
-                }`;
-
-            const toast = new bootstrap.Toast(toastBox, { delay: 3000 });
-            toast.show();
+            const box = document.getElementById('toastBox');
+            const msg = document.getElementById('toastMsg');
+            msg.innerText = message;
+            box.className = `toast align-items-center border-0 text-white
+                ${type === 'success' ? 'bg-success' : 'bg-danger'}`;
+            new bootstrap.Toast(box, { delay: 3000 }).show();
         }
-    </script>
-
-
-
-    <script>
-        const API = '../backend/api/users';
-        const token = localStorage.getItem('token');
-
-        // Load phòng ban vào select
-        async function loadDepartments() {
-            const res = await fetch('../backend/api/departments/list.php', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const json = await res.json();
-            const sel = document.getElementById('departmentId');
-            sel.innerHTML = '<option value="">-- Chọn phòng ban --</option>';
-            (json.data || []).forEach(d => {
-                sel.innerHTML += `<option value="${d.id}">${d.name}</option>`;
-            });
-        }
-
-        // Load danh sách nhân viên
-        async function loadUsers() {
-            const res = await fetch(`${API}/list.php`, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const json = await res.json();
-            if (json.status !== 'success') return;
-
-            const tbody = document.querySelector('tbody');
-            tbody.innerHTML = '';
-
-            json.data.forEach(u => {
-                tbody.innerHTML += `
-            <tr>
-                <td>#${String(u.id).padStart(3, '0')}</td>
-                <td>${u.full_name}</td>
-                <td>${u.email}</td>
-                <td>${u.dept_name ?? '---'}</td>
-                <td>${renderRole(u.role_name)}</td>
-                <td>${u.is_active == 1
-                        ? '<span class="badge bg-success">Hoạt động</span>'
-                        : '<span class="badge bg-secondary">Vô hiệu</span>'}</td>
-                <td class="text-center">
-                    <div class="d-flex justify-content-center gap-2">
-                        <button class="btn btn-sm btn-outline-primary"
-                            onclick='openEdit(${JSON.stringify(u)})'>
-                            <i class="feather-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger"
-                            onclick="disableUser(${u.id})">
-                            <i class="feather-slash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>`;
-            });
-        }
-
 
         function renderRole(role) {
             const map = {
                 admin: '<span class="badge bg-danger">Admin</span>',
+                director: '<span class="badge bg-purple" style="background:#6f42c1">Giám đốc</span>',
                 hr: '<span class="badge bg-info">HR</span>',
                 manager: '<span class="badge bg-warning text-dark">Manager</span>',
-                employee: '<span class="badge bg-secondary">Nhân viên</span>'
+                employee: '<span class="badge bg-secondary">Nhân viên</span>',
             };
             return map[role] ?? `<span class="badge bg-secondary">${role}</span>`;
         }
 
-        // Mở modal thêm
+        // ================================================================
+        // Load dữ liệu
+        // ================================================================
+        async function loadRoles() {
+            const res = await callAPI('roles.php');
+            if (!res || res.status !== 'success') return;
+
+            // Dropdown filter
+            const filter = document.getElementById('filterRole');
+            filter.innerHTML = '<option value="">Tất cả vai trò</option>';
+            res.data.forEach(r => {
+                filter.innerHTML += `<option value="${r.name}">${r.display_name}</option>`;
+            });
+
+            // Dropdown trong modal
+            const sel = document.getElementById('roleId');
+            sel.innerHTML = '';
+            res.data.forEach(r => {
+                sel.innerHTML += `<option value="${r.id}" data-name="${r.name}">${r.display_name}</option>`;
+            });
+            sel.value = res.data.find(r => r.name === 'employee')?.id ?? '';
+        }
+
+        async function loadDepartments() {
+            const res = await callAPI('departments/list.php');
+            if (!res || res.status !== 'success') return;
+            const sel = document.getElementById('departmentId');
+            sel.innerHTML = '<option value="">-- Chọn phòng ban --</option>';
+            res.data.forEach(d => {
+                sel.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+            });
+        }
+
+        async function loadManagers() {
+            const res = await callAPI('users/list.php');
+            if (!res || res.status !== 'success') return;
+
+            const sel = document.getElementById('managerId');
+            sel.innerHTML = '<option value="">-- Chọn quản lý --</option>';
+
+            // Chỉ hiện những người có thể là quản lý (director, hr, manager)
+            const validRoles = ['director', 'hr', 'manager'];
+            res.data
+                .filter(u => validRoles.includes(u.role_name))
+                .forEach(u => {
+                    sel.innerHTML +=
+                        `<option value="${u.id}">${u.full_name} (${u.role_name})</option>`;
+                });
+        }
+
+        async function loadUsers() {
+            const res = await callAPI('users/list.php');
+            const tbody = document.getElementById('user-tbody');
+            if (!res || res.status !== 'success') {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">
+                    Lỗi tải dữ liệu</td></tr>`;
+                return;
+            }
+            allUsers = res.data;
+            renderTable(allUsers);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('user-tbody');
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">
+                    Không có người dùng nào</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = data.map(u => `
+                <tr>
+                    <td>#${String(u.id).padStart(3, '0')}</td>
+                    <td class="fw-semibold">${u.full_name}</td>
+                    <td class="text-muted fs-13">${u.email}</td>
+                    <td>${u.dept_name ?? '---'}</td>
+                    <td class="fs-13">${u.manager_name ?? '<span class="text-muted">---</span>'}</td>
+                    <td>${renderRole(u.role_name)}</td>
+                    <td>${u.is_active == 1
+                    ? '<span class="badge bg-success">Hoạt động</span>'
+                    : '<span class="badge bg-secondary">Vô hiệu</span>'}</td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                            <button class="btn btn-sm btn-outline-primary"
+                                onclick='openEdit(${JSON.stringify(u)})'>
+                                <i class="feather-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger"
+                                onclick="disableUser(${u.id})">
+                                <i class="feather-slash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>`).join('');
+        }
+
+        // ================================================================
+        // Filter
+        // ================================================================
+        function filterUsers() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const role = document.getElementById('filterRole').value;
+            const filtered = allUsers.filter(u =>
+                (!search || u.full_name.toLowerCase().includes(search) ||
+                    u.email.toLowerCase().includes(search)) &&
+                (!role || u.role_name === role)
+            );
+            renderTable(filtered);
+        }
+
+        // ================================================================
+        // Ẩn/hiện field Manager theo role
+        // ================================================================
+        function onRoleChange() {
+            const sel = document.getElementById('roleId');
+            const roleName = sel.options[sel.selectedIndex]?.dataset.name ?? '';
+            const field = document.getElementById('managerField');
+
+            // Admin và Director không cần manager
+            if (roleName === 'admin' || roleName === 'director') {
+                field.style.display = 'none';
+                document.getElementById('managerId').value = '';
+            } else {
+                field.style.display = 'block';
+            }
+        }
+
+        // ================================================================
+        // Modal thêm
+        // ================================================================
         async function openAdd() {
             document.getElementById('modalTitle').innerText = 'Thêm người dùng';
             document.getElementById('userId').value = '';
@@ -483,15 +347,22 @@
             document.getElementById('email').disabled = false;
             document.getElementById('password').value = '';
             document.getElementById('phone').value = '';
-            document.getElementById('roleId').value = '4';
             document.getElementById('passwordField').style.display = 'block';
 
             await loadDepartments();
+            await loadManagers();
             document.getElementById('departmentId').value = '';
+            document.getElementById('managerId').value = '';
+
+            // Default role = employee → hiện manager field
+            document.getElementById('managerField').style.display = 'block';
+
             new bootstrap.Modal(document.getElementById('modalUser')).show();
         }
 
-        // Mở modal sửa
+        // ================================================================
+        // Modal sửa
+        // ================================================================
         async function openEdit(u) {
             document.getElementById('modalTitle').innerText = 'Sửa người dùng';
             document.getElementById('userId').value = u.id;
@@ -501,18 +372,25 @@
             document.getElementById('phone').value = u.phone ?? '';
             document.getElementById('passwordField').style.display = 'none';
 
-            const roleMap = { admin: 1, hr: 2, manager: 3, employee: 4 };
-            document.getElementById('roleId').value = roleMap[u.role_name] ?? 4;
-
             await loadDepartments();
+            await loadManagers();
+
+            // Set role
+            const roleMap = { admin: 1, director: 2, hr: 3, manager: 4, employee: 5 };
+            document.getElementById('roleId').value = roleMap[u.role_name] ?? 5;
+            onRoleChange();
+
             setTimeout(() => {
                 document.getElementById('departmentId').value = u.department_id ?? '';
+                document.getElementById('managerId').value = u.manager_id ?? '';
             }, 100);
 
             new bootstrap.Modal(document.getElementById('modalUser')).show();
         }
 
-        // Lưu thêm/sửa
+        // ================================================================
+        // Lưu
+        // ================================================================
         async function saveUser() {
             const id = document.getElementById('userId').value;
             const fullName = document.getElementById('fullName').value.trim();
@@ -520,64 +398,67 @@
             const phone = document.getElementById('phone').value.trim();
             const roleId = parseInt(document.getElementById('roleId').value);
             const deptId = document.getElementById('departmentId').value || null;
+            const mgrId = document.getElementById('managerId').value || null;
 
             if (!fullName || !email) {
-                alert('Vui lòng nhập đầy đủ họ tên và email!');
+                showToast('Vui lòng nhập đầy đủ họ tên và email!', 'error');
                 return;
             }
 
-            let url, body;
+            let endpoint, body;
             if (id) {
-                url = `${API}/update.php`;
-                body = { id: parseInt(id), full_name: fullName, phone, role_id: roleId, department_id: deptId, is_active: 1 };
-            } else {
-                url = `${API}/create.php`;
+                endpoint = 'users/update.php';
                 body = {
-                    full_name: fullName, email, phone, role_id: roleId, department_id: deptId,
+                    id: parseInt(id),
+                    full_name: fullName,
+                    phone,
+                    role_id: roleId,
+                    department_id: deptId,
+                    manager_id: mgrId ? parseInt(mgrId) : null,
+                    is_active: 1
+                };
+            } else {
+                endpoint = 'users/create.php';
+                body = {
+                    full_name: fullName,
+                    email,
+                    phone,
+                    role_id: roleId,
+                    department_id: deptId,
+                    manager_id: mgrId ? parseInt(mgrId) : null,
                     password: document.getElementById('password').value || '123456'
                 };
             }
 
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-            const json = await res.json();
-
-            if (json.status === 'success') {
+            const res = await callAPI(endpoint, 'POST', body);
+            if (res && res.status === 'success') {
                 bootstrap.Modal.getInstance(document.getElementById('modalUser')).hide();
                 showToast(id ? 'Cập nhật thành công!' : 'Thêm người dùng thành công!', 'success');
                 loadUsers();
             } else {
-                showToast(json.message, 'error');
+                showToast(res?.message || 'Có lỗi xảy ra', 'error');
             }
-
-
         }
 
+        // ================================================================
         // Vô hiệu hóa
+        // ================================================================
         async function disableUser(id) {
             if (!confirm('Vô hiệu hóa người dùng này?')) return;
-            const res = await fetch(`${API}/delete.php`, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id })
-            });
-            const json = await res.json();
-            if (json.status === 'success') {
-                showToast('Đã vô hiệu hóa người dùng!', 'success'); 
+            const res = await callAPI('users/delete.php', 'POST', { id });
+            if (res && res.status === 'success') {
+                showToast('Đã vô hiệu hóa người dùng!', 'success');
                 loadUsers();
             } else {
-                showToast(json.message, 'error'); 
+                showToast(res?.message || 'Có lỗi xảy ra', 'error');
             }
         }
 
-        // Gắn nút Thêm người dùng
-        document.querySelector('.btn-primary').addEventListener('click', openAdd);
-
+        // ================================================================
         // Khởi chạy
-        loadDepartments();
+        // ================================================================
+        document.getElementById('btnAdd').addEventListener('click', openAdd);
+        loadRoles();
         loadUsers();
     </script>
 </body>
