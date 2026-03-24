@@ -122,33 +122,65 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <!-- Bỏ field Mã loại phép -->
-                                <div class="mb-4">
+
+                                <div class="mb-3">
                                     <label class="form-label">Tên loại phép <span class="text-danger">*</span></label>
                                     <input type="text" id="ltName" class="form-control" placeholder="VD: Phép năm">
                                 </div>
-                                <div class="mb-4">
+                                <div class="mb-3">
                                     <label class="form-label">Số ngày tối đa / Năm <span
                                             class="text-danger">*</span></label>
                                     <input type="number" id="ltMaxDays" class="form-control" value="0" min="0">
+                                    <div class="form-text text-muted">Nhập 999 = Không giới hạn</div>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Tính lương</label>
-                                    <select id="ltIsPaid" class="form-control">
-                                        <option value="1">Có hưởng lương</option>
-                                        <option value="0">Không hưởng lương</option>
-                                    </select>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Tính lương</label>
+                                        <select id="ltIsPaid" class="form-control">
+                                            <option value="1">Có hưởng lương</option>
+                                            <option value="0">Không hưởng lương</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Yêu cầu giấy tờ</label>
+                                        <select id="ltRequiresDoc" class="form-control">
+                                            <option value="0">Không yêu cầu</option>
+                                            <option value="1">Có yêu cầu</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Yêu cầu giấy tờ</label>
-                                    <select id="ltRequiresDoc" class="form-control">
-                                        <option value="0">Không yêu cầu</option>
-                                        <option value="1">Có yêu cầu</option>
-                                    </select>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Số ngày chuyển năm sau</label>
+                                        <input type="number" id="ltCarryOver" class="form-control" value="0" min="0">
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Thứ tự ưu tiên</label>
+                                        <input type="number" id="ltPriorityOrder" class="form-control" value="1"
+                                            min="1">
+                                    </div>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Số ngày được chuyển sang năm sau</label>
-                                    <input type="number" id="ltCarryOver" class="form-control" value="0" min="0">
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Cho phép ghép phép</label>
+                                        <select id="ltCanCombine" class="form-control">
+                                            <option value="1">Có</option>
+                                            <option value="0">Không</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Giới tính áp dụng</label>
+                                        <select id="ltGender" class="form-control">
+                                            <option value="">Tất cả</option>
+                                            <option value="male">Nam</option>
+                                            <option value="female">Nữ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Mô tả chính sách</label>
+                                    <textarea id="ltPolicyDesc" class="form-control" rows="3"
+                                        placeholder="Mô tả chi tiết..."></textarea>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Trạng thái</label>
@@ -190,6 +222,9 @@
                                                 <th>Tên Loại Phép</th>
                                                 <th>Số Ngày</th>
                                                 <th>Tính Lương</th>
+                                                <th>Ghép Phép</th>
+                                                <th>Giới Tính</th>
+                                                <th>Ưu Tiên</th>
                                                 <th>Trạng Thái</th>
                                                 <th class="text-end">Thao Tác</th>
                                             </tr>
@@ -316,7 +351,7 @@
     <!--! ================================================================ !-->
     <!--! BEGIN: Theme Customizer !-->
     <!--! ================================================================ !-->
-    
+
     <!--! ================================================================ !-->
     <!--! [End] Theme Customizer !-->
     <!--! ================================================================ !-->
@@ -339,7 +374,7 @@
     <script src="assets/js/proposal-create-init.min.js"></script>
     <!--! END: Apps Init !-->
     <!--! BEGIN: Theme Customizer  !-->
-    
+
     <!--! END: Theme Customizer !-->
     <script>
         $(document).ready(function () {
@@ -429,31 +464,46 @@
             tbody.innerHTML = '';
 
             json.data.forEach((lt, i) => {
+                const genderLabel = lt.gender_restriction === 'male'
+                    ? '<span class="badge bg-soft-info text-info">Nam</span>'
+                    : lt.gender_restriction === 'female'
+                        ? '<span class="badge bg-soft-pink text-danger">Nữ</span>'
+                        : '<span class="text-muted fs-12">Tất cả</span>';
+
                 tbody.innerHTML += `
-        <tr>
-            <td><span class="fw-bold text-primary">LP${String(lt.id).padStart(2, '0')}</span></td>
-            <td><span class="fw-bold text-dark">${lt.name}</span></td>
-            <td>${lt.max_days_per_year}</td>
-            <td>${lt.is_paid == 1
+                    <tr>
+                        <td><span class="fw-bold text-primary">LP${String(lt.id).padStart(2, '0')}</span></td>
+                        <td>
+                            <span class="fw-bold text-dark">${lt.name}</span>
+                            ${lt.policy_description
+                        ? `<div class="fs-11 text-muted text-truncate" style="max-width:150px">${lt.policy_description}</div>`
+                        : ''}
+                        </td>
+                        <td>${lt.max_days_per_year >= 999 ? '<span class="text-muted">∞</span>' : lt.max_days_per_year}</td>
+                        <td>${lt.is_paid == 1
                         ? '<span class="badge bg-soft-success text-success">Có</span>'
                         : '<span class="badge bg-soft-danger text-danger">Không</span>'}</td>
-            <td>
-                <div class="form-check form-switch ps-5">
-                    <input class="form-check-input" type="checkbox" ${lt.is_active == 1 ? 'checked' : ''}
-                        onchange="toggleActive(${lt.id}, this.checked)">
-                </div>
-            </td>
-            <td class="text-end">
-                <a href="javascript:void(0);" class="avatar-text avatar-md text-primary" onclick='fillForm(${JSON.stringify(lt)})'>
-                    <i class="feather-edit"></i>
-                </a>
-                <a href="javascript:void(0);" class="avatar-text avatar-md text-danger" onclick="deleteType(${lt.id})">
-                    <i class="feather-trash-2"></i>
-                </a>
-            </td>
-        </tr>`;
+                        <td>${lt.can_combine == 1
+                        ? '<span class="badge bg-soft-primary text-primary">Có</span>'
+                        : '<span class="badge bg-soft-secondary text-secondary">Không</span>'}</td>
+                        <td>${genderLabel}</td>
+                        <td><span class="badge bg-soft-warning text-warning">${lt.priority_order}</span></td>
+                        <td>
+                            <div class="form-check form-switch ps-5">
+                                <input class="form-check-input" type="checkbox" ${lt.is_active == 1 ? 'checked' : ''}
+                                    onchange="toggleActive(${lt.id}, this.checked)">
+                            </div>
+                        </td>
+                        <td class="text-end">
+                            <a href="javascript:void(0);" class="avatar-text avatar-md text-primary" onclick='fillForm(${JSON.stringify(lt)})'>
+                                <i class="feather-edit"></i>
+                            </a>
+                            <a href="javascript:void(0);" class="avatar-text avatar-md text-danger" onclick="deleteType(${lt.id})">
+                                <i class="feather-trash-2"></i>
+                            </a>
+                        </td>
+                    </tr>`;
             });
-
             // Cap nhat so luong
             document.querySelector('.card-footer .fs-12').innerText =
                 `Hiển thị 1 đến ${json.data.length} của ${json.data.length} loại phép`;
@@ -468,15 +518,15 @@
             document.getElementById('ltIsPaid').value = lt.is_paid;
             document.getElementById('ltRequiresDoc').value = lt.requires_document;
             document.getElementById('ltCarryOver').value = lt.carry_over_days;
+            document.getElementById('ltPriorityOrder').value = lt.priority_order ?? 1;
+            document.getElementById('ltCanCombine').value = lt.can_combine ?? 1;
+            document.getElementById('ltGender').value = lt.gender_restriction ?? '';
+            document.getElementById('ltPolicyDesc').value = lt.policy_description ?? '';
             document.getElementById('statusSwitch').checked = lt.is_active == 1;
-            // Hiện lưu ý
             document.getElementById('editNote').style.display = 'block';
-
-            // Scroll lên form
             document.querySelector('.card-title').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // ===== RESET FORM =====
         function resetForm() {
             editingId = null;
             document.querySelector('.card-title').innerText = 'Thêm / Sửa Loại Phép';
@@ -485,10 +535,14 @@
             document.getElementById('ltIsPaid').value = 1;
             document.getElementById('ltRequiresDoc').value = 0;
             document.getElementById('ltCarryOver').value = 0;
+            document.getElementById('ltPriorityOrder').value = 1;
+            document.getElementById('ltCanCombine').value = 1;
+            document.getElementById('ltGender').value = '';
+            document.getElementById('ltPolicyDesc').value = '';
             document.getElementById('statusSwitch').checked = true;
+            document.getElementById('editNote').style.display = 'none';
         }
 
-        // ===== LƯU =====
         async function saveLeaveType() {
             const body = {
                 name: document.getElementById('ltName').value.trim(),
@@ -496,13 +550,14 @@
                 is_paid: parseInt(document.getElementById('ltIsPaid').value),
                 requires_document: parseInt(document.getElementById('ltRequiresDoc').value),
                 carry_over_days: parseInt(document.getElementById('ltCarryOver').value),
+                priority_order: parseInt(document.getElementById('ltPriorityOrder').value),
+                can_combine: parseInt(document.getElementById('ltCanCombine').value),
+                gender_restriction: document.getElementById('ltGender').value || null,
+                policy_description: document.getElementById('ltPolicyDesc').value.trim() || null,
                 is_active: document.getElementById('statusSwitch').checked ? 1 : 0
             };
 
-            if (!body.name) {
-                showToast('Vui lòng nhập tên loại phép!', 'error');
-                return;
-            }
+            if (!body.name) { showToast('Vui lòng nhập tên loại phép!', 'error'); return; }
 
             const action = editingId ? 'update' : 'create';
             if (editingId) body.id = editingId;

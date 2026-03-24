@@ -201,7 +201,7 @@
 
         <script>
             // 1. Phân quyền truy cập
-            const currentUser = checkRole(['admin', 'director', 'manager']);
+            const currentUser = checkRole(['admin', 'hr', 'director', 'manager']);
             if (!currentUser) throw new Error('Không có quyền truy cập');
 
             // 2. Hàm tải danh sách nhân viên

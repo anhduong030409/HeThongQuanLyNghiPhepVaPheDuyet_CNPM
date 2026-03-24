@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LMS || Leave Management System</title>
+    <title>LMS || Đăng Ký Nghỉ Phép</title>
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
@@ -20,7 +20,6 @@
 
     <main class="nxl-container">
         <div class="nxl-content">
-            <!-- [ page-header ] start -->
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
                     <div class="page-header-title">
@@ -28,16 +27,14 @@
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item">Đăng kí nghỉ phép</li>
+                        <li class="breadcrumb-item">Đăng ký nghỉ phép</li>
                     </ul>
                 </div>
             </div>
-            <!-- [ page-header ] end -->
 
-            <!-- [ Main Content ] start -->
             <div class="main-content">
 
-                <!-- Thẻ tổng quan số dư -->
+                <!-- Thẻ tổng quan số dư phép năm -->
                 <div class="col-xl-12 mb-3">
                     <div class="card border-0 shadow-sm">
                         <div class="card-body d-flex align-items-center justify-content-between">
@@ -54,12 +51,11 @@
                                 <div class="fs-12 text-muted">Sau khi gửi đơn này (ước tính)</div>
                                 <div class="fs-5 fw-bold text-primary" id="afterDays">-- ngày</div>
                             </div>
-
                         </div>
                     </div>
                 </div>
 
-                <!-- Alert box dùng chung -->
+                <!-- Alert box -->
                 <div id="alert-box" class="alert d-none mb-3" role="alert"></div>
 
                 <div class="row">
@@ -108,7 +104,7 @@
                                             </select>
                                         </div>
 
-                                        <!-- Số ngày tính được -->
+                                        <!-- Số ngày làm việc -->
                                         <div class="col-12 mb-3">
                                             <div class="d-flex align-items-center gap-2">
                                                 <span class="text-muted fs-13">Số ngày làm việc:</span>
@@ -116,9 +112,39 @@
                                             </div>
                                         </div>
 
-                                        <!-- ===== KHU VỰC GHÉP PHÉP ===== -->
-                                        <div class="col-12 mb-3" id="leave-items-container">
-                                            <!-- Sẽ được render bởi JS sau khi chọn ngày -->
+                                        <!-- ===== TABS CHỌN CHẾ ĐỘ PHÉP ===== -->
+                                        <div class="col-12 mb-3" id="leave-mode-section" style="display:none">
+                                            <ul class="nav nav-pills nav-fill mb-3 border rounded p-1 bg-light gap-1"
+                                                id="leaveModeTab">
+                                                <li class="nav-item">
+                                                    <button type="button" class="nav-link active w-100 py-2"
+                                                        id="tab-auto" onclick="switchMode('auto')">
+                                                        <i class="feather-zap me-2"></i>Tự động
+                                                        <div class="fs-11 text-muted fw-normal mt-1">Hệ thống ghép phép
+                                                            tối ưu</div>
+                                                    </button>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <button type="button" class="nav-link w-100 py-2" id="tab-manual"
+                                                        onclick="switchMode('manual')">
+                                                        <i class="feather-edit-2 me-2"></i>Tự chọn
+                                                        <div class="fs-11 text-muted fw-normal mt-1">Chọn loại phép muốn
+                                                            dùng</div>
+                                                    </button>
+                                                </li>
+                                            </ul>
+
+                                            <!-- Nội dung chế độ TỰ ĐỘNG -->
+                                            <div id="mode-auto">
+                                                <div id="leave-items-container"></div>
+                                            </div>
+
+                                            <!-- Nội dung chế độ TỰ CHỌN -->
+                                            <div id="mode-manual" style="display:none">
+                                                <div id="manual-items-container">
+                                                    <!-- Render bởi JS -->
+                                                </div>
+                                            </div>
                                         </div>
                                         <!-- ============================= -->
 
@@ -158,7 +184,7 @@
                     <!-- Sidebar -->
                     <div class="col-xl-4">
                         <!-- Lưu ý -->
-                        <div class="card stretch stretch-full border-0 shadow-sm bg-primary text-white mb-4">
+                        <div class="card border-0 shadow-sm bg-primary text-white mb-4">
                             <div class="card-body">
                                 <h5 class="fw-bold mb-3"><i class="feather-info me-2"></i>Lưu ý quan trọng</h5>
                                 <ul class="list-unstyled fs-13 mb-0">
@@ -172,7 +198,7 @@
                             </div>
                         </div>
 
-                        <!-- Số dư tất cả loại phép -->
+                        <!-- Số dư phép -->
                         <div class="card border-0 shadow-sm">
                             <div class="card-header bg-white py-3">
                                 <h6 class="mb-0 fw-bold">Số dư phép của bạn</h6>
@@ -186,7 +212,6 @@
                     </div>
                 </div>
             </div>
-            <!-- [ Main Content ] end -->
         </div>
 
         <footer class="footer">
@@ -197,8 +222,6 @@
         </footer>
     </main>
 
-    
-
     <script src="load-layout.js"></script>
     <script src="assets/vendors/js/vendors.min.js"></script>
     <script src="assets/vendors/js/daterangepicker.min.js"></script>
@@ -206,20 +229,38 @@
     <script src="assets/vendors/js/circle-progress.min.js"></script>
     <script src="assets/js/common-init.min.js"></script>
     <script src="assets/js/dashboard-init.min.js"></script>
-    
 
     <script>
         // ================================================================
         // Khởi tạo
         // ================================================================
-        const currentUser = checkRole(['admin', 'hr', 'manager', 'employee']);
+        const currentUser = checkRole(['director', 'admin', 'hr', 'manager', 'employee']);
         if (!currentUser) throw new Error('Khong co quyen');
 
-        let selectedItems = [];
+        let selectedItems = [];     // Chế độ tự động
+        let manualItems = [];     // Chế độ tự chọn
         let totalDaysNeeded = 0;
+        let currentMode = 'auto';   // 'auto' | 'manual'
+        let allBalances = [];       // Toàn bộ số dư phép của nhân viên
 
         // ================================================================
-        // Load số dư phép hiển thị sidebar
+        // Chuyển chế độ
+        // ================================================================
+        function switchMode(mode) {
+            currentMode = mode;
+
+            document.getElementById('tab-auto').classList.toggle('active', mode === 'auto');
+            document.getElementById('tab-manual').classList.toggle('active', mode === 'manual');
+            document.getElementById('mode-auto').style.display = mode === 'auto' ? '' : 'none';
+            document.getElementById('mode-manual').style.display = mode === 'manual' ? '' : 'none';
+
+            if (mode === 'manual' && totalDaysNeeded > 0) {
+                renderManualItems();
+            }
+        }
+
+        // ================================================================
+        // Load số dư phép sidebar
         // ================================================================
         async function loadBalanceSidebar() {
             const res = await callAPI(`leave/balance.php?user_id=${currentUser.id}`);
@@ -233,6 +274,9 @@
                 container.innerHTML = '<p class="text-muted fs-13 p-2">Chưa có số dư phép</p>';
                 return;
             }
+
+            // Lưu lại để dùng cho chế độ tự chọn
+            allBalances = res.data;
 
             let html = '';
             res.data.forEach(b => {
@@ -257,7 +301,6 @@
             });
             container.innerHTML = html;
 
-            // Cập nhật thẻ phép năm ở trên
             const annual = res.data.find(b => b.leave_type_name === 'Phép năm');
             if (annual) {
                 document.getElementById('remainingDays').innerText =
@@ -266,7 +309,7 @@
         }
 
         // ================================================================
-        // Load thông tin manager (người duyệt)
+        // Load người duyệt
         // ================================================================
         async function loadApprover() {
             const el = document.getElementById('approverName');
@@ -276,17 +319,15 @@
             }
             const res = await callAPI(`users/list.php?id=${currentUser.manager_id}`);
             if (res && res.status === 'success' && res.data) {
-                // API trả về object (1 user) khi lọc theo ?id=
                 const manager = res.data;
-                const roleLabel = manager.role_display || 'Quản lý';
-                el.value = `${manager.full_name} (${roleLabel})`;
+                el.value = `${manager.full_name} (${manager.role_display || 'Quản lý'})`;
             } else {
                 el.value = 'Không tìm thấy quản lý';
             }
         }
 
         // ================================================================
-        // Tính ngày làm việc (trừ thứ 7, CN)
+        // Tính ngày làm việc
         // ================================================================
         function calcWorkingDays(startStr, endStr, session) {
             let count = 0;
@@ -304,7 +345,7 @@
         }
 
         // ================================================================
-        // Khi thay đổi ngày — tính ngày và gọi gợi ý
+        // Khi thay đổi ngày
         // ================================================================
         async function onDateChange() {
             const start = document.getElementById('startDate').value;
@@ -322,19 +363,24 @@
 
             if (totalDaysNeeded <= 0) {
                 showAlert('warning', 'Khoảng thời gian đã chọn không có ngày làm việc nào');
-                document.getElementById('leave-items-container').innerHTML = '';
+                document.getElementById('leave-mode-section').style.display = 'none';
                 return;
             }
 
             hideAlert();
-            await loadSuggestion(totalDaysNeeded);
+            document.getElementById('leave-mode-section').style.display = '';
 
-            // Cập nhật ước tính sau khi gửi
+            if (currentMode === 'auto') {
+                await loadSuggestion(totalDaysNeeded);
+            } else {
+                renderManualItems();
+            }
+
             updateAfterDays();
         }
 
         // ================================================================
-        // Gọi API gợi ý ghép phép
+        // CHẾ ĐỘ TỰ ĐỘNG — Gọi API gợi ý
         // ================================================================
         async function loadSuggestion(totalDays) {
             const container = document.getElementById('leave-items-container');
@@ -353,23 +399,23 @@
             }
 
             selectedItems = res.data.items;
-            renderLeaveItems(res.data);
+            renderAutoItems(res.data);
         }
 
-        // ================================================================
-        // Render bảng phân bổ loại phép
-        // ================================================================
-        function renderLeaveItems(suggestion) {
+        function renderAutoItems(suggestion) {
             const container = document.getElementById('leave-items-container');
 
-            if (suggestion.items.length === 0) {
+            if (!suggestion.items || suggestion.items.length === 0) {
                 container.innerHTML = `
                     <div class="alert alert-warning">
                         <i class="feather-alert-triangle me-2"></i>
-                        Bạn chưa có số dư phép nào. Vui lòng liên hệ HR để được cấp phép.
+                        Bạn chưa có số dư phép nào. Vui lòng liên hệ HR.
                     </div>`;
                 return;
             }
+
+            const allocated = suggestion.items.reduce((s, i) => s + i.days_used, 0);
+            const isBalanced = Math.round(allocated * 10) === Math.round(suggestion.total_days * 10);
 
             let rowsHtml = '';
             suggestion.items.forEach((item, idx) => {
@@ -382,7 +428,7 @@
                         </td>
                         <td>
                             <input type="number"
-                                class="form-control form-control-sm item-days-input"
+                                class="form-control form-control-sm"
                                 data-idx="${idx}"
                                 data-type-id="${item.leave_type_id}"
                                 data-type-name="${item.leave_type_name}"
@@ -391,25 +437,23 @@
                                 min="0"
                                 max="${isUnlimited ? 999 : item.remaining}"
                                 step="0.5"
-                                onchange="onItemDaysChange(this)">
+                                onchange="onAutoItemChange(this)">
                         </td>
                         <td class="text-muted fs-13 align-middle">
-                            ${isUnlimited ? '<span class="text-muted">Không giới hạn</span>'
+                            ${isUnlimited
+                        ? '<span class="text-muted">Không giới hạn</span>'
                         : `<span class="${item.remaining < 3 ? 'text-warning fw-semibold' : ''}">${item.remaining} ngày</span>`}
                         </td>
                     </tr>`;
             });
 
-            const allocated = suggestion.items.reduce((s, i) => s + i.days_used, 0);
-            const isBalanced = Math.round(allocated * 10) === Math.round(suggestion.total_days * 10);
-
             container.innerHTML = `
                 <div class="card border shadow-none">
                     <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
                         <span class="fw-semibold fs-13">
-                            <i class="feather-layers me-1 text-primary"></i>Phân bổ loại phép
+                            <i class="feather-zap me-1 text-primary"></i>Gợi ý phân bổ tự động
                         </span>
-                        <span class="fs-12 text-muted">Cần nghỉ: <strong>${suggestion.total_days} ngày</strong></span>
+                        <span class="fs-12 text-muted">Cần: <strong>${suggestion.total_days} ngày</strong></span>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-sm mb-0">
@@ -426,8 +470,7 @@
                     <div class="card-footer bg-white py-2 d-flex justify-content-between align-items-center">
                         <div class="fs-13">
                             Đã phân bổ:
-                            <strong id="allocated-display"
-                                class="${isBalanced ? 'text-success' : 'text-danger'}">
+                            <strong id="allocated-display" class="${isBalanced ? 'text-success' : 'text-danger'}">
                                 ${allocated}
                             </strong>
                             / ${suggestion.total_days} ngày
@@ -441,14 +484,11 @@
                 ${!suggestion.fully_covered ? `
                 <div class="alert alert-warning mt-2 fs-13 mb-0">
                     <i class="feather-alert-triangle me-1"></i>
-                    Thiếu <strong>${suggestion.uncovered} ngày</strong> — phần còn thiếu sẽ dùng <strong>phép không lương</strong>.
+                    Thiếu <strong>${suggestion.uncovered} ngày</strong> — sẽ dùng <strong>phép không lương</strong>.
                 </div>` : ''}`;
         }
 
-        // ================================================================
-        // Khi NV tự chỉnh số ngày 1 loại phép
-        // ================================================================
-        function onItemDaysChange(input) {
+        function onAutoItemChange(input) {
             const idx = parseInt(input.dataset.idx);
             const remaining = parseFloat(input.dataset.remaining);
             const val = parseFloat(input.value) || 0;
@@ -468,20 +508,156 @@
                 el.textContent = allocated;
                 el.className = isBalanced ? 'text-success' : 'text-danger';
             }
-
             updateAfterDays();
         }
 
         // ================================================================
-        // Cập nhật ước tính số ngày còn sau khi gửi
+        // CHẾ ĐỘ TỰ CHỌN — Render danh sách loại phép
+        // ================================================================
+        function renderManualItems() {
+            const container = document.getElementById('manual-items-container');
+
+            if (allBalances.length === 0) {
+                container.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="feather-alert-triangle me-2"></i>
+                        Bạn chưa có số dư phép nào. Vui lòng liên hệ HR.
+                    </div>`;
+                return;
+            }
+
+            const manualAllocated = manualItems.reduce((s, i) => s + (i.days_used || 0), 0);
+            const isBalanced = Math.round(manualAllocated * 10) === Math.round(totalDaysNeeded * 10);
+
+            let rowsHtml = '';
+            allBalances.forEach(b => {
+                const existing = manualItems.find(i => i.leave_type_id === b.leave_type_id);
+                const daysUsed = existing ? existing.days_used : 0;
+                const isUnlimited = b.remaining_days >= 999;
+
+                rowsHtml += `
+                    <tr>
+                        <td>
+                            <div class="fw-semibold fs-13">${b.leave_type_name}</div>
+                            ${b.requires_document
+                        ? '<span class="badge bg-soft-warning text-warning fs-11">Cần giấy tờ</span>'
+                        : ''}
+                        </td>
+                        <td>
+                            <input type="number"
+                                class="form-control form-control-sm manual-input"
+                                data-type-id="${b.leave_type_id}"
+                                data-type-name="${b.leave_type_name}"
+                                data-remaining="${b.remaining_days}"
+                                value="${daysUsed}"
+                                min="0"
+                                max="${isUnlimited ? 999 : b.remaining_days}"
+                                step="0.5"
+                                onchange="onManualItemChange(this)">
+                        </td>
+                        <td class="fs-13 align-middle">
+                            ${isUnlimited
+                        ? '<span class="text-muted">Không giới hạn</span>'
+                        : `<span class="${b.remaining_days < 3 ? 'text-warning fw-semibold' : 'text-muted'}">${b.remaining_days} ngày</span>`}
+                        </td>
+                    </tr>`;
+            });
+
+            container.innerHTML = `
+                <div class="card border shadow-none">
+                    <div class="card-header bg-light py-2 d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold fs-13">
+                            <i class="feather-edit-2 me-1 text-primary"></i>Tự chọn loại phép
+                        </span>
+                        <span class="fs-12 text-muted">Cần: <strong>${totalDaysNeeded} ngày</strong></span>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="fs-12">Loại phép</th>
+                                    <th class="fs-12" style="width:130px">Số ngày dùng</th>
+                                    <th class="fs-12" style="width:120px">Số dư</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rowsHtml}</tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer bg-white py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="fs-13">
+                                Đã phân bổ:
+                                <strong id="manual-allocated-display" class="${isBalanced ? 'text-success' : 'text-danger'}">
+                                    ${manualAllocated}
+                                </strong>
+                                / ${totalDaysNeeded} ngày
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                onclick="clearManualItems()">
+                                <i class="feather-refresh-cw me-1"></i>Xóa tất cả
+                            </button>
+                        </div>
+                        ${!isBalanced ? `
+                        <div class="mt-2 fs-12 ${manualAllocated > totalDaysNeeded ? 'text-danger' : 'text-warning'}">
+                            <i class="feather-alert-triangle me-1"></i>
+                            ${manualAllocated > totalDaysNeeded
+                        ? `Đã phân bổ vượt quá <strong>${(manualAllocated - totalDaysNeeded).toFixed(1)} ngày</strong>`
+                        : `Còn thiếu <strong>${(totalDaysNeeded - manualAllocated).toFixed(1)} ngày</strong> chưa phân bổ`}
+                        </div>` : ''}
+                    </div>
+                </div>`;
+        }
+
+        function onManualItemChange(input) {
+            const typeId = parseInt(input.dataset.typeId);
+            const typeName = input.dataset.typeName;
+            const remaining = parseFloat(input.dataset.remaining);
+            const val = parseFloat(input.value) || 0;
+
+            if (remaining < 999 && val > remaining) {
+                input.value = remaining;
+                showAlert('warning', `Không thể dùng quá ${remaining} ngày "${typeName}"`);
+                return;
+            }
+
+            // Cập nhật manualItems
+            const existing = manualItems.find(i => i.leave_type_id === typeId);
+            if (existing) {
+                existing.days_used = val;
+            } else if (val > 0) {
+                manualItems.push({ leave_type_id: typeId, leave_type_name: typeName, days_used: val });
+            }
+
+            // Xóa item nếu = 0
+            manualItems = manualItems.filter(i => i.days_used > 0);
+
+            const allocated = manualItems.reduce((s, i) => s + i.days_used, 0);
+            const isBalanced = Math.round(allocated * 10) === Math.round(totalDaysNeeded * 10);
+            const el = document.getElementById('manual-allocated-display');
+            if (el) {
+                el.textContent = allocated;
+                el.className = isBalanced ? 'text-success' : 'text-danger';
+            }
+
+            updateAfterDays();
+        }
+
+        function clearManualItems() {
+            manualItems = [];
+            renderManualItems();
+        }
+
+        // ================================================================
+        // Cập nhật ước tính phép năm còn lại
         // ================================================================
         function updateAfterDays() {
-            const annualItem = selectedItems.find(i => i.leave_type_name === 'Phép năm');
+            const items = currentMode === 'auto' ? selectedItems : manualItems;
+            const annualItem = items.find(i => i.leave_type_name === 'Phép năm');
             if (!annualItem) return;
 
-            const res = document.getElementById('remainingDays').innerText.split('/');
-            if (res.length < 2) return;
-            const current = parseFloat(res[0].trim()) || 0;
+            const parts = document.getElementById('remainingDays').innerText.split('/');
+            if (parts.length < 2) return;
+            const current = parseFloat(parts[0].trim()) || 0;
             const afterVal = current - annualItem.days_used;
             const el = document.getElementById('afterDays');
             el.innerText = (afterVal >= 0 ? afterVal.toFixed(1) : '0') + ' ngày';
@@ -503,15 +679,17 @@
                 return;
             }
 
-            if (selectedItems.length === 0) {
-                showAlert('danger', 'Vui lòng chọn ngày nghỉ trước');
+            // Lấy items theo chế độ đang dùng
+            const items = currentMode === 'auto' ? selectedItems : manualItems;
+
+            if (items.length === 0) {
+                showAlert('danger', 'Vui lòng phân bổ ít nhất 1 loại phép');
                 return;
             }
 
-            const allocated = selectedItems.reduce((s, i) => s + i.days_used, 0);
+            const allocated = items.reduce((s, i) => s + i.days_used, 0);
             if (Math.round(allocated * 10) !== Math.round(totalDaysNeeded * 10)) {
-                showAlert('danger',
-                    `Tổng ngày phân bổ (${allocated}) chưa khớp với số ngày nghỉ (${totalDaysNeeded})`);
+                showAlert('danger', `Tổng ngày phân bổ (${allocated}) chưa khớp với số ngày nghỉ (${totalDaysNeeded})`);
                 return;
             }
 
@@ -520,16 +698,13 @@
                 end_date: end,
                 total_days: totalDaysNeeded,
                 reason: reason,
-                items: selectedItems.map(i => ({
+                items: items.map(i => ({
                     leave_type_id: i.leave_type_id,
                     days_used: i.days_used
                 }))
             };
 
-            // Backward compatible: nếu chỉ 1 loại thì gửi thêm leave_type_id
-            if (selectedItems.length === 1) {
-                body.leave_type_id = selectedItems[0].leave_type_id;
-            }
+            if (items.length === 1) body.leave_type_id = items[0].leave_type_id;
 
             const btn = document.getElementById('btn-submit');
             btn.disabled = true;
@@ -553,16 +728,24 @@
         // ================================================================
         function resetForm() {
             selectedItems = [];
+            manualItems = [];
             totalDaysNeeded = 0;
+            currentMode = 'auto';
+
+            document.getElementById('leave-mode-section').style.display = 'none';
             document.getElementById('leave-items-container').innerHTML = '';
+            document.getElementById('manual-items-container').innerHTML = '';
             document.getElementById('totalDaysDisplay').innerText = '--';
             document.getElementById('remainingDays').innerText = '-- / --';
             document.getElementById('afterDays').innerText = '-- ngày';
+
+            // Reset tab về auto
+            switchMode('auto');
             hideAlert();
         }
 
         // ================================================================
-        // Helpers alert
+        // Alert helpers
         // ================================================================
         function showAlert(type, msg) {
             const el = document.getElementById('alert-box');
@@ -579,11 +762,9 @@
         // ================================================================
         // Khởi chạy
         // ================================================================
-        // Giới hạn ngày tối đa = hôm nay + 1 năm, tối thiểu = hôm nay
         const today = new Date();
         const maxDate = new Date(today);
         maxDate.setFullYear(today.getFullYear() + 1);
-
         const fmt = d => d.toISOString().split('T')[0];
 
         document.getElementById('startDate').min = fmt(today);
@@ -591,16 +772,14 @@
         document.getElementById('endDate').min = fmt(today);
         document.getElementById('endDate').max = fmt(maxDate);
 
-        // Khi chọn startDate thì cập nhật min của endDate
         document.getElementById('startDate').addEventListener('change', function () {
             document.getElementById('endDate').min = this.value;
-            document.getElementById('endDate').value = this.value; // mặc định end = start
+            document.getElementById('endDate').value = this.value;
             onDateChange();
         });
 
         loadBalanceSidebar();
         loadApprover();
-
     </script>
 </body>
 

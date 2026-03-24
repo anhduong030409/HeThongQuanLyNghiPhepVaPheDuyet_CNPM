@@ -357,7 +357,7 @@
     </div>
 
     <script>
-        const currentUser = checkRole(['admin', 'hr', 'manager', 'employee']);
+        const currentUser = checkRole(['director','admin', 'hr', 'manager', 'employee']);
         if (!currentUser) throw new Error('Khong co quyen');
 
         let currentRequestId = null;
