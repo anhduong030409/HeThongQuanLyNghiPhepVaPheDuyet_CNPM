@@ -315,7 +315,7 @@
     <!--! ================================================================ !-->
     <!--! BEGIN: Theme Customizer !-->
     <!--! ================================================================ !-->
-    
+
     <!--! ================================================================ !-->
     <!--! [End] Theme Customizer !-->
     <!--! ================================================================ !-->
@@ -335,7 +335,7 @@
     <script src="assets/js/dashboard-init.min.js"></script>
     <!--! END: Apps Init !-->
     <!--! BEGIN: Theme Customizer  !-->
-    
+
     <!--! END: Theme Customizer !-->
     <!-- Modal xem chi tiết -->
     <div class="modal fade" id="modalDetail" tabindex="-1">
@@ -357,7 +357,7 @@
     </div>
 
     <script>
-        const currentUser = checkRole(['director','admin', 'hr', 'manager', 'employee']);
+        const currentUser = checkRole(['director', 'admin', 'hr', 'manager', 'employee']);
         if (!currentUser) throw new Error('Khong co quyen');
 
         let currentRequestId = null;
@@ -467,6 +467,38 @@
             <div class="fs-12 text-muted">Ngày gửi</div>
             <div>${formatDate(r.submitted_at)}</div>
         </div>
+
+        <div class="col-12">
+            <div class="fs-12 text-muted mb-1">Tệp đính kèm</div>
+            ${r.document_url
+                    ? `<a href="http://localhost:82/HeThongQuanLyNghiPhepVaPheDuyet_CNPM/backend/${r.document_url}"
+                      target="_blank"
+                      class="btn btn-sm btn-outline-primary">
+                        <i class="feather-paperclip me-1"></i>Xem file đính kèm
+                   </a>`
+                    : '<span class="text-muted fs-13">Không có tệp đính kèm</span>'}
+        </div>
+
+        ${r.is_combined && r.items && r.items.length > 0 ? `
+        <div class="col-12">
+            <div class="fs-12 text-muted mb-1">Chi tiết loại phép</div>
+            <table class="table table-sm table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="fs-12">Loại phép</th>
+                        <th class="fs-12 text-end">Số ngày</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${r.items.map(i => `
+                    <tr>
+                        <td class="fs-13">${i.leave_type_name}</td>
+                        <td class="fs-13 text-end">${i.days_used} ngày</td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+        </div>` : ''}
+
     </div>`;
 
             new bootstrap.Modal(document.getElementById('modalDetail')).show();

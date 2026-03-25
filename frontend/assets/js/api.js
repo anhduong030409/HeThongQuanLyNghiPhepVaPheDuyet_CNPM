@@ -2,13 +2,13 @@ const API_URL = "http://localhost:82/HeThongQuanLyNghiPhepVaPheDuyet_CNPM/backen
 
 // ===== TOKEN =====
 function saveToken(token) { localStorage.setItem("token", token); }
-function getToken()       { return localStorage.getItem("token"); }
-function removeToken()    { localStorage.removeItem("token"); }
+function getToken() { return localStorage.getItem("token"); }
+function removeToken() { localStorage.removeItem("token"); }
 
 // ===== USER =====
-function saveUser(user)   { localStorage.setItem("user", JSON.stringify(user)); }
-function getUser()        { return JSON.parse(localStorage.getItem("user")); }
-function removeUser()     { localStorage.removeItem("user"); }
+function saveUser(user) { localStorage.setItem("user", JSON.stringify(user)); }
+function getUser() { return JSON.parse(localStorage.getItem("user")); }
+function removeUser() { localStorage.removeItem("user"); }
 
 // ===== AUTH =====
 function checkLogin() {
@@ -36,13 +36,31 @@ async function callAPI(endpoint, method = "GET", body = null) {
     const options = {
         method: method,
         headers: {
-            "Content-Type":  "application/json",
+            "Content-Type": "application/json",
             "Authorization": "Bearer " + (getToken() || "")
         }
     };
     if (body) options.body = JSON.stringify(body);
     try {
-        const res  = await fetch(`${API_URL}/${endpoint}`, options);
+        const res = await fetch(`${API_URL}/${endpoint}`, options);
+        const data = await res.json();
+        if (res.status === 401) { logout(); return null; }
+        return data;
+    } catch (error) {
+        return { status: "error", message: "Loi ket noi server" };
+    }
+}
+
+
+// ===== CALL API VỚI FILE =====
+async function callAPIFile(endpoint, formData) {
+    try {
+        const res = await fetch(`${API_URL}/${endpoint}`, {
+            method: "POST",
+            headers: { "Authorization": "Bearer " + (getToken() || "") },
+            // KHÔNG set Content-Type — browser tự set multipart/form-data
+            body: formData
+        });
         const data = await res.json();
         if (res.status === 401) { logout(); return null; }
         return data;
@@ -70,7 +88,7 @@ async function loadNotifications() {
 
     const badge = document.getElementById("notif-badge");
     if (badge) {
-        badge.innerText     = res.unread_count;
+        badge.innerText = res.unread_count;
         badge.style.display = res.unread_count > 0 ? "inline" : "none";
     }
 

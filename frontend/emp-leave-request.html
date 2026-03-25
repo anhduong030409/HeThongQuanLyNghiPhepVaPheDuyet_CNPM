@@ -679,9 +679,7 @@
                 return;
             }
 
-            // Lấy items theo chế độ đang dùng
             const items = currentMode === 'auto' ? selectedItems : manualItems;
-
             if (items.length === 0) {
                 showAlert('danger', 'Vui lòng phân bổ ít nhất 1 loại phép');
                 return;
@@ -693,24 +691,30 @@
                 return;
             }
 
-            const body = {
-                start_date: start,
-                end_date: end,
-                total_days: totalDaysNeeded,
-                reason: reason,
-                items: items.map(i => ({
-                    leave_type_id: i.leave_type_id,
-                    days_used: i.days_used
-                }))
-            };
-
-            if (items.length === 1) body.leave_type_id = items[0].leave_type_id;
-
             const btn = document.getElementById('btn-submit');
             btn.disabled = true;
             btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang gửi...';
 
-            const res = await callAPI('leave/request.php', 'POST', body);
+            // Dùng FormData để gửi kèm file
+            const formData = new FormData();
+            formData.append('start_date', start);
+            formData.append('end_date', end);
+            formData.append('total_days', totalDaysNeeded);
+            formData.append('reason', reason);
+            formData.append('items', JSON.stringify(items.map(i => ({
+                leave_type_id: i.leave_type_id,
+                days_used: i.days_used
+            }))));
+
+            if (items.length === 1) formData.append('leave_type_id', items[0].leave_type_id);
+
+            // Thêm file nếu có
+            const fileInput = document.querySelector('input[type="file"]');
+            if (fileInput && fileInput.files[0]) {
+                formData.append('attachment', fileInput.files[0]);
+            }
+
+            const res = await callAPIFile('leave/request.php', formData);
 
             btn.disabled = false;
             btn.innerHTML = '<i class="feather-send me-2"></i>Gửi đơn ngay';

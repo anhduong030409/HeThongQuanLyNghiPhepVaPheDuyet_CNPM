@@ -28,11 +28,8 @@
                 <div class="page-header-right ms-auto">
                     <div class="d-flex align-items-center gap-2">
                         <select class="form-select form-select-sm" id="statusFilter" onchange="loadRequests()"
-                            style="width:160px">
-                            <option value="pending">Chờ duyệt</option>
-                            <option value="approved">Đã duyệt</option>
-                            <option value="rejected">Đã từ chối</option>
-                            <option value="">Tất cả</option>
+                            style="width:180px">
+                            <!-- Options sẽ được render theo role trong JS -->
                         </select>
                     </div>
                 </div>
@@ -54,13 +51,13 @@
                                                 <th>Thời gian</th>
                                                 <th>Ngày nghỉ</th>
                                                 <th>Lý do</th>
+                                                <th>Trạng thái</th>
                                                 <th class="text-center">Thao tác</th>
                                             </tr>
                                         </thead>
-                                        <!-- TBODY TRỐNG — JS sẽ render vào đây -->
                                         <tbody id="request-tbody">
                                             <tr>
-                                                <td colspan="8" class="text-center text-muted py-4">
+                                                <td colspan="9" class="text-center text-muted py-4">
                                                     <span class="spinner-border spinner-border-sm me-2"></span>
                                                     Đang tải...
                                                 </td>
@@ -75,8 +72,6 @@
             </div>
         </div>
     </main>
-
-    
 
     <!-- Modal từ chối -->
     <div class="modal fade" id="modalReject" tabindex="-1">
@@ -101,7 +96,7 @@
         </div>
     </div>
 
-    <!-- Modal chi tiết đơn ghép phép -->
+    <!-- Modal chi tiết đơn ghép -->
     <div class="modal fade" id="modalDetail" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -109,8 +104,7 @@
                     <h5 class="modal-title">Chi tiết phân bổ phép</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body" id="modalDetailBody">
-                </div>
+                <div class="modal-body" id="modalDetailBody"></div>
             </div>
         </div>
     </div>
@@ -128,13 +122,44 @@
     <script src="load-layout.js"></script>
     <script src="assets/vendors/js/vendors.min.js"></script>
     <script src="assets/js/common-init.min.js"></script>
-    
 
     <script>
         const currentUser = checkRole(['admin', 'director', 'hr', 'manager']);
         if (!currentUser) throw new Error('Khong co quyen');
 
+        const isHrLevel = ['hr', 'admin', 'director'].includes(currentUser.role);
         let rejectingId = null;
+
+        // ================================================================
+        // Render filter options theo role
+        // ================================================================
+        function initFilter() {
+            const filter = document.getElementById('statusFilter');
+
+            // Status mặc định: manager thấy 'pending', HR thấy 'pending_hr'
+            const defaultStatus = isHrLevel ? 'pending_hr' : 'pending';
+
+            const options = isHrLevel
+                ? [
+                    { value: 'pending_hr', label: 'Chờ HR duyệt' },
+                    { value: 'approved', label: 'Đã duyệt' },
+                    { value: 'rejected', label: 'Đã từ chối' },
+                    { value: 'pending', label: 'Chờ Manager duyệt' },
+                    { value: '', label: 'Tất cả' },
+                ]
+                : [
+                    { value: 'pending', label: 'Chờ duyệt' },
+                    { value: 'approved', label: 'Đã duyệt' },
+                    { value: 'rejected', label: 'Đã từ chối' },
+                    { value: '', label: 'Tất cả' },
+                ];
+
+            filter.innerHTML = options.map(o =>
+                `<option value="${o.value}" ${o.value === defaultStatus ? 'selected' : ''}>
+                    ${o.label}
+                </option>`
+            ).join('');
+        }
 
         // ================================================================
         // Helpers
@@ -157,22 +182,33 @@
         function statusBadge(status) {
             const map = {
                 pending: 'bg-soft-warning text-warning',
+                pending_hr: 'bg-soft-info text-info',
                 approved: 'bg-soft-success text-success',
                 rejected: 'bg-soft-danger text-danger',
                 cancelled: 'bg-soft-secondary text-secondary',
             };
             const label = {
-                pending: 'Chờ duyệt', approved: 'Đã duyệt',
-                rejected: 'Từ chối', cancelled: 'Đã hủy'
+                pending: 'Chờ Manager duyệt',
+                pending_hr: 'Chờ HR duyệt',
+                approved: 'Đã duyệt',
+                rejected: 'Từ chối',
+                cancelled: 'Đã hủy',
             };
             return `<span class="badge ${map[status] || ''}">${label[status] || status}</span>`;
         }
 
         // ================================================================
-        // Render cột "Loại phép" — xử lý cả đơn 1 loại lẫn đơn ghép
+        // Kiểm tra có được duyệt đơn này không
+        // ================================================================
+        function canApprove(r) {
+            if (isHrLevel) return r.status === 'pending_hr';
+            return r.status === 'pending';
+        }
+
+        // ================================================================
+        // Render cột Loại phép
         // ================================================================
         function renderLeaveTypeCell(r) {
-            // Đơn ghép: is_combined = true, có mảng items
             if (r.is_combined && r.items && r.items.length > 0) {
                 const summary = r.items
                     .map(i => `${i.leave_type_name} (${i.days_used}n)`)
@@ -184,7 +220,6 @@
                         Xem chi tiết
                     </a>`;
             }
-            // Đơn thường: 1 loại phép
             return `<span class="badge bg-soft-info text-info">${r.leave_type_name || '---'}</span>`;
         }
 
@@ -192,7 +227,7 @@
         // Modal chi tiết đơn ghép
         // ================================================================
         function showDetail(requestId, items) {
-            let rows = items.map((item, i) => `
+            const rows = items.map((item, i) => `
                 <tr>
                     <td>${i + 1}</td>
                     <td>${item.leave_type_name}</td>
@@ -216,29 +251,29 @@
         }
 
         // ================================================================
-        // Load danh sách đơn
+        // Load danh sách đơn — gọi approve.php (có GET handler)
         // ================================================================
         async function loadRequests() {
             const status = document.getElementById('statusFilter').value;
             const tbody = document.getElementById('request-tbody');
 
-            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">
+            tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-4">
                 <span class="spinner-border spinner-border-sm me-2"></span>Đang tải...</td></tr>`;
 
             const endpoint = status
-                ? `leave/request.php?status=${status}`
-                : 'leave/request.php';
+                ? `leave/approve.php?status=${status}`
+                : 'leave/approve.php';
 
             const json = await callAPI(endpoint);
 
             if (!json || json.status !== 'success') {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">
                     Lỗi tải dữ liệu</td></tr>`;
                 return;
             }
 
             if (json.data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-4">
                     Không có đơn nào</td></tr>`;
                 return;
             }
@@ -248,29 +283,28 @@
                     ? formatDate(r.start_date)
                     : `${formatDate(r.start_date)} – ${formatDate(r.end_date)}`;
 
-                const isPending = r.status === 'pending';
+                const actionBtns = canApprove(r) ? `
+                    <div class="hstack gap-2 justify-content-center">
+                        <button class="btn btn-sm btn-success" onclick="approve(${r.id})">
+                            <i class="feather-check me-1"></i>Duyệt
+                        </button>
+                        <button class="btn btn-sm btn-warning text-white"
+                            onclick="openReject(${r.id})">
+                            <i class="feather-x me-1"></i>Từ chối
+                        </button>
+                    </div>` : '---';
 
                 return `
                 <tr>
                     <td class="text-center">${i + 1}</td>
-                    <td class="fw-bold text-dark">${r.full_name || currentUser.full_name}</td>
+                    <td class="fw-bold text-dark">${r.full_name || '---'}</td>
                     <td class="text-muted fs-13">${r.email || ''}</td>
                     <td>${renderLeaveTypeCell(r)}</td>
                     <td><span class="badge bg-soft-info text-info">${r.total_days} ngày</span></td>
                     <td class="fs-13">${dateRange}</td>
-                    <td class="fs-13">${r.reason}</td>
-                    <td class="text-center">
-                        ${isPending ? `
-                        <div class="hstack gap-2 justify-content-center">
-                            <button class="btn btn-sm btn-success" onclick="approve(${r.id})">
-                                Duyệt
-                            </button>
-                            <button class="btn btn-sm btn-warning text-white"
-                                onclick="openReject(${r.id})">
-                                Từ chối
-                            </button>
-                        </div>` : statusBadge(r.status)}
-                    </td>
+                    <td class="fs-13">${r.reason || '---'}</td>
+                    <td>${statusBadge(r.status)}</td>
+                    <td class="text-center">${actionBtns}</td>
                 </tr>`;
             }).join('');
         }
@@ -279,14 +313,14 @@
         // Duyệt đơn
         // ================================================================
         async function approve(id) {
-            if (!confirm('Duyệt đơn nghỉ phép này?')) return;
+            if (!confirm('Xác nhận duyệt đơn nghỉ phép này?')) return;
             const res = await callAPI('leave/approve.php', 'POST', {
                 request_id: id,
                 decision: 'approved',
                 comment: ''
             });
-            if (res && res.status === 'success') {
-                showToast('Đã duyệt đơn!', 'success');
+            if (res?.status === 'success') {
+                showToast(res.message || 'Đã duyệt đơn!', 'success');
                 loadRequests();
             } else {
                 showToast(res?.message || 'Có lỗi xảy ra', 'error');
@@ -313,7 +347,7 @@
                 decision: 'rejected',
                 comment: comment
             });
-            if (res && res.status === 'success') {
+            if (res?.status === 'success') {
                 bootstrap.Modal.getInstance(document.getElementById('modalReject')).hide();
                 showToast('Đã từ chối đơn!', 'success');
                 loadRequests();
@@ -322,7 +356,10 @@
             }
         }
 
+        // ================================================================
         // Khởi chạy
+        // ================================================================
+        initFilter();
         loadRequests();
     </script>
 </body>
