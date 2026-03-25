@@ -51,8 +51,8 @@
     <!--! ================================================================ !-->
     <!--! [Start] Main Content !-->
     <!--! ================================================================ !-->
-    <main class="nxl-container">
-        <div class="nxl-content">
+    <main class="nxl-container apps-container d-flex flex-column" style="min-height: calc(100vh - 80px);">
+        <div class="nxl-content flex-grow-1">
             <!-- [ page-header ] start -->
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
@@ -77,39 +77,46 @@
                                 <span class="reportrange-picker-field"></span>
                             </div>
                             <div class="dropdown filter-dropdown">
-                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10" data-bs-auto-close="outside">
+                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10"
+                                    data-bs-auto-close="outside">
                                     <i class="feather-filter me-2"></i>
                                     <span>Filter</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Role" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Role"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Role">Role</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Team" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Team"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Team">Team</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Email" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Email"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Email">Email</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Member" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Member"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Member">Member</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Recommendation" checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Recommendation">Recommendation</label>
+                                            <input type="checkbox" class="custom-control-input" id="Recommendation"
+                                                checked="checked" />
+                                            <label class="custom-control-label c-pointer"
+                                                for="Recommendation">Recommendation</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-divider"></div>
@@ -137,115 +144,102 @@
             <div class="main-content">
                 <div class="row">
 
-    <div class="col-12">
-        <div class="card">
+                    <div class="col-12">
+                        <div class="card">
 
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5>Quản lý phân quyền hệ thống</h5>
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>Quản lý phân quyền hệ thống</h5>
 
-                <button class="btn btn-primary">
-                    <i class="feather-save me-2"></i>
-                    Lưu thay đổi
-                </button>
-            </div>
+                                <button class="btn btn-primary">
+                                    <i class="feather-save me-2"></i>
+                                    Lưu thay đổi
+                                </button>
+                            </div>
 
-            <div class="card-body">
+                            <div class="card-body">
 
-                <div class="table-responsive">
+                                <div class="table-responsive">
 
-                    <table class="table table-bordered align-middle text-center">
+                                    <table class="table table-bordered align-middle text-center">
 
-                        <thead class="table-light">
-                            <tr>
-                                <th class="text-start">Chức năng hệ thống</th>
-                                <th>Admin</th>
-                                <th>Nhân sự (HR)</th>
-                                <th>Quản lý (Manager)</th>
-                                <th>Nhân viên (Employee)</th>
-                            </tr>
-                        </thead>
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="text-start">Chức năng hệ thống</th>
+                                                <th>Admin</th>
+                                                <th>Nhân sự (HR)</th>
+                                                <th>Quản lý (Manager)</th>
+                                                <th>Nhân viên (Employee)</th>
+                                            </tr>
+                                        </thead>
 
-                        <tbody>
+                                        <tbody>
 
-                            <tr>
-                                <td class="text-start">Xem bảng điều khiển</td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                            </tr>
+                                            <tr>
+                                                <td class="text-start">Xem bảng điều khiển</td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                            </tr>
 
-                            <tr>
-                                <td class="text-start">Quản lý người dùng</td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox"></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
+                                            <tr>
+                                                <td class="text-start">Quản lý người dùng</td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox"></td>
+                                                <td><input type="checkbox"></td>
+                                            </tr>
 
-                            <tr>
-                                <td class="text-start">Quản lý hồ sơ nhân viên</td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
+                                            <tr>
+                                                <td class="text-start">Quản lý hồ sơ nhân viên</td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox"></td>
+                                            </tr>
 
-                            <tr>
-                                <td class="text-start">Phê duyệt đơn nghỉ phép</td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
+                                            <tr>
+                                                <td class="text-start">Phê duyệt đơn nghỉ phép</td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox"></td>
+                                            </tr>
 
-                            <tr>
-                                <td class="text-start">Gửi yêu cầu nghỉ phép</td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                            </tr>
+                                            <tr>
+                                                <td class="text-start">Gửi yêu cầu nghỉ phép</td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                            </tr>
 
-                            <tr>
-                                <td class="text-start">Xem báo cáo</td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox" checked></td>
-                                <td><input type="checkbox"></td>
-                            </tr>
+                                            <tr>
+                                                <td class="text-start">Xem báo cáo</td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox" checked></td>
+                                                <td><input type="checkbox"></td>
+                                            </tr>
 
-                        </tbody>
+                                        </tbody>
 
-                    </table>
+                                    </table>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
 
                 </div>
 
             </div>
-
-        </div>
-    </div>
-
-</div>
-                
-                </div>  
             <!-- [ Main Content ] end -->
         </div>
         <!-- [ Footer ] start -->
-        <footer class="footer">
-            <p class="fs-11 text-muted fw-medium text-uppercase mb-0 copyright">
-                <span>Copyright ©</span>
-                <script>
-                    document.write(new Date().getFullYear());
-                </script>
-            </p>
-            <p><span>By: <a target="_blank" href="https://wrapbootstrap.com/user/theme_ocean" target="_blank">theme_ocean</a></span> • <span>Distributed by: <a target="_blank" href="https://themewagon.com" target="_blank">ThemeWagon</a></span></p>
-            <div class="d-flex align-items-center gap-4">
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Help</a>
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Terms</a>
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Privacy</a>
-            </div>
-        </footer>
+        <div id="footer"></div>
         <!-- [ Footer ] end -->
     </main>
     <!--! ================================================================ !-->
@@ -254,7 +248,7 @@
     <!--! ================================================================ !-->
     <!--! BEGIN: Theme Customizer !-->
     <!--! ================================================================ !-->
-    
+
     <!--! ================================================================ !-->
     <!--! [End] Theme Customizer !-->
     <!--! ================================================================ !-->
@@ -274,7 +268,7 @@
     <script src="assets/js/dashboard-init.min.js"></script>
     <!--! END: Apps Init !-->
     <!--! BEGIN: Theme Customizer  !-->
-    
+
     <!--! END: Theme Customizer !-->
 </body>
 

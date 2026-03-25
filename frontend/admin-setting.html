@@ -51,8 +51,8 @@
     <!--! ================================================================ !-->
     <!--! [Start] Main Content !-->
     <!--! ================================================================ !-->
-    <main class="nxl-container">
-        <div class="nxl-content">
+    <main class="nxl-container apps-container d-flex flex-column" style="min-height: calc(100vh - 80px);">
+        <div class="nxl-content flex-grow-1">
             <!-- [ page-header ] start -->
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
@@ -77,39 +77,46 @@
                                 <span class="reportrange-picker-field"></span>
                             </div>
                             <div class="dropdown filter-dropdown">
-                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10" data-bs-auto-close="outside">
+                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10"
+                                    data-bs-auto-close="outside">
                                     <i class="feather-filter me-2"></i>
                                     <span>Filter</span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Role" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Role"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Role">Role</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Team" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Team"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Team">Team</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Email" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Email"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Email">Email</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Member" checked="checked" />
+                                            <input type="checkbox" class="custom-control-input" id="Member"
+                                                checked="checked" />
                                             <label class="custom-control-label c-pointer" for="Member">Member</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-item">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Recommendation" checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Recommendation">Recommendation</label>
+                                            <input type="checkbox" class="custom-control-input" id="Recommendation"
+                                                checked="checked" />
+                                            <label class="custom-control-label c-pointer"
+                                                for="Recommendation">Recommendation</label>
                                         </div>
                                     </div>
                                     <div class="dropdown-divider"></div>
@@ -137,159 +144,146 @@
             <div class="main-content">
                 <div class="row">
 
-    <!-- Cấu hình chung -->
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h5>Cấu hình chung hệ thống</h5>
+                    <!-- Cấu hình chung -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Cấu hình chung hệ thống</h5>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Tên hệ thống</label>
+                                    <input type="text" class="form-control" value="Hệ thống quản lý nhân sự">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Email quản trị</label>
+                                    <input type="email" class="form-control" value="admin@company.com">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Ngôn ngữ mặc định</label>
+                                    <select class="form-select">
+                                        <option>Tiếng Việt</option>
+                                        <option>English</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Múi giờ hệ thống</label>
+                                    <select class="form-select">
+                                        <option>GMT +7 (Việt Nam)</option>
+                                        <option>GMT +8</option>
+                                        <option>GMT +9</option>
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Cấu hình bảo mật -->
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Cấu hình bảo mật</h5>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Bật xác thực 2 lớp (2FA)</label>
+                                </div>
+
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" checked>
+                                    <label class="form-check-label">Yêu cầu đổi mật khẩu định kỳ</label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Thời gian phiên đăng nhập (phút)</label>
+                                    <input type="number" class="form-control" value="30">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Cấu hình vai trò -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Cấu hình vai trò hệ thống</h5>
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered align-middle text-center">
+
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Vai trò</th>
+                                                <th>Mô tả</th>
+                                                <th>Trạng thái</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+
+                                            <tr>
+                                                <td><span class="badge bg-danger">Admin</span></td>
+                                                <td>Quản trị toàn bộ hệ thống</td>
+                                                <td><span class="badge bg-success">Đang hoạt động</span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><span class="badge bg-info">HR</span></td>
+                                                <td>Quản lý hồ sơ và thông tin nhân sự</td>
+                                                <td><span class="badge bg-success">Đang hoạt động</span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><span class="badge bg-warning text-dark">Manager</span></td>
+                                                <td>Quản lý nhân viên trong bộ phận</td>
+                                                <td><span class="badge bg-success">Đang hoạt động</span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><span class="badge bg-secondary">Employee</span></td>
+                                                <td>Nhân viên sử dụng hệ thống</td>
+                                                <td><span class="badge bg-success">Đang hoạt động</span></td>
+                                            </tr>
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Nút lưu -->
+                    <div class="col-12">
+                        <div class="text-end mt-3">
+                            <button class="btn btn-primary">
+                                <i class="feather-save me-2"></i>
+                                Lưu cấu hình
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            <div class="card-body">
-
-                <div class="mb-3">
-                    <label class="form-label">Tên hệ thống</label>
-                    <input type="text" class="form-control" value="Hệ thống quản lý nhân sự">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Email quản trị</label>
-                    <input type="email" class="form-control" value="admin@company.com">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Ngôn ngữ mặc định</label>
-                    <select class="form-select">
-                        <option>Tiếng Việt</option>
-                        <option>English</option>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Múi giờ hệ thống</label>
-                    <select class="form-select">
-                        <option>GMT +7 (Việt Nam)</option>
-                        <option>GMT +8</option>
-                        <option>GMT +9</option>
-                    </select>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Cấu hình bảo mật -->
-    <div class="col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h5>Cấu hình bảo mật</h5>
-            </div>
-            <div class="card-body">
-
-                <div class="form-check form-switch mb-3">
-                    <input class="form-check-input" type="checkbox" checked>
-                    <label class="form-check-label">Bật xác thực 2 lớp (2FA)</label>
-                </div>
-
-                <div class="form-check form-switch mb-3">
-                    <input class="form-check-input" type="checkbox" checked>
-                    <label class="form-check-label">Yêu cầu đổi mật khẩu định kỳ</label>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Thời gian phiên đăng nhập (phút)</label>
-                    <input type="number" class="form-control" value="30">
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Cấu hình vai trò -->
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h5>Cấu hình vai trò hệ thống</h5>
-            </div>
-
-            <div class="card-body">
-
-                <div class="table-responsive">
-                    <table class="table table-bordered align-middle text-center">
-
-                        <thead class="table-light">
-                            <tr>
-                                <th>Vai trò</th>
-                                <th>Mô tả</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-                                <td><span class="badge bg-danger">Admin</span></td>
-                                <td>Quản trị toàn bộ hệ thống</td>
-                                <td><span class="badge bg-success">Đang hoạt động</span></td>
-                            </tr>
-
-                            <tr>
-                                <td><span class="badge bg-info">HR</span></td>
-                                <td>Quản lý hồ sơ và thông tin nhân sự</td>
-                                <td><span class="badge bg-success">Đang hoạt động</span></td>
-                            </tr>
-
-                            <tr>
-                                <td><span class="badge bg-warning text-dark">Manager</span></td>
-                                <td>Quản lý nhân viên trong bộ phận</td>
-                                <td><span class="badge bg-success">Đang hoạt động</span></td>
-                            </tr>
-
-                            <tr>
-                                <td><span class="badge bg-secondary">Employee</span></td>
-                                <td>Nhân viên sử dụng hệ thống</td>
-                                <td><span class="badge bg-success">Đang hoạt động</span></td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Nút lưu -->
-    <div class="col-12">
-        <div class="text-end mt-3">
-            <button class="btn btn-primary">
-                <i class="feather-save me-2"></i>
-                Lưu cấu hình
-            </button>
-        </div>
-    </div>
-
-</div>
-                </div>  
             <!-- [ Main Content ] end -->
         </div>
         <!-- [ Footer ] start -->
-        <footer class="footer">
-            <p class="fs-11 text-muted fw-medium text-uppercase mb-0 copyright">
-                <span>Copyright ©</span>
-                <script>
-                    document.write(new Date().getFullYear());
-                </script>
-            </p>
-            <p><span>By: <a target="_blank" href="https://wrapbootstrap.com/user/theme_ocean" target="_blank">theme_ocean</a></span> • <span>Distributed by: <a target="_blank" href="https://themewagon.com" target="_blank">ThemeWagon</a></span></p>
-            <div class="d-flex align-items-center gap-4">
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Help</a>
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Terms</a>
-                <a href="javascript:void(0);" class="fs-11 fw-semibold text-uppercase">Privacy</a>
-            </div>
-        </footer>
+        <div id="footer"></div>
         <!-- [ Footer ] end -->
     </main>
     <!--! ================================================================ !-->
@@ -298,7 +292,7 @@
     <!--! ================================================================ !-->
     <!--! BEGIN: Theme Customizer !-->
     <!--! ================================================================ !-->
-    
+
     <!--! ================================================================ !-->
     <!--! [End] Theme Customizer !-->
     <!--! ================================================================ !-->
@@ -318,7 +312,7 @@
     <script src="assets/js/dashboard-init.min.js"></script>
     <!--! END: Apps Init !-->
     <!--! BEGIN: Theme Customizer  !-->
-    
+
     <!--! END: Theme Customizer !-->
 </body>
 

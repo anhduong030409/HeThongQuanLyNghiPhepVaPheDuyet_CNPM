@@ -17,8 +17,8 @@
     <div id="navigation"></div>
     <div id="header"></div>
 
-    <main class="nxl-container apps-container">
-        <div class="nxl-content">
+    <main class="nxl-container apps-container d-flex flex-column" style="min-height: calc(100vh - 80px);">
+        <div class="nxl-content flex-grow-1">
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
                     <div class="page-header-title">
@@ -71,6 +71,9 @@
                 </div>
             </div>
         </div>
+
+
+        <div id="footer"></div>
     </main>
 
     <!-- Modal từ chối -->
@@ -121,43 +124,58 @@
 
     <script src="load-layout.js"></script>
     <script src="assets/vendors/js/vendors.min.js"></script>
-    <script src="assets/js/common-init.min.js"></script>
 
     <script>
         const currentUser = checkRole(['admin', 'director', 'hr', 'manager']);
         if (!currentUser) throw new Error('Khong co quyen');
 
-        const isHrLevel = ['hr', 'admin', 'director'].includes(currentUser.role);
+        const isHrLevel = ['hr'].includes(currentUser.role);
+        const isDirector = currentUser.role === 'director';
         let rejectingId = null;
 
         // ================================================================
         // Render filter options theo role
         // ================================================================
+        // Sửa initFilter
         function initFilter() {
             const filter = document.getElementById('statusFilter');
 
-            // Status mặc định: manager thấy 'pending', HR thấy 'pending_hr'
-            const defaultStatus = isHrLevel ? 'pending_hr' : 'pending';
+            let defaultStatus, options;
 
-            const options = isHrLevel
-                ? [
+            if (isHrLevel) {
+                // HR: duyệt pending_hr của employee
+                defaultStatus = 'pending_hr';
+                options = [
                     { value: 'pending_hr', label: 'Chờ HR duyệt' },
                     { value: 'approved', label: 'Đã duyệt' },
                     { value: 'rejected', label: 'Đã từ chối' },
-                    { value: 'pending', label: 'Chờ Manager duyệt' },
                     { value: '', label: 'Tất cả' },
-                ]
-                : [
+                ];
+            } else if (isDirector) {
+                // Director: duyệt pending của manager/hr/admin VÀ pending_hr của admin/IT
+                defaultStatus = 'pending';
+                options = [
+                    { value: 'pending', label: 'Chờ Director duyệt' },
+                    { value: 'pending_hr', label: 'Chờ duyệt hành chính (Admin/IT)' },
+                    { value: 'approved', label: 'Đã duyệt' },
+                    { value: 'rejected', label: 'Đã từ chối' },
+                    { value: '', label: 'Tất cả' },
+                ];
+            } else {
+                // Manager: duyệt pending của employee
+                defaultStatus = 'pending';
+                options = [
                     { value: 'pending', label: 'Chờ duyệt' },
                     { value: 'approved', label: 'Đã duyệt' },
                     { value: 'rejected', label: 'Đã từ chối' },
                     { value: '', label: 'Tất cả' },
                 ];
+            }
 
             filter.innerHTML = options.map(o =>
                 `<option value="${o.value}" ${o.value === defaultStatus ? 'selected' : ''}>
-                    ${o.label}
-                </option>`
+            ${o.label}
+        </option>`
             ).join('');
         }
 
@@ -202,7 +220,8 @@
         // ================================================================
         function canApprove(r) {
             if (isHrLevel) return r.status === 'pending_hr';
-            return r.status === 'pending';
+            if (isDirector) return r.status === 'pending' || r.status === 'pending_hr';
+            return r.status === 'pending'; // manager
         }
 
         // ================================================================

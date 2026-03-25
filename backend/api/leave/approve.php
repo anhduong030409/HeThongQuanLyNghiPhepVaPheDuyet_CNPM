@@ -3,7 +3,7 @@ require_once '../../config/cors.php';
 require_once '../../config/database.php';
 require_once '../../config/auth.php';
 
-$payload = requireRole(['admin', 'director', 'hr', 'manager']);
+$payload = requireRole(['director', 'hr', 'manager']);
 $method = $_SERVER['REQUEST_METHOD'];
 
 // ================================================================
@@ -13,7 +13,7 @@ if ($method === 'GET') {
     $role = $payload['role'];
     $status = $_GET['status'] ?? null;
 
-    if (in_array($role, ['hr', 'admin', 'director'])) {
+    if (in_array($role, ['hr', 'director'])) {
         $filter_status = $status ?? 'pending_hr';
         $sql = "SELECT r.*,
                        t.name       as leave_type_name,
@@ -95,27 +95,60 @@ if ($method === 'POST') {
     }
 
     // Xác định status đơn phải có để role này được duyệt
-    $expected_status = in_array($role, ['hr', 'admin', 'director']) ? 'pending_hr' : 'pending';
-
-    $stmt_get = mysqli_prepare(
-        $conn,
-        "SELECT r.*, u.manager_id
+    // Xác định expected_status theo role VÀ thực tế đơn
+    if ($role === 'director') {
+        // Director có thể duyệt cả pending (cấp 1) lẫn pending_hr (cấp 2)
+        // Lấy đơn không filter status, kiểm tra sau
+        $stmt_get = mysqli_prepare(
+            $conn,
+            "SELECT r.*, u.manager_id
          FROM leave_requests r
          JOIN users u ON u.id = r.user_id
-         WHERE r.id = ? AND r.status = ?"
-    );
-    mysqli_stmt_bind_param($stmt_get, "is", $request_id, $expected_status);
+         WHERE r.id = ? AND r.status IN ('pending', 'pending_hr')"
+        );
+        mysqli_stmt_bind_param($stmt_get, "i", $request_id);
+    } elseif (in_array($role, ['hr'])) {
+        $stmt_get = mysqli_prepare(
+            $conn,
+            "SELECT r.*, u.manager_id
+         FROM leave_requests r
+         JOIN users u ON u.id = r.user_id
+         WHERE r.id = ? AND r.status = 'pending_hr'"
+        );
+        mysqli_stmt_bind_param($stmt_get, "i", $request_id);
+    } else {
+        // manager
+        $stmt_get = mysqli_prepare(
+            $conn,
+            "SELECT r.*, u.manager_id
+         FROM leave_requests r
+         JOIN users u ON u.id = r.user_id
+         WHERE r.id = ? AND r.status = 'pending'"
+        );
+        mysqli_stmt_bind_param($stmt_get, "i", $request_id);
+    }
+
     mysqli_stmt_execute($stmt_get);
     $request = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_get));
 
     if (!$request) {
         http_response_code(400);
-        echo json_encode(["status" => "error", "message" => "Đơn không tồn tại hoặc không thuộc quyền xử lý của bạn"]);
+        echo json_encode(["status" => "error", "message" => "Đơn không tồn tại hoặc không thuộc quyền xử lý"]);
         exit;
     }
 
-    // Manager chỉ được duyệt đơn của nhân viên mình quản lý
+    // Kiểm tra quyền duyệt
     if ($role === 'manager' && $request['manager_id'] != $payload['id']) {
+        http_response_code(403);
+        echo json_encode(["status" => "error", "message" => "Bạn không có quyền duyệt đơn này"]);
+        exit;
+    }
+
+    if (
+        $role === 'director' && $request['status'] === 'pending'
+        && $request['manager_id'] != $payload['id']
+    ) {
+        // Director duyệt cấp 1 thì phải là manager trực tiếp
         http_response_code(403);
         echo json_encode(["status" => "error", "message" => "Bạn không có quyền duyệt đơn này"]);
         exit;
@@ -123,18 +156,25 @@ if ($method === 'POST') {
 
     mysqli_begin_transaction($conn);
     try {
-        // Xác định trạng thái mới
         if ($decision === 'rejected') {
             $new_status = 'rejected';
-        } elseif (in_array($role, ['hr', 'admin', 'director'])) {
-            // HR/Director duyệt cấp 2 → approved hoàn toàn
+        } elseif ($role === 'hr') {
             $new_status = 'approved';
+        } elseif ($role === 'director') {
+            if ($request['status'] === 'pending_hr') {
+                // Director duyệt cấp 2
+                $new_status = 'approved';
+            } else {
+                // Director duyệt cấp 1 (là manager trực tiếp)
+                $new_status = $request['approval_level'] == 1 ? 'approved' : 'pending_hr';
+            }
         } else {
-            // Manager duyệt cấp 1:
-            // approval_level=1 → chỉ 1 cấp → approved luôn
-            // approval_level=2 → cần 2 cấp → chuyển HR
+            // manager thường
             $new_status = $request['approval_level'] == 1 ? 'approved' : 'pending_hr';
         }
+
+        // Level log cũng cần sửa
+        $level = ($request['status'] === 'pending') ? 1 : 2;
 
         // Cập nhật status đơn
         $stmt_update = mysqli_prepare(
@@ -152,7 +192,7 @@ if ($method === 'POST') {
         }
 
         // Ghi log vào leave_approvals
-        $level = in_array($role, ['hr', 'admin', 'director']) ? 2 : 1;
+        $level = in_array($role, ['hr', 'director']) ? 2 : 1;
         $stmt_log = mysqli_prepare(
             $conn,
             "INSERT INTO leave_approvals (request_id, approver_id, approval_level, decision, comment)

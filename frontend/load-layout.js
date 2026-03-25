@@ -7,7 +7,7 @@ function loadPartial(id, file) {
 }
 
 function loadPartial(id, file) {
-    return fetch(file)  // Thêm "return" vào đây
+    return fetch(file)
         .then(r => r.text())
         .then(html => {
             document.getElementById(id).innerHTML = html;
@@ -80,5 +80,5 @@ function hideEmptyCaptions() {
 
 loadPartial('navigation', 'partials/navigation.html');
 loadPartial('header', 'partials/header.html');
-loadPartial('theme-customizer', 'partials/theme-customizer.html');
+loadPartial('footer', 'partials/footer.html');
 

@@ -52,8 +52,8 @@
     <!--! ================================================================ !-->
     <!--! [Start] Main Content !-->
     <!--! ================================================================ !-->
-    <main class="nxl-container apps-container apps-users">
-        <div class="nxl-content px-3 pt-3">
+    <main class="nxl-container apps-container d-flex flex-column" style="min-height: calc(100vh - 80px);">
+        <div class="nxl-content flex-grow-1">
             <div class="page-header d-flex align-items-center justify-content-between mb-4">
                 <div class="page-header-left">
                     <h5 class="fw-bold mb-0">Quản lý nhân sự hệ thống</h5>
@@ -95,7 +95,8 @@
                                     <i class="feather-user-check"></i>
                                 </div>
                                 <div>
-                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Đang hoạt động</small>
+                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Đang hoạt
+                                        động</small>
                                     <h4 class="fw-bold mb-0" id="stat-active">--</h4>
                                 </div>
                             </div>
@@ -125,7 +126,8 @@
                                     <i class="feather-user-plus"></i>
                                 </div>
                                 <div>
-                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Tuyển mới (tháng này)</small>
+                                    <small class="text-muted d-block fs-10 fw-bold text-uppercase">Tuyển mới (tháng
+                                        này)</small>
                                     <h4 class="fw-bold mb-0" id="stat-new">--</h4>
                                 </div>
                             </div>
@@ -169,104 +171,91 @@
                 </div>
             </div>
         </div>
+
+
+        <div id="footer"></div>
     </main>
-    <!--! ================================================================ !-->
-    <!--! [End] Main Content !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! BEGIN: Theme Customizer !-->
-    <!--! ================================================================ !-->
-    
-    <!--! ================================================================ !-->
-    <!--! [End] Theme Customizer !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! Footer Script !-->
-    <!--! ================================================================ !-->
-    <!--! BEGIN: Vendors JS !-->
 
-    
+    <script src="load-layout.js"></script>
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <!-- vendors.min.js {always must need to be top} -->
+    <script src="assets/vendors/js/time-tracker.min.js"></script>
+    <script src="assets/vendors/js/emojionearea.min.js"></script>
+    <!--! END: Vendors JS !-->
+    <!--! BEGIN: Apps Init  !-->
+    <script src="assets/js/common-init.min.js"></script>
+    <script src="assets/js/apps-chat-init.min.js"></script>
+    <!--! END: Apps Init !-->
+    <!--! END: Apps Init !-->
 
-        <script src="load-layout.js"></script>
-        <script src="assets/vendors/js/vendors.min.js"></script>
-        <!-- vendors.min.js {always must need to be top} -->
-        <script src="assets/vendors/js/time-tracker.min.js"></script>
-        <script src="assets/vendors/js/emojionearea.min.js"></script>
-        <!--! END: Vendors JS !-->
-        <!--! BEGIN: Apps Init  !-->
-        <script src="assets/js/common-init.min.js"></script>
-        <script src="assets/js/apps-chat-init.min.js"></script>
-        <!--! END: Apps Init !-->
-        <!--! END: Apps Init !-->
+    <script>
+        // 1. Phân quyền truy cập
+        const currentUser = checkRole(['admin', 'hr', 'director', 'manager']);
+        if (!currentUser) throw new Error('Không có quyền truy cập');
 
-        <script>
-            // 1. Phân quyền truy cập
-            const currentUser = checkRole(['admin', 'hr', 'director', 'manager']);
-            if (!currentUser) throw new Error('Không có quyền truy cập');
+        // 2. Hàm tải danh sách nhân viên
+        async function loadUsers() {
+            const tbody = document.getElementById('users-tbody');
 
-            // 2. Hàm tải danh sách nhân viên
-            async function loadUsers() {
-                const tbody = document.getElementById('users-tbody');
-                
-                try {
-                    const res = await callAPI('users/list.php');
-                    
-                    if (!res || res.status !== 'success') {
-                        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Lỗi tải dữ liệu</td></tr>';
-                        return;
-                    }
+            try {
+                const res = await callAPI('users/list.php');
 
-                    if (res.data.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Không có nhân viên nào</td></tr>';
-                        return;
-                    }
+                if (!res || res.status !== 'success') {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Lỗi tải dữ liệu</td></tr>';
+                    return;
+                }
 
-                    let html = '';
-                    let statTotal = res.data.length;
-                    let statActive = 0;
-                    let statInactive = 0;
-                    let statNew = 0;
+                if (res.data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Không có nhân viên nào</td></tr>';
+                    return;
+                }
 
-                    const now = new Date();
-                    // check for "this month"
-                    const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                let html = '';
+                let statTotal = res.data.length;
+                let statActive = 0;
+                let statInactive = 0;
+                let statNew = 0;
 
-                    res.data.forEach(u => {
-                        const name = u.full_name || 'Chưa thiết lập';
-                        const initial = name.split(' ').pop().substring(0, 2).toUpperCase();
-                        
-                        // Map màu sắc để phân biệt role
-                        const roleColors = {
-                            'admin': 'danger',
-                            'director': 'primary',
-                            'manager': 'warning',
-                            'hr': 'info',
-                            'employee': 'success'
-                        };
-                        const color = roleColors[u.role_name] || roleColors[u.role] || 'secondary';
+                const now = new Date();
+                // check for "this month"
+                const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-                        // Xử lý Ngày gia nhập (created_at)
-                        let joinDate = '---';
-                        if (u.created_at) {
-                            const d = new Date(u.created_at);
-                            joinDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-                            
-                            // Tuyển mới: gia nhập trong THÁNG NÀY
-                            const uMonthStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-                            if (uMonthStr === currentMonthStr) {
-                                statNew++;
-                            }
+                res.data.forEach(u => {
+                    const name = u.full_name || 'Chưa thiết lập';
+                    const initial = name.split(' ').pop().substring(0, 2).toUpperCase();
+
+                    // Map màu sắc để phân biệt role
+                    const roleColors = {
+                        'admin': 'danger',
+                        'director': 'primary',
+                        'manager': 'warning',
+                        'hr': 'info',
+                        'employee': 'success'
+                    };
+                    const color = roleColors[u.role_name] || roleColors[u.role] || 'secondary';
+
+                    // Xử lý Ngày gia nhập (created_at)
+                    let joinDate = '---';
+                    if (u.created_at) {
+                        const d = new Date(u.created_at);
+                        joinDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+
+                        // Tuyển mới: gia nhập trong THÁNG NÀY
+                        const uMonthStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                        if (uMonthStr === currentMonthStr) {
+                            statNew++;
                         }
+                    }
 
-                        // Xử lý Trạng thái
-                        const isActive = parseInt(u.is_active) === 1;
-                        if (isActive) statActive++;
-                        else statInactive++;
+                    // Xử lý Trạng thái
+                    const isActive = parseInt(u.is_active) === 1;
+                    if (isActive) statActive++;
+                    else statInactive++;
 
-                        const statusStr = isActive ? 'Hoạt động' : 'Tạm khóa';
-                        const statusColor = isActive ? 'success' : 'danger';
-                        
-                        html += `
+                    const statusStr = isActive ? 'Hoạt động' : 'Tạm khóa';
+                    const statusColor = isActive ? 'success' : 'danger';
+
+                    html += `
                         <tr>
                             <td class="px-4">
                                 <div class="d-flex align-items-center">
@@ -288,25 +277,25 @@
                                 </div>
                             </td>
                         </tr>`;
-                    });
+                });
 
-                    tbody.innerHTML = html;
+                tbody.innerHTML = html;
 
-                    // Render Stats
-                    document.getElementById('stat-total').innerText = statTotal < 10 ? '0' + statTotal : statTotal;
-                    document.getElementById('stat-active').innerText = statActive < 10 ? '0' + statActive : statActive;
-                    document.getElementById('stat-inactive').innerText = statInactive < 10 ? '0' + statInactive : statInactive;
-                    document.getElementById('stat-new').innerText = statNew < 10 ? '0' + statNew : statNew;
+                // Render Stats
+                document.getElementById('stat-total').innerText = statTotal < 10 ? '0' + statTotal : statTotal;
+                document.getElementById('stat-active').innerText = statActive < 10 ? '0' + statActive : statActive;
+                document.getElementById('stat-inactive').innerText = statInactive < 10 ? '0' + statInactive : statInactive;
+                document.getElementById('stat-new').innerText = statNew < 10 ? '0' + statNew : statNew;
 
-                } catch (error) {
-                    console.error("Lỗi:", error);
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Không thể kết nối API</td></tr>';
-                }
+            } catch (error) {
+                console.error("Lỗi:", error);
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Không thể kết nối API</td></tr>';
             }
+        }
 
-            // Gọi hàm render list
-            loadUsers();
-        </script>
+        // Gọi hàm render list
+        loadUsers();
+    </script>
 </body>
 
 </html>
