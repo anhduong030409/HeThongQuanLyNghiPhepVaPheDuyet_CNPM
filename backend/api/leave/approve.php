@@ -13,38 +13,93 @@ if ($method === 'GET') {
     $role = $payload['role'];
     $status = $_GET['status'] ?? null;
 
-    if (in_array($role, ['hr', 'director'])) {
-        $filter_status = $status ?? 'pending_hr';
-        $sql = "SELECT r.*,
-                       t.name       as leave_type_name,
-                       u.full_name, u.email, u.department_id,
-                       d.name       as department_name
-                FROM leave_requests r
-                LEFT JOIN leave_types t  ON t.id = r.leave_type_id
-                JOIN users u             ON u.id = r.user_id
-                LEFT JOIN departments d  ON d.id = u.department_id
-                WHERE r.status = ?
-                ORDER BY r.submitted_at ASC";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "s", $filter_status);
+    // 'all' hoặc rỗng → không filter status
+    $filter_all = (!$status || $status === 'all');
+
+    if ($role === 'director') {
+        if ($filter_all) {
+            $sql = "SELECT r.*, t.name as leave_type_name,
+                           u.full_name, u.email, u.department_id,
+                           d.name as department_name
+                    FROM leave_requests r
+                    LEFT JOIN leave_types t  ON t.id = r.leave_type_id
+                    JOIN users u             ON u.id = r.user_id
+                    LEFT JOIN departments d  ON d.id = u.department_id
+                    WHERE u.manager_id = ?
+                    ORDER BY r.submitted_at ASC";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "i", $payload['id']);
+        } else {
+            $sql = "SELECT r.*, t.name as leave_type_name,
+                           u.full_name, u.email, u.department_id,
+                           d.name as department_name
+                    FROM leave_requests r
+                    LEFT JOIN leave_types t  ON t.id = r.leave_type_id
+                    JOIN users u             ON u.id = r.user_id
+                    LEFT JOIN departments d  ON d.id = u.department_id
+                    WHERE u.manager_id = ?
+                      AND r.status = ?
+                    ORDER BY r.submitted_at ASC";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "is", $payload['id'], $status);
+        }
+
+    } elseif ($role === 'hr') {
+        if ($filter_all) {
+            $sql = "SELECT r.*, t.name as leave_type_name,
+                           u.full_name, u.email, u.department_id,
+                           d.name as department_name
+                    FROM leave_requests r
+                    LEFT JOIN leave_types t  ON t.id = r.leave_type_id
+                    JOIN users u             ON u.id = r.user_id
+                    LEFT JOIN departments d  ON d.id = u.department_id
+                    ORDER BY r.submitted_at ASC";
+            $stmt = mysqli_prepare($conn, $sql);
+        } else {
+            $sql = "SELECT r.*, t.name as leave_type_name,
+                           u.full_name, u.email, u.department_id,
+                           d.name as department_name
+                    FROM leave_requests r
+                    LEFT JOIN leave_types t  ON t.id = r.leave_type_id
+                    JOIN users u             ON u.id = r.user_id
+                    LEFT JOIN departments d  ON d.id = u.department_id
+                    WHERE r.status = ?
+                    ORDER BY r.submitted_at ASC";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "s", $status);
+        }
 
     } else {
-        $filter_status = $status ?? 'pending';
-        $sql = "SELECT r.*,
-                       t.name       as leave_type_name,
-                       u.full_name, u.email, u.department_id,
-                       d.name       as department_name
-                FROM leave_requests r
-                LEFT JOIN leave_types t  ON t.id = r.leave_type_id
-                JOIN users u             ON u.id = r.user_id
-                LEFT JOIN departments d  ON d.id = u.department_id
-                WHERE u.manager_id = ?
-                  AND r.status     = ?
-                ORDER BY r.submitted_at ASC";
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "is", $payload['id'], $filter_status);
+        // manager
+        if ($filter_all) {
+            $sql = "SELECT r.*, t.name as leave_type_name,
+                           u.full_name, u.email, u.department_id,
+                           d.name as department_name
+                    FROM leave_requests r
+                    LEFT JOIN leave_types t  ON t.id = r.leave_type_id
+                    JOIN users u             ON u.id = r.user_id
+                    LEFT JOIN departments d  ON d.id = u.department_id
+                    WHERE u.manager_id = ?
+                    ORDER BY r.submitted_at ASC";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "i", $payload['id']);
+        } else {
+            $sql = "SELECT r.*, t.name as leave_type_name,
+                           u.full_name, u.email, u.department_id,
+                           d.name as department_name
+                    FROM leave_requests r
+                    LEFT JOIN leave_types t  ON t.id = r.leave_type_id
+                    JOIN users u             ON u.id = r.user_id
+                    LEFT JOIN departments d  ON d.id = u.department_id
+                    WHERE u.manager_id = ?
+                      AND r.status = ?
+                    ORDER BY r.submitted_at ASC";
+            $stmt = mysqli_prepare($conn, $sql);
+            mysqli_stmt_bind_param($stmt, "is", $payload['id'], $status);
+        }
     }
 
+    // phần fetch items giữ nguyên như cũ
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $list = [];
@@ -104,7 +159,7 @@ if ($method === 'POST') {
             "SELECT r.*, u.manager_id
          FROM leave_requests r
          JOIN users u ON u.id = r.user_id
-         WHERE r.id = ? AND r.status IN ('pending', 'pending_hr')"
+         WHERE r.id = ? AND r.status = 'pending'"
         );
         mysqli_stmt_bind_param($stmt_get, "i", $request_id);
     } elseif (in_array($role, ['hr'])) {
@@ -161,20 +216,13 @@ if ($method === 'POST') {
         } elseif ($role === 'hr') {
             $new_status = 'approved';
         } elseif ($role === 'director') {
-            if ($request['status'] === 'pending_hr') {
-                // Director duyệt cấp 2
-                $new_status = 'approved';
-            } else {
-                // Director duyệt cấp 1 (là manager trực tiếp)
-                $new_status = $request['approval_level'] == 1 ? 'approved' : 'pending_hr';
-            }
+            $new_status = $request['approval_level'] == 1 ? 'approved' : 'pending_hr';
         } else {
-            // manager thường
             $new_status = $request['approval_level'] == 1 ? 'approved' : 'pending_hr';
         }
 
         // Level log cũng cần sửa
-        $level = ($request['status'] === 'pending') ? 1 : 2;
+        $level = ($role === 'hr') ? 2 : 1;
 
         // Cập nhật status đơn
         $stmt_update = mysqli_prepare(
@@ -191,6 +239,20 @@ if ($method === 'POST') {
             _restoreBalance($conn, $request_id);
         }
 
+        $stmt_check = mysqli_prepare(
+            $conn,
+            "SELECT id FROM leave_approvals 
+     WHERE request_id = ? AND approval_level = ?"
+        );
+        mysqli_stmt_bind_param($stmt_check, "ii", $request_id, $level);
+        mysqli_stmt_execute($stmt_check);
+        mysqli_stmt_store_result($stmt_check);
+        if (mysqli_stmt_num_rows($stmt_check) > 0) {
+            mysqli_rollback($conn);
+            http_response_code(400);
+            echo json_encode(["status" => "error", "message" => "Đơn này đã được xử lý rồi"]);
+            exit;
+        }
         // Ghi log vào leave_approvals
         $level = in_array($role, ['hr', 'director']) ? 2 : 1;
         $stmt_log = mysqli_prepare(

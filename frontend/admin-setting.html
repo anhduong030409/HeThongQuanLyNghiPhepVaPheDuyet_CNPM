@@ -25,12 +25,7 @@
     <!--! BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
     <!--! END: Custom CSS-->
-    <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
-    <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
-    <!--[if lt IE 9]>
-			<script src="https:oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-			<script src="https:oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
+    <script src="assets/js/api.js"></script>
 </head>
 
 <body>
@@ -57,86 +52,12 @@
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">Dashboard</h5>
+                        <h5 class="m-b-10">Cấu hình hệ thống</h5>
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item">Cấu hình hệ thống</li>
                     </ul>
-                </div>
-                <div class="page-header-right ms-auto">
-                    <div class="page-header-right-items">
-                        <div class="d-flex d-md-none">
-                            <a href="javascript:void(0)" class="page-header-right-close-toggle">
-                                <i class="feather-arrow-left me-2"></i>
-                                <span>Back</span>
-                            </a>
-                        </div>
-                        <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-                            <div id="reportrange" class="reportrange-picker d-flex align-items-center">
-                                <span class="reportrange-picker-field"></span>
-                            </div>
-                            <div class="dropdown filter-dropdown">
-                                <a class="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10"
-                                    data-bs-auto-close="outside">
-                                    <i class="feather-filter me-2"></i>
-                                    <span>Filter</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Role"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Role">Role</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Team"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Team">Team</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Email"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Email">Email</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Member"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer" for="Member">Member</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-item">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="Recommendation"
-                                                checked="checked" />
-                                            <label class="custom-control-label c-pointer"
-                                                for="Recommendation">Recommendation</label>
-                                        </div>
-                                    </div>
-                                    <div class="dropdown-divider"></div>
-                                    <a href="javascript:void(0);" class="dropdown-item">
-                                        <i class="feather-plus me-3"></i>
-                                        <span>Create New</span>
-                                    </a>
-                                    <a href="javascript:void(0);" class="dropdown-item">
-                                        <i class="feather-filter me-3"></i>
-                                        <span>Manage Filter</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-md-none d-flex align-items-center">
-                        <a href="javascript:void(0)" class="page-header-right-open-toggle">
-                            <i class="feather-align-right fs-20"></i>
-                        </a>
-                    </div>
                 </div>
             </div>
             <!-- [ page-header ] end -->
@@ -145,7 +66,7 @@
                 <div class="row">
 
                     <!-- Cấu hình chung -->
-                    <div class="col-lg-6">
+                    <div class="col-12">
                         <div class="card">
                             <div class="card-header">
                                 <h5>Cấu hình chung hệ thống</h5>
@@ -154,12 +75,12 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Tên hệ thống</label>
-                                    <input type="text" class="form-control" value="Hệ thống quản lý nhân sự">
+                                    <input readonly type="text" class="form-control" value="Hệ thống quản lý nhân sự">
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Email quản trị</label>
-                                    <input type="email" class="form-control" value="admin@company.com">
+                                    <input readonly type="email" class="form-control" value="admin@company.com">
                                 </div>
 
                                 <div class="mb-3">
@@ -182,35 +103,6 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <!-- Cấu hình bảo mật -->
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Cấu hình bảo mật</h5>
-                            </div>
-                            <div class="card-body">
-
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" checked>
-                                    <label class="form-check-label">Bật xác thực 2 lớp (2FA)</label>
-                                </div>
-
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" checked>
-                                    <label class="form-check-label">Yêu cầu đổi mật khẩu định kỳ</label>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label">Thời gian phiên đăng nhập (phút)</label>
-                                    <input type="number" class="form-control" value="30">
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
 
                     <!-- Cấu hình vai trò -->
                     <div class="col-12">
@@ -237,6 +129,12 @@
                                             <tr>
                                                 <td><span class="badge bg-danger">Admin</span></td>
                                                 <td>Quản trị toàn bộ hệ thống</td>
+                                                <td><span class="badge bg-success">Đang hoạt động</span></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td><span class="badge" style="background:#6f42c1">Giám đốc</span></td>
+                                                <td>Cấp cao nhất, duyệt đơn của Manager/HR/Admin</td>
                                                 <td><span class="badge bg-success">Đang hoạt động</span></td>
                                             </tr>
 
@@ -269,12 +167,10 @@
 
 
                     <!-- Nút lưu -->
-                    <div class="col-12">
-                        <div class="text-end mt-3">
-                            <button class="btn btn-primary">
-                                <i class="feather-save me-2"></i>
-                                Lưu cấu hình
-                            </button>
+                    <div class="col-12 mt-2 mb-4">
+                        <div class="alert alert-info fs-13 mb-0">
+                            <i class="feather-info me-2"></i>
+                            Thông tin cấu hình hệ thống. Liên hệ đội kỹ thuật để thay đổi cấu hình.
                         </div>
                     </div>
 
@@ -314,6 +210,10 @@
     <!--! BEGIN: Theme Customizer  !-->
 
     <!--! END: Theme Customizer !-->
+    <script>
+        const currentUser = checkRole(['admin']);
+        if (!currentUser) throw new Error('Khong co quyen');
+    </script>
 </body>
 
 </html>

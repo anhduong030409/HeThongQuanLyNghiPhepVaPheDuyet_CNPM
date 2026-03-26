@@ -24,13 +24,7 @@
     <!--! END: Vendors CSS-->
     <!--! BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
-    <!--! END: Custom CSS-->
-    <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
-    <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
-    <!--[if lt IE 9]>
-			<script src="https:oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-			<script src="https:oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-		<![endif]-->
+    <script src="assets/js/api.js"></script>
 </head>
 
 <body>
@@ -149,11 +143,9 @@
 
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5>Quản lý phân quyền hệ thống</h5>
-
-                                <button class="btn btn-primary">
-                                    <i class="feather-save me-2"></i>
-                                    Lưu thay đổi
-                                </button>
+                                <span class="badge bg-soft-info text-info fs-12">
+                                    <i class="feather-info me-1"></i>Chỉ xem — phân quyền được cấu hình trong hệ thống
+                                </span>
                             </div>
 
                             <div class="card-body">
@@ -164,64 +156,87 @@
 
                                         <thead class="table-light">
                                             <tr>
-                                                <th class="text-start">Chức năng hệ thống</th>
+                                                <th class="text-start">Chức năng</th>
                                                 <th>Admin</th>
-                                                <th>Nhân sự (HR)</th>
-                                                <th>Quản lý (Manager)</th>
-                                                <th>Nhân viên (Employee)</th>
+                                                <th>Giám đốc</th>
+                                                <th>HR</th>
+                                                <th>Manager</th>
+                                                <th>Employee</th>
                                             </tr>
                                         </thead>
-
                                         <tbody>
-
                                             <tr>
-                                                <td class="text-start">Xem bảng điều khiển</td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
+                                                <td class="text-start">Xem dashboard</td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
                                             </tr>
-
+                                            <tr>
+                                                <td class="text-start">Đăng ký nghỉ phép</td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start">Lịch sử nghỉ phép</td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start">Duyệt nghỉ phép</td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start">Danh sách nhân viên</td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start">Quản lý loại phép</td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-start">Theo dõi thống kê & Báo cáo</td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                            </tr>
                                             <tr>
                                                 <td class="text-start">Quản lý người dùng</td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox"></td>
-                                                <td><input type="checkbox"></td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
                                             </tr>
-
                                             <tr>
-                                                <td class="text-start">Quản lý hồ sơ nhân viên</td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox"></td>
+                                                <td class="text-start">Phân quyền & Cấu hình hệ thống</td>
+                                                <td><input type="checkbox" checked disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
+                                                <td><input type="checkbox" disabled></td>
                                             </tr>
-
-                                            <tr>
-                                                <td class="text-start">Phê duyệt đơn nghỉ phép</td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox"></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="text-start">Gửi yêu cầu nghỉ phép</td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                            </tr>
-
-                                            <tr>
-                                                <td class="text-start">Xem báo cáo</td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox" checked></td>
-                                                <td><input type="checkbox"></td>
-                                            </tr>
-
                                         </tbody>
 
                                     </table>
@@ -270,6 +285,12 @@
     <!--! BEGIN: Theme Customizer  !-->
 
     <!--! END: Theme Customizer !-->
+    <script>
+        const currentUser = checkRole(['admin']);
+        if (!currentUser) throw new Error('Khong co quyen');
+    </script>
 </body>
+
+
 
 </html>

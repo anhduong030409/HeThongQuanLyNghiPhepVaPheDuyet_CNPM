@@ -69,13 +69,14 @@
                                                 <th>Phòng ban</th>
                                                 <th>Quản lý trực tiếp</th>
                                                 <th>Vai trò</th>
+                                                <th>Giới tính</th>
                                                 <th>Trạng thái</th>
                                                 <th class="text-center">Thao tác</th>
                                             </tr>
                                         </thead>
                                         <tbody id="user-tbody">
                                             <tr>
-                                                <td colspan="8" class="text-center text-muted py-4">
+                                                <td colspan="9" class="text-center text-muted py-4">
                                                     <span class="spinner-border spinner-border-sm me-2"></span>Đang
                                                     tải...
                                                 </td>
@@ -121,6 +122,14 @@
                     <div class="mb-3">
                         <label class="form-label">Số điện thoại</label>
                         <input type="text" class="form-control" id="phone" placeholder="Nhập số điện thoại">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giới tính</label>
+                        <select class="form-select" id="gender">
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                            <option value="other">Khác</option>
+                        </select>
                     </div>
 
                     <div class="row">
@@ -274,6 +283,11 @@
                     Không có người dùng nào</td></tr>`;
                 return;
             }
+            const genderLabel = {
+                male: '<span class="badge bg-soft-info text-info">Nam</span>',
+                female: '<span class="badge bg-soft-pink" style="color:#d63384">Nữ</span>',
+                other: '<span class="badge bg-soft-secondary text-secondary">Khác</span>',
+            };
             tbody.innerHTML = data.map(u => `
                 <tr>
                     <td>#${String(u.id).padStart(3, '0')}</td>
@@ -282,6 +296,7 @@
                     <td>${u.dept_name ?? '---'}</td>
                     <td class="fs-13">${u.manager_name ?? '<span class="text-muted">---</span>'}</td>
                     <td>${renderRole(u.role_name)}</td>
+                    <td>${genderLabel[u.gender] ?? '---'}</td>
                     <td>${u.is_active == 1
                     ? '<span class="badge bg-success">Hoạt động</span>'
                     : '<span class="badge bg-secondary">Vô hiệu</span>'}</td>
@@ -343,7 +358,7 @@
             document.getElementById('password').value = '';
             document.getElementById('phone').value = '';
             document.getElementById('passwordField').style.display = 'block';
-
+            document.getElementById('gender').value = '';
             await loadDepartments();
             await loadManagers();
             document.getElementById('departmentId').value = '';
@@ -378,6 +393,7 @@
             setTimeout(() => {
                 document.getElementById('departmentId').value = u.department_id ?? '';
                 document.getElementById('managerId').value = u.manager_id ?? '';
+                document.getElementById('gender').value = u.gender || 'male';
             }, 100);
 
             new bootstrap.Modal(document.getElementById('modalUser')).show();
@@ -394,6 +410,7 @@
             const roleId = parseInt(document.getElementById('roleId').value);
             const deptId = document.getElementById('departmentId').value || null;
             const mgrId = document.getElementById('managerId').value || null;
+            const gender = document.getElementById('gender').value;
             console.log('manager_id gửi đi:', document.getElementById('managerId').value);
             if (!fullName || !email) {
                 showToast('Vui lòng nhập đầy đủ họ tên và email!', 'error');
@@ -410,6 +427,7 @@
                     role_id: roleId,
                     department_id: deptId,
                     manager_id: mgrId ? parseInt(mgrId) : null,
+                    gender: gender,
                     is_active: 1
                 };
             } else {
@@ -421,6 +439,7 @@
                     role_id: roleId,
                     department_id: deptId,
                     manager_id: mgrId ? parseInt(mgrId) : null,
+                    gender: gender,
                     password: document.getElementById('password').value || '123456'
                 };
             }

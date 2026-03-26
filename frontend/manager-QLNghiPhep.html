@@ -149,17 +149,16 @@
                     { value: 'pending_hr', label: 'Chờ HR duyệt' },
                     { value: 'approved', label: 'Đã duyệt' },
                     { value: 'rejected', label: 'Đã từ chối' },
-                    { value: '', label: 'Tất cả' },
+                    { value: 'all', label: 'Tất cả' },
                 ];
             } else if (isDirector) {
-                // Director: duyệt pending của manager/hr/admin VÀ pending_hr của admin/IT
+                // Director: duyệt pending của manager/hr/admin
                 defaultStatus = 'pending';
                 options = [
                     { value: 'pending', label: 'Chờ Director duyệt' },
-                    { value: 'pending_hr', label: 'Chờ duyệt hành chính (Admin/IT)' },
                     { value: 'approved', label: 'Đã duyệt' },
                     { value: 'rejected', label: 'Đã từ chối' },
-                    { value: '', label: 'Tất cả' },
+                    { value: 'all', label: 'Tất cả' },
                 ];
             } else {
                 // Manager: duyệt pending của employee
@@ -168,7 +167,7 @@
                     { value: 'pending', label: 'Chờ duyệt' },
                     { value: 'approved', label: 'Đã duyệt' },
                     { value: 'rejected', label: 'Đã từ chối' },
-                    { value: '', label: 'Tất cả' },
+                    { value: 'all', label: 'Tất cả' },
                 ];
             }
 
@@ -279,7 +278,7 @@
             tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-4">
                 <span class="spinner-border spinner-border-sm me-2"></span>Đang tải...</td></tr>`;
 
-            const endpoint = status
+            const endpoint = (status && status !== 'all')
                 ? `leave/approve.php?status=${status}`
                 : 'leave/approve.php';
 

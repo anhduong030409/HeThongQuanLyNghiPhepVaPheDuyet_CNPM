@@ -6,6 +6,7 @@ require_once '../../config/auth.php';
 requireAuth();
 
 $sql = "SELECT u.id, u.full_name, u.email, u.phone, u.is_active,
+               u.gender,
                u.department_id, u.manager_id, u.created_at,
                r.name        as role_name,
                r.display_name as role_display,
@@ -18,20 +19,20 @@ $sql = "SELECT u.id, u.full_name, u.email, u.phone, u.is_active,
         WHERE 1=1";
 
 $params = [];
-$types  = '';
+$types = '';
 
 // Lọc theo ID cụ thể (dùng cho loadApprover)
 if (!empty($_GET['id'])) {
-    $sql     .= " AND u.id = ?";
+    $sql .= " AND u.id = ?";
     $params[] = intval($_GET['id']);
-    $types   .= 'i';
+    $types .= 'i';
 }
 
 // Lọc theo role (slug: admin, hr, manager, employee)
 if (!empty($_GET['role'])) {
-    $sql     .= " AND r.name = ?";
+    $sql .= " AND r.name = ?";
     $params[] = $_GET['role'];
-    $types   .= 's';
+    $types .= 's';
 }
 
 $sql .= " ORDER BY u.id ASC";

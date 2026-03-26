@@ -231,7 +231,25 @@ if ($method === 'POST') {
     // <= 2 ngày: 1 cấp — manager duyệt → approved
     // >  2 ngày: 2 cấp — manager duyệt → pending_hr → HR duyệt → approved
     // ================================================================
-    $approval_level = $total_days > 2 ? 2 : 1;
+
+   // ================================================================
+    // Xác định cấp duyệt theo ROLE người gửi, không theo số ngày
+    // ================================================================
+
+    // Lấy role của người gửi
+    $stmt_role = mysqli_prepare($conn,
+        "SELECT r.name as role_name
+        FROM users u
+        JOIN roles r ON r.id = u.role_id
+        WHERE u.id = ?"
+    );
+    mysqli_stmt_bind_param($stmt_role, "i", $user_id);
+    mysqli_stmt_execute($stmt_role);
+    $sender = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_role));
+    $sender_role = $sender['role_name'] ?? 'employee';
+
+    // Employee → 2 cấp, còn lại → 1 cấp
+    $approval_level = ($sender_role === 'employee') ? 2 : 1;
 
     // ================================================================
     // Transaction: tạo đơn + items + trừ số dư
@@ -290,9 +308,9 @@ if ($method === 'POST') {
         }
 
         // Thông báo cho nhân viên
-        $msg = $approval_level == 2
+        $msg = ($approval_level == 2)
             ? "Đơn nghỉ phép đã gửi — cần duyệt 2 cấp (Manager → HR)"
-            : "Đơn nghỉ phép mới đã được gửi";
+            : "Đơn nghỉ phép đã gửi — chờ Director phê duyệt";
 
         $stmt_notif = mysqli_prepare($conn,
             "INSERT INTO notifications (user_id, request_id, type, message) VALUES (?, ?, 'submitted', ?)"
