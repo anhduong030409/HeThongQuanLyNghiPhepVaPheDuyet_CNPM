@@ -44,10 +44,23 @@ async function callAPI(endpoint, method = "GET", body = null) {
     try {
         const res = await fetch(`${API_URL}/${endpoint}`, options);
         const data = await res.json();
-        if (res.status === 401) { logout(); return null; }
+
+        // SỬA Ở ĐÂY: Nếu trả về 401 NHƯNG KHÔNG PHẢI là API login thì mới đá văng (logout)
+        if (res.status === 401 && !endpoint.includes("login.php")) {
+            // Kiểm tra xem hàm logout có tồn tại không để tránh lỗi văng catch
+            if (typeof logout === "function") {
+                logout();
+            } else {
+                window.location.href = "auth-login.html";
+            }
+            return null;
+        }
+
+        // Nếu là API login bị 401, nó vẫn sẽ đi tiếp xuống đây và trả về data báo sai pass
         return data;
     } catch (error) {
-        return { status: "error", message: "Loi ket noi server" };
+        console.error("Lỗi tại callAPI:", error); // In ra console để sau này dễ debug
+        return { status: "error", message: "Lỗi kết nối server" };
     }
 }
 

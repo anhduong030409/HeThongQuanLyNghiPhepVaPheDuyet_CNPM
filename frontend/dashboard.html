@@ -153,11 +153,12 @@
             <div class="main-content" id="it-admin-dashboard" style="display: none;">
                 <div class="row mb-4">
                     <div class="col-md-4">
-                        <div class="card bg-dark text-white">
+                        <div class="card bg-secondary text-white">
                             <div class="card-body">
                                 <h5>Tổng số tài khoản (Users)</h5>
                                 <h2 class="mb-0" id="it-total-users">156</h2>
-                                <small class="text-success" id="it-new-users" style="display:none;"><i class="feather-arrow-up"></i> +0 user mới tuần này</small>
+                                <small class="text-success" id="it-new-users" style="display:none;"><i
+                                        class="feather-arrow-up"></i> +0 user mới tuần này</small>
                             </div>
                         </div>
                     </div>
@@ -349,18 +350,18 @@
     <!--! END: Theme Customizer !-->
     <script>
         // 1. Kiểm tra login và lấy thông tin user (nhớ thêm quyền 'it' vào mảng cho phép)
-        const user = checkRole(['admin', 'director', 'hr', 'manager', 'employee', 'it']);
+        const user = checkRole(['admin', 'director', 'hr', 'manager', 'employee']);
 
         if (user) {
             // 2. Logic phân quyền hiển thị Giao diện
             const role = user.role;
 
-            if (['admin', 'director', 'hr', 'manager'].includes(role)) {
+            if (['director', 'hr', 'manager'].includes(role)) {
                 // Nhóm quản lý
                 document.getElementById('admin-hr-dashboard').style.display = 'block';
                 loadAdminData(user);
             }
-            else if (role === 'it') {
+            else if (role === 'admin') {
                 // IT hệ thống
                 document.getElementById('it-admin-dashboard').style.display = 'block';
                 loadITData(user);
@@ -403,7 +404,7 @@
 
                 if (leaveRes && leaveRes.status === 'success') {
                     let today = new Date();
-                    today.setHours(0,0,0,0);
+                    today.setHours(0, 0, 0, 0);
 
                     leaveRes.data.forEach(r => {
                         // Check pending
@@ -411,13 +412,13 @@
                             pendingCount++;
                             pendingList.push(r);
                         }
-                        
+
                         // Check absent today
                         if (r.status === 'approved') {
                             let sd = new Date(r.start_date);
-                            sd.setHours(0,0,0,0);
+                            sd.setHours(0, 0, 0, 0);
                             let ed = new Date(r.end_date);
-                            ed.setHours(23,59,59,999);
+                            ed.setHours(23, 59, 59, 999);
                             if (today >= sd && today <= ed) {
                                 absentCount++;
                                 let dept = userDeptMap[r.user_id] || 'Chưa phân bổ';
@@ -433,7 +434,7 @@
                 // 3. Hiển thị "Đơn xin nghỉ chờ duyệt mới nhất" (Tối đa 5 đơn)
                 let tbody = document.getElementById('admin-pending-leaves-body');
                 tbody.innerHTML = '';
-                
+
                 if (pendingList.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="6" class="text-center">Chưa có đơn nghỉ phép chờ duyệt</td></tr>`;
                 } else {
@@ -444,15 +445,15 @@
                         let leaveTypeName = r.is_combined ? 'Nghỉ ghép' : (r.leave_type_name || 'Khác');
                         let startDate = new Date(r.start_date).toLocaleDateString('vi-VN');
                         let endDate = new Date(r.end_date).toLocaleDateString('vi-VN');
-                        
+
                         let statusText = r.status === 'pending' ? 'Chờ Quản lý duyệt' : 'Chờ HR duyệt';
                         let badgeClass = 'bg-warning text-dark';
-                        
+
                         tbody.innerHTML += `
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <div class="avatar-text avatar-sm bg-primary text-white">${fullName.substring(0,2).toUpperCase()}</div>
+                                        <div class="avatar-text avatar-sm bg-primary text-white">${fullName.substring(0, 2).toUpperCase()}</div>
                                         <span>${fullName}</span>
                                     </div>
                                 </td>
@@ -467,13 +468,13 @@
                         `;
                     });
                 }
-                
+
                 // 4. Hiển thị thống kê phòng ban
                 let deptStatsContainer = document.getElementById('admin-dept-stats');
                 deptStatsContainer.innerHTML = '';
                 let depts = Object.keys(deptAbsentCount);
                 if (depts.length === 0) {
-                     deptStatsContainer.innerHTML = `
+                    deptStatsContainer.innerHTML = `
                          <div class="col-12">
                             <div class="p-2 border border-dashed rounded">
                                 <span class="d-block text-muted mb-1">Không có nhân viên vắng mặt hôm nay</span>
@@ -481,8 +482,8 @@
                          </div>
                      `;
                 } else {
-                     depts.forEach(dept => {
-                         deptStatsContainer.innerHTML += `
+                    depts.forEach(dept => {
+                        deptStatsContainer.innerHTML += `
                              <div class="col-6">
                                 <div class="p-2 border border-dashed rounded">
                                     <span class="d-block text-muted mb-1">${dept}</span>
@@ -490,9 +491,9 @@
                                 </div>
                              </div>
                          `;
-                     });
+                    });
                 }
-                
+
             } catch (err) {
                 console.error(err);
             }
@@ -500,7 +501,7 @@
 
         async function loadITData(user) {
             console.log("Đang tải dữ liệu cho IT...");
-            
+
             try {
                 // 1. Fetch Users List
                 const usersRes = await callAPI('users/list.php');
@@ -517,7 +518,7 @@
                         } else {
                             inactiveUsers++;
                         }
-                        
+
                         // Fake audit log from user creation
                         if (u.created_at) {
                             logs.push({
@@ -541,7 +542,7 @@
                             let action = `Gửi đơn nghỉ phép`;
                             if (r.status === 'approved') action = 'Đơn nghỉ phép được duyệt';
                             if (r.status === 'rejected') action = 'Đơn nghỉ phép bị từ chối';
-                            
+
                             logs.push({
                                 time: r.submitted_at || new Date().toISOString().slice(0, 19).replace('T', ' '),
                                 account: r.email || r.full_name || 'User',
@@ -553,7 +554,7 @@
                     }
 
                     // Sort logs descending by time
-                    logs.sort((a,b) => new Date(b.time) - new Date(a.time));
+                    logs.sort((a, b) => new Date(b.time) - new Date(a.time));
 
                     let tbody = document.getElementById('it-audit-logs-body');
                     if (tbody) {
@@ -576,7 +577,7 @@
                         }
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error("Lỗi khi tải dữ liệu IT: ", e);
             }
         }
@@ -598,7 +599,7 @@
             if (balanceRes && balanceRes.status === 'success') {
                 let total = 0;
                 let used = 0;
-                
+
                 balanceRes.data.forEach(b => {
                     if (b.max_days_per_year < 999) {
                         total += parseFloat(b.total_days);
@@ -610,14 +611,14 @@
                 document.getElementById('emp-used-leave').innerText = used;
                 let remaining = total - used;
                 document.getElementById('emp-remaining-leave').innerText = (remaining > 0 ? remaining : 0);
-                
+
                 let percent = total > 0 ? (used / total) * 100 : 0;
                 percent = percent > 100 ? 100 : percent;
                 let progressBar = document.getElementById('emp-progress-bar');
                 progressBar.style.width = percent + '%';
                 progressBar.setAttribute('aria-valuenow', percent);
                 document.getElementById('emp-progress-text').innerText = `Đã dùng ${Math.round(percent)}% quỹ phép năm`;
-                
+
                 if (percent >= 80) {
                     progressBar.className = 'progress-bar bg-danger';
                 } else if (percent >= 50) {
@@ -634,7 +635,7 @@
             // 3. Fetch API lịch sử xin nghỉ phép (hiển thị tối đa 5 đơn gần nhất)
             const historyRes = await callAPI(`leave/request.php?user_id=${user.id}`);
             let tbody = document.getElementById('emp-leave-history-body');
-            
+
             if (historyRes && historyRes.status === 'success') {
                 tbody.innerHTML = '';
                 if (historyRes.data.length === 0) {
@@ -642,8 +643,8 @@
                 } else {
                     historyRes.data.slice(0, 5).forEach(r => {
                         let statusBadge = '';
-                        switch(r.status) {
-                            case 'pending': 
+                        switch (r.status) {
+                            case 'pending':
                             case 'pending_hr':
                                 statusBadge = '<span class="badge bg-warning text-dark">Chờ duyệt</span>'; break;
                             case 'approved': statusBadge = '<span class="badge bg-success">Đã duyệt</span>'; break;
@@ -651,11 +652,11 @@
                             case 'cancelled': statusBadge = '<span class="badge bg-secondary">Đã hủy</span>'; break;
                             default: statusBadge = `<span class="badge bg-light text-dark">${r.status}</span>`;
                         }
-                        
+
                         let leaveTypeName = r.is_combined ? 'Nghỉ ghép' : (r.leave_type_name || 'Khác');
                         let startDate = new Date(r.start_date).toLocaleDateString('vi-VN');
                         let endDate = new Date(r.end_date).toLocaleDateString('vi-VN');
-                        
+
                         tbody.innerHTML += `
                             <tr>
                                 <td>${leaveTypeName}</td>
