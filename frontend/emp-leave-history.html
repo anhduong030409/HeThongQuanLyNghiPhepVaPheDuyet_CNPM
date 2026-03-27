@@ -25,6 +25,7 @@
     <!--! BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
     <script src="assets/js/api.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <!--! END: Custom CSS-->
     <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
     <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
@@ -77,16 +78,16 @@
                                     <div class="col-lg-4 col-md-6">
                                         <label class="form-label fw-bold fs-12 text-muted">TÌM KIẾM</label>
                                         <div class="input-group">
-                                            <span class="input-group-text bg-white border-end-0"><i
-                                                    class="feather-search"></i></span>
-                                            <input type="text" class="form-control border-start-0 ps-0"
-                                                placeholder="Nhập mã đơn hoặc lý do...">
+                                            <span class="input-group-text bg-white border-end-0"><i class="feather-search"></i></span>
+                                            <input type="text" id="filterKeyword" class="form-control border-start-0 ps-0"
+                                                placeholder="Nhập mã đơn hoặc lý do..." oninput="filterHistory()">
                                         </div>
                                     </div>
 
                                     <div class="col-lg-2 col-md-3">
                                         <label class="form-label fw-bold fs-12 text-muted">NĂM</label>
-                                        <select class="form-select">
+                                        <select class="form-select" id="filterYear" onchange="filterHistory()">
+                                            <option value="">Tất cả năm</option>
                                             <option value="2026" selected>2026</option>
                                             <option value="2025">2025</option>
                                             <option value="2024">2024</option>
@@ -95,8 +96,10 @@
 
                                     <div class="col-lg-3 col-md-3">
                                         <label class="form-label fw-bold fs-12 text-muted">TRẠNG THÁI</label>
-                                        <select class="form-select">
+                                        <select class="form-select" id="filterStatus" onchange="filterHistory()">
                                             <option value="all">Tất cả trạng thái</option>
+                                            <option value="pending">Chờ Manager duyệt</option>
+                                            <option value="pending_hr">Chờ HR duyệt</option>
                                             <option value="approved">Đã phê duyệt</option>
                                             <option value="rejected">Bị từ chối</option>
                                             <option value="cancelled">Đã hủy đơn</option>
@@ -104,11 +107,11 @@
                                     </div>
 
                                     <div class="col-lg-3 col-md-12 d-flex gap-2">
-                                        <button class="btn btn-primary w-100">
-                                            <i class="feather-filter me-2"></i>Áp dụng
-                                        </button>
-                                        <button class="btn btn-outline-success w-100">
+                                        <button class="btn btn-success w-100" onclick="exportExcel()">
                                             <i class="feather-download me-2"></i>Xuất Excel
+                                        </button>
+                                        <button class="btn btn-light w-100" onclick="resetFilter()">
+                                            <i class="feather-rotate-ccw me-2"></i>Đặt lại
                                         </button>
                                     </div>
                                 </div>
@@ -272,21 +275,62 @@
         if (!currentUser) throw new Error('Khong co quyen');
 
         let currentRequestId = null;
+        let allHistory = []; // Cache toàn bộ dữ liệu
 
         // ===== LOAD DANH SÁCH =====
         async function loadHistory() {
             const res = await callAPI(`leave/request.php?user_id=${currentUser.id}`);
             if (!res || res.status !== 'success') return;
 
+            allHistory = res.data; // Lưu vào cache
+            filterHistory(); // Hiển thị với filter hiện tại
+        }
+
+        // ===== LỌC DỮ LIỆU =====
+        function filterHistory() {
+            const keyword = (document.getElementById('filterKeyword')?.value || '').toLowerCase();
+            const year = document.getElementById('filterYear')?.value || '';
+            const status = document.getElementById('filterStatus')?.value || 'all';
+
+            const filtered = allHistory.filter(r => {
+                const matchKeyword = !keyword
+                    || String(r.id).includes(keyword)
+                    || (r.reason || '').toLowerCase().includes(keyword)
+                    || (r.leave_type_name || '').toLowerCase().includes(keyword);
+
+                const matchYear = !year
+                    || new Date(r.start_date).getFullYear() == year;
+
+                const matchStatus = status === 'all' || r.status === status;
+
+                return matchKeyword && matchYear && matchStatus;
+            });
+
+            renderHistory(filtered);
+        }
+
+        // ===== ĐẶT LẠI FILTER =====
+        function resetFilter() {
+            document.getElementById('filterKeyword').value = '';
+            document.getElementById('filterYear').value = '';
+            document.getElementById('filterStatus').value = 'all';
+            renderHistory(allHistory);
+        }
+
+        // ===== RENDER BẢNG =====
+        function renderHistory(data) {
             const tbody = document.querySelector('tbody');
             tbody.innerHTML = '';
 
-            if (res.data.length === 0) {
+            const countDisplay = document.querySelector('.card-title + div');
+            if (countDisplay) countDisplay.innerText = `Hiển thị ${data.length} bản ghi`;
+
+            if (data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Chưa có đơn nào</td></tr>`;
                 return;
             }
 
-            res.data.forEach(r => {
+            data.forEach(r => {
                 const statusBadge = renderStatus(r.status);
                 const dateRange = r.start_date === r.end_date
                     ? formatDate(r.start_date)
@@ -295,7 +339,7 @@
                 tbody.innerHTML += `
         <tr>
             <td class="ps-4 fw-bold">#LR-${r.id}</td>
-            <td>${r.leave_type_name}</td>
+            <td>${r.leave_type_name ?? 'Nghỉ ghép'}</td>
             <td>${dateRange}</td>
             <td>${r.total_days}</td>
             <td class="text-truncate" style="max-width:200px">${r.reason}</td>
@@ -308,11 +352,6 @@
         </tr>`;
             });
 
-            // Cap nhat so ban ghi
-            const countDisplay = document.querySelector('.card-title + div');
-            if (countDisplay) {
-                countDisplay.innerText = `Hiển thị ${res.data.length} bản ghi`;
-            }
         }
 
         function renderStatus(status) {
@@ -428,6 +467,42 @@
             } else {
                 alert(res?.message || 'Lỗi khi hủy đơn');
             }
+        }
+
+        // ===== EXPORT EXCEL =====
+        function exportExcel() {
+            if (!allHistory.length) { alert('Không có dữ liệu để xuất!'); return; }
+            
+            const user = getUser();
+            const headers = [
+                ['LỊCH SỬ NGHỈ PHÉP - ' + (user?.full_name || 'Nhân viên')],
+                ['Ngày xuất: ' + new Date().toLocaleString()],
+                [],
+                ['Mã đơn', 'Loại nghỉ', 'Số ngày', 'Từ ngày', 'Đến ngày', 'Trạng thái', 'Lý do', 'Ngày gửi']
+            ];
+
+            const rows = allHistory.map(r => [
+                `LR-${r.id.toString().padStart(4, '0')}`,
+                r.leave_type_name || 'Nghỉ ghép',
+                r.total_days,
+                formatDate(r.start_date),
+                formatDate(r.end_date),
+                r.status === 'approved' ? 'Chấp thuận' : 
+                r.status === 'rejected' ? 'Bị từ chối' : 
+                r.status === 'cancelled' ? 'Đã hủy' : 'Đang chờ',
+                r.reason || '--',
+                r.submitted_at ? formatDate(r.submitted_at) : '--'
+            ]);
+
+            const worksheet = XLSX.utils.aoa_to_sheet([...headers, ...rows]);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "LichSuNghiPhep");
+
+            // Căn chỉnh cột
+            const colWidths = [12, 15, 10, 15, 15, 15, 35, 15];
+            worksheet['!cols'] = colWidths.map(w => ({ wch: w }));
+
+            XLSX.writeFile(workbook, `Lich-Su-Nghi-Phep-${new Date().toISOString().slice(0, 10)}.xlsx`);
         }
 
         // ===== KHỞI CHẠY =====

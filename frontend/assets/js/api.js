@@ -129,3 +129,15 @@ async function markAllAsRead(user_id) {
     await callAPI(`notifications.php?user_id=${user_id}`, "POST", {});
     loadNotifications();
 }
+
+// ===== UTILS =====
+function formatDate(dateStr) {
+    if (!dateStr) return '--';
+    try {
+        const parts = dateStr.split(' ')[0].split('-');
+        if (parts.length !== 3) return dateStr;
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    } catch (e) {
+        return dateStr;
+    }
+}

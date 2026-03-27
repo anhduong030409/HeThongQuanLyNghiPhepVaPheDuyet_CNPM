@@ -5,35 +5,19 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="keyword" content="">
-    <meta name="author" content="theme_ocean">
-    <title>Duralux || HR - Lập Báo Cáo</title>
+    <title>LMS || HR - Lập Báo Cáo</title>
     <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/select2.min.css">
-    <link rel="stylesheet" type="text/css" href="assets/vendors/css/select2-theme.min.css">
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css">
+    <script src="assets/js/api.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
-    <!--! ================================================================ !-->
-    <!--! [Start] Navigation Manu !-->
-    <!--! ================================================================ !-->
     <div id="navigation"></div>
-    <!--! ================================================================ !-->
-    <!--! [End]  Navigation Manu !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! [Start] Header !-->
-    <!--! ================================================================ !-->
     <div id="header"></div>
-    <!--! ================================================================ !-->
-    <!--! [End] Header !-->
-    <!--! ================================================================ !-->
-    <!--! ================================================================ !-->
-    <!--! [Start] Main Content !-->
+
     <main class="nxl-container apps-container d-flex flex-column" style="min-height: calc(100vh - 80px);">
         <div class="nxl-content flex-grow-1">
             <div class="page-header">
@@ -47,197 +31,133 @@
                     </ul>
                 </div>
                 <div class="page-header-right ms-auto">
-                    <div class="page-header-right-items">
-                        <div class="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-                            <a href="javascript:void(0);" class="btn btn-success">
-                                <i class="feather-file-text me-2"></i>
-                                <span>Xuất Excel</span>
-                            </a>
-                            <a href="javascript:void(0);" class="btn btn-danger">
-                                <i class="feather-printer me-2"></i>
-                                <span>Xuất PDF</span>
-                            </a>
-                        </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-success" onclick="exportExcel()">
+                            <i class="feather-file-text me-2"></i>Xuất Excel
+                        </button>
+                        <button class="btn btn-danger" onclick="window.print()">
+                            <i class="feather-printer me-2"></i>In / PDF
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="main-content">
 
+            <div class="main-content">
+                <!-- Tab Nav -->
                 <ul class="nav nav-tabs mb-4 border-bottom">
                     <li class="nav-item">
-                        <a class="nav-link text-muted pb-3" href="hr-leave-type.html"><i
-                                class="feather-list me-2"></i>Quản lý loại phép</a>
+                        <a class="nav-link text-muted pb-3" href="hr-leave-type.html"><i class="feather-list me-2"></i>Quản lý loại phép</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-muted pb-3" href="hr-leave-statistical.html"><i
-                                class="feather-bar-chart-2 me-2"></i>Theo dõi thống kê</a>
+                        <a class="nav-link text-muted pb-3" href="hr-leave-statistical.html"><i class="feather-bar-chart-2 me-2"></i>Theo dõi thống kê</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active fw-bold pb-3 text-primary" href="#"><i
-                                class="feather-file-text me-2"></i>Lập báo cáo</a>
+                        <a class="nav-link active fw-bold pb-3 text-primary" href="#"><i class="feather-file-text me-2"></i>Lập báo cáo</a>
                     </li>
                 </ul>
 
-                <div class="row">
-                    <div class="col-12 mb-4">
-                        <div class="card stretch stretch-full border-top border-4 border-primary border-opacity-50">
+                <!-- Bộ lọc -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card border-top border-4 border-primary border-opacity-50 shadow-sm">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">Tiêu Chí Lọc Báo Cáo</h5>
                             </div>
                             <div class="card-body">
-                                <div class="row g-4">
-                                    <div class="col-lg-3 col-md-6">
-                                        <label class="form-label fw-medium">Loại báo cáo</label>
-                                        <select class="form-select">
-                                            <option>Báo cáo tổng hợp phép năm</option>
-                                            <option>Báo cáo chi tiết nghỉ phép</option>
-                                            <option>Báo cáo tồn phép nhân viên</option>
-                                            <option>Danh sách nghỉ không lương</option>
-                                        </select>
-                                    </div>
+                                <div class="row g-3 align-items-end">
                                     <div class="col-lg-3 col-md-6">
                                         <label class="form-label fw-medium">Phòng ban</label>
-                                        <select class="form-select">
-                                            <option>Tất cả phòng ban</option>
-                                            <option>Phòng IT</option>
-                                            <option>Phòng Marketing</option>
-                                            <option>Phòng Kế Toán</option>
-                                            <option>Phòng Hành Chính</option>
+                                        <select class="form-select" id="filterDept">
+                                            <option value="">Tất cả phòng ban</option>
                                         </select>
                                     </div>
-                                    <div class="col-lg-3 col-md-6">
+                                    <div class="col-lg-2 col-md-4">
+                                        <label class="form-label fw-medium">Năm</label>
+                                        <select class="form-select" id="filterYear">
+                                            <option value="2026" selected>2026</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2024">2024</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4">
                                         <label class="form-label fw-medium">Từ ngày</label>
-                                        <input type="date" class="form-control" value="2026-01-01">
+                                        <input type="date" class="form-control" id="filterFrom" value="2026-01-01">
                                     </div>
-                                    <div class="col-lg-3 col-md-6">
+                                    <div class="col-lg-3 col-md-4">
                                         <label class="form-label fw-medium">Đến ngày</label>
-                                        <input type="date" class="form-control" value="2026-12-31">
+                                        <input type="date" class="form-control" id="filterTo" value="2026-12-31">
                                     </div>
-                                </div>
-                                <div class="d-flex justify-content-end mt-4">
-                                    <button type="button" class="btn btn-primary px-4"><i
-                                            class="feather-filter me-2"></i>Tạo Dữ Liệu</button>
+                                    <div class="col-lg-1 col-md-12">
+                                        <button class="btn btn-primary w-100" onclick="loadReport()">
+                                            <i class="feather-filter"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                <!-- Thẻ Tổng quan -->
+                <div class="row g-3 mb-4" id="summaryCards">
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm text-center py-3">
+                            <div class="text-muted fs-12 fw-bold mb-1">TỔNG NHÂN VIÊN</div>
+                            <div class="fs-4 fw-bold text-dark" id="sumCount">--</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm text-center py-3">
+                            <div class="text-muted fs-12 fw-bold mb-1">PHÉP ĐÃ DÙNG (ngày)</div>
+                            <div class="fs-4 fw-bold text-danger" id="sumUsed">--</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm text-center py-3">
+                            <div class="text-muted fs-12 fw-bold mb-1">ĐANG CHỜ DUYỆT (ngày)</div>
+                            <div class="fs-4 fw-bold text-warning" id="sumPending">--</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card border-0 shadow-sm text-center py-3">
+                            <div class="text-muted fs-12 fw-bold mb-1">PHÉP CÒN LẠI (ngày)</div>
+                            <div class="fs-4 fw-bold text-success" id="sumRemain">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bảng kết quả -->
+                <div class="row">
                     <div class="col-12">
-                        <div class="card stretch stretch-full">
+                        <div class="card stretch stretch-full shadow-sm">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0">Xem trước: Báo Cáo Tổng Hợp Phép Năm (Năm 2026)</h5>
-                                <span class="badge bg-soft-primary text-primary px-3 py-2 fs-12">Cập nhật lúc: 10:30
-                                    AM</span>
+                                <h5 class="card-title mb-0">Báo Cáo Tổng Hợp Phép Năm</h5>
+                                <span class="badge bg-soft-primary text-primary px-3 py-2 fs-12" id="reportTimestamp">--</span>
                             </div>
-                            <div class="card-body custom-card-action p-0">
+                            <div class="card-body p-0">
                                 <div class="table-responsive">
                                     <table class="table table-hover table-bordered align-middle mb-0 text-center">
                                         <thead class="bg-light">
                                             <tr>
-                                                <th class="text-start">NHÂN VIÊN</th>
+                                                <th class="text-start ps-3">NHÂN VIÊN</th>
                                                 <th>PHÒNG BAN</th>
-                                                <th>TỔNG PHÉP ĐƯỢC CẤP</th>
-                                                <th>PHÉP ĐÃ DÙNG</th>
-                                                <th>PHÉP ĐANG CHỜ DUYỆT</th>
-                                                <th>PHÉP CÒN LẠI</th>
+                                                <th>TỔNG PHÉP</th>
+                                                <th>ĐÃ DÙNG</th>
+                                                <th>CHỜ DUYỆT</th>
+                                                <th>CÒN LẠI</th>
                                                 <th class="text-start">GHI CHÚ</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="text-start">
-                                                    <div class="d-flex align-items-center gap-3">
-                                                        <div class="avatar-image avatar-sm">
-                                                            <img src="assets/images/avatar/1.png" alt=""
-                                                                class="img-fluid">
-                                                        </div>
-                                                        <div>
-                                                            <span class="d-block fw-bold text-dark">Alexandra
-                                                                Della</span>
-                                                            <span class="fs-12 text-muted">Mã: NV001</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>Marketing</td>
-                                                <td><span class="fw-bold text-dark">12.0</span></td>
-                                                <td><span class="fw-bold text-danger">4.0</span></td>
-                                                <td><span class="fw-bold text-warning">0.0</span></td>
-                                                <td><span class="badge bg-soft-success text-success fs-12">8.0
-                                                        ngày</span></td>
-                                                <td class="text-start text-muted fs-12">Nghỉ 1 ngày ốm (Tháng 3)</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start">
-                                                    <div class="d-flex align-items-center gap-3">
-                                                        <div class="avatar-image avatar-sm">
-                                                            <img src="assets/images/avatar/2.png" alt=""
-                                                                class="img-fluid">
-                                                        </div>
-                                                        <div>
-                                                            <span class="d-block fw-bold text-dark">Curtis Green</span>
-                                                            <span class="fs-12 text-muted">Mã: NV002</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>IT</td>
-                                                <td><span class="fw-bold text-dark">12.0</span></td>
-                                                <td><span class="fw-bold text-danger">10.5</span></td>
-                                                <td><span class="fw-bold text-warning">1.5</span></td>
-                                                <td><span class="badge bg-soft-danger text-danger fs-12">0.0 ngày</span>
-                                                </td>
-                                                <td class="text-start text-danger fs-12 fw-medium">Sắp hết phép năm</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start">
-                                                    <div class="d-flex align-items-center gap-3">
-                                                        <div class="avatar-image avatar-sm">
-                                                            <img src="assets/images/avatar/3.png" alt=""
-                                                                class="img-fluid">
-                                                        </div>
-                                                        <div>
-                                                            <span class="d-block fw-bold text-dark">Marianne
-                                                                Audrey</span>
-                                                            <span class="fs-12 text-muted">Mã: NV003</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>Kế toán</td>
-                                                <td><span class="fw-bold text-dark">15.0</span></td>
-                                                <td><span class="fw-bold text-danger">2.0</span></td>
-                                                <td><span class="fw-bold text-warning">0.0</span></td>
-                                                <td><span class="badge bg-soft-success text-success fs-12">13.0
-                                                        ngày</span></td>
-                                                <td class="text-start text-muted fs-12">Đã cộng 3 ngày thâm niên</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-start">
-                                                    <div class="d-flex align-items-center gap-3">
-                                                        <div class="avatar-image avatar-sm">
-                                                            <img src="assets/images/avatar/4.png" alt=""
-                                                                class="img-fluid">
-                                                        </div>
-                                                        <div>
-                                                            <span class="d-block fw-bold text-dark">Kenneth Hune</span>
-                                                            <span class="fs-12 text-muted">Mã: NV004</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>Hành chính</td>
-                                                <td><span class="fw-bold text-dark">12.0</span></td>
-                                                <td><span class="fw-bold text-danger">0.0</span></td>
-                                                <td><span class="fw-bold text-warning">0.0</span></td>
-                                                <td><span class="badge bg-soft-success text-success fs-12">12.0
-                                                        ngày</span></td>
-                                                <td class="text-start text-muted fs-12">Chưa sử dụng phép</td>
-                                            </tr>
+                                        <tbody id="reportTbody">
+                                            <tr><td colspan="7" class="text-center text-muted py-4">Chọn tiêu chí và bấm Lọc để xem báo cáo</td></tr>
                                         </tbody>
-                                        <tfoot class="bg-gray-100 fw-bold text-dark">
+                                        <tfoot class="bg-light fw-bold" id="reportTfoot" style="display:none;">
                                             <tr>
                                                 <td colspan="2" class="text-end">TỔNG CỘNG:</td>
-                                                <td>51.0</td>
-                                                <td class="text-danger">16.5</td>
-                                                <td class="text-warning">1.5</td>
-                                                <td class="text-success">33.0</td>
+                                                <td id="footTotal">0</td>
+                                                <td class="text-danger" id="footUsed">0</td>
+                                                <td class="text-warning" id="footPending">0</td>
+                                                <td class="text-success" id="footRemain">0</td>
                                                 <td></td>
                                             </tr>
                                         </tfoot>
@@ -245,35 +165,136 @@
                                 </div>
                             </div>
                             <div class="card-footer d-flex justify-content-between align-items-center">
-                                <span class="fs-12 text-muted">Hiển thị 1 đến 4 của 45 nhân viên</span>
-                                <ul class="pagination mb-0">
-                                    <li class="page-item disabled"><a class="page-link" href="#">Trước</a></li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">...</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">Sau</a></li>
-                                </ul>
+                                <span class="fs-12 text-muted" id="recordCount">Chưa có dữ liệu</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <div id="footer"></div>
     </main>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="proposalSent"></div>
-    <div class="modal fade-scale" id="searchModal" tabindex="-1"></div>
-    <div class="modal fade-scale" id="languageSelectModal" tabindex="-1"></div>
-
-
-    <script src="load-layout.js"></script>
     <script src="assets/vendors/js/vendors.min.js"></script>
-    <script src="assets/vendors/js/select2.min.js"></script>
-    <script src="assets/vendors/js/select2-active.min.js"></script>
+    <script src="load-layout.js"></script>
     <script src="assets/js/common-init.min.js"></script>
 
-</body>
+    <script>
+        const currentUser = checkRole(['hr', 'admin', 'director']);
+        if (!currentUser) throw new Error('Khong co quyen');
 
+        let reportData = [];
+
+        // ===== Load departments =====
+        async function loadDepts() {
+            const res = await callAPI('departments/list.php');
+            if (!res || res.status !== 'success') return;
+            const sel = document.getElementById('filterDept');
+            res.data.forEach(d => {
+                sel.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+            });
+        }
+
+        // ===== Load report =====
+        async function loadReport() {
+            const dept  = document.getElementById('filterDept').value;
+            const year  = document.getElementById('filterYear').value;
+            const from  = document.getElementById('filterFrom').value;
+            const to    = document.getElementById('filterTo').value;
+
+            let params = `year=${year}&date_from=${from}&date_to=${to}`;
+            if (dept) params += `&dept_id=${dept}`;
+
+            const res = await callAPI(`leave/report.php?${params}`);
+            if (!res || res.status !== 'success') return;
+
+            reportData = res.data;
+            renderReport(res);
+        }
+
+        // ===== Render =====
+        function renderReport(res) {
+            const tbody = document.getElementById('reportTbody');
+            const tfoot = document.getElementById('reportTfoot');
+            const s = res.summary;
+
+            // Cập nhật summary cards
+            document.getElementById('sumCount').innerText   = s.count;
+            document.getElementById('sumUsed').innerText    = s.used;
+            document.getElementById('sumPending').innerText = s.pending;
+            document.getElementById('sumRemain').innerText  = s.remain;
+            document.getElementById('reportTimestamp').innerText = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
+            document.getElementById('recordCount').innerText = `Hiển thị ${s.count} nhân viên`;
+
+            // Footer tổng
+            document.getElementById('footTotal').innerText   = s.total;
+            document.getElementById('footUsed').innerText    = s.used;
+            document.getElementById('footPending').innerText = s.pending;
+            document.getElementById('footRemain').innerText  = s.remain;
+            tfoot.style.display = '';
+
+            if (res.data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Không có dữ liệu phù hợp</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = res.data.map((r, i) => {
+                const remainBadge = r.remain_days <= 0
+                    ? `<span class="badge bg-soft-danger text-danger fs-12">${r.remain_days} ngày</span>`
+                    : r.remain_days <= 2
+                        ? `<span class="badge bg-soft-warning text-warning fs-12">${r.remain_days} ngày</span>`
+                        : `<span class="badge bg-soft-success text-success fs-12">${r.remain_days} ngày</span>`;
+
+                const code = r.employee_code ? `#${r.employee_code}` : `#${String(r.id).padStart(3,'0')}`;
+                return `<tr>
+                    <td class="text-start ps-3">
+                        <div>
+                            <span class="fw-bold text-dark d-block">${r.full_name}</span>
+                            <span class="fs-12 text-muted">${code}</span>
+                        </div>
+                    </td>
+                    <td>${r.dept_name ?? '--'}</td>
+                    <td><span class="fw-bold text-dark">${r.total_days}</span></td>
+                    <td><span class="fw-bold text-danger">${r.used_days}</span></td>
+                    <td><span class="fw-bold text-warning">${r.pending_days}</span></td>
+                    <td>${remainBadge}</td>
+                    <td class="text-start fs-12 ${r.note_class}">${r.note}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ===== Xuất Excel =====
+        function exportExcel() {
+            if (!reportData.length) { alert('Vui lòng tải báo cáo trước!'); return; }
+            
+            const headers = [['BÁO CÁO TỔNG HỢP NGHỈ PHÉP NĂM ' + document.getElementById('filterYear').value], []];
+            headers.push(['Họ tên', 'Mã NV', 'Phòng ban', 'Tổng phép', 'Đã dùng', 'Chờ duyệt', 'Còn lại', 'Ghi chú']);
+            
+            const rows = reportData.map(r => [
+                r.full_name,
+                r.employee_code || r.id,
+                r.dept_name || '--',
+                r.total_days,
+                r.used_days,
+                r.pending_days,
+                r.remain_days,
+                r.note
+            ]);
+
+            const worksheet = XLSX.utils.aoa_to_sheet([...headers, ...rows]);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "BaoCaoNghiPhep");
+
+            // Tự động chỉnh độ rộng cột
+            const colWidths = [25, 10, 15, 12, 12, 12, 12, 30];
+            worksheet['!cols'] = colWidths.map(w => ({ wch: w }));
+
+            XLSX.writeFile(workbook, `Bao-Cao-Nghi-Phep-${new Date().toISOString().slice(0,10)}.xlsx`);
+        }
+
+        // ===== Khởi động =====
+        loadDepts();
+        loadReport();
+    </script>
+</body>
 </html>
