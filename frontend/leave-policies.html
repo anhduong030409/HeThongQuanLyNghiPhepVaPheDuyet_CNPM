@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quy định nghỉ phép || Leave Management System</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
+    <script src="assets/js/api.js"></script>
+</head>
+
+<body>
+    <div id="navigation"></div>
+    <div id="header"></div>
+
+    <main class="nxl-container apps-container d-flex flex-column" style="min-height: calc(100vh - 80px);">
+        <div class="nxl-content flex-grow-1">
+            <div class="page-header">
+                <div class="page-header-left d-flex align-items-center">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Terms & Policies</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item">Quy định các Loại Phép</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-lg-9 mx-auto">
+                        <div class="card stretch stretch-full border-0 shadow-sm">
+                            <div class="card-header bg-white border-bottom-0 pt-4 pb-2">
+                                <h4 class="card-title fw-bold text-dark mb-0">Chính sách & Quy định nghỉ phép nhân sự</h4>
+                                <p class="text-muted mt-2">Dưới đây là một số thông tin chi tiết về các loại nghỉ phép phổ biến áp dụng trên hệ thống theo Luật hiện hành:</p>
+                            </div>
+                            <div class="card-body">
+                                
+                                <!-- Loại 1 -->
+                                <div class="mb-5 border-start border-4 border-primary ps-4">
+                                    <h5 class="fw-bold text-primary"><i class="feather-sun me-2"></i>1. Nghỉ phép năm tĩnh (Annual Leave)</h5>
+                                    <p class="text-muted text-justify">
+                                        Nhân viên ký kết hợp đồng lao động chính thức và làm việc đủ 12 tháng tại công ty được cấp <strong>12 ngày phép tự chọn chế hưởng 100% lương</strong> hàng năm (Được tính lũy kế theo thâm niên mỗi 5 năm được phép +1 ngày). Nếu thời gian làm việc chưa đủ 12 tháng, quỹ phép được tính tỷ lệ thuận theo số tháng làm thực tế. Phép này nếu sử dụng và bị từ chối sẽ được cộng trả lại.
+                                    </p>
+                                </div>
+
+                                <!-- Loại 2 -->
+                                <div class="mb-5 border-start border-4 border-warning ps-4">
+                                    <h5 class="fw-bold text-warning"><i class="feather-thermometer me-2"></i>2. Nghỉ ốm đau (Sick Leave)</h5>
+                                    <p class="text-muted text-justify">
+                                        Nghỉ phép hưởng chế độ ốm đau thông qua quy định chi trả từ cơ quan BHXH. Yêu cầu bắt buộc nhân sự phải đính kèm minh chứng là <strong>Giấy ra viện hoặc Giấy chứng nhận nghỉ việc hưởng BHXH mẫu quy định</strong> hợp pháp khi gửi đơn. Thời gian cấp cho nghỉ ốm tuân theo chế độ của BHXH (tối đa 30-60 ngày trong năm), đối với hệ thống của ta tạm ghi nhận là 30 ngày/năm. Không thể hủy nếu đơn đã được phê duyệt liên thông HR.
+                                    </p>
+                                </div>
+
+                                <!-- Loại 3 -->
+                                <div class="mb-5 border-start border-4 border-success ps-4">
+                                    <h5 class="fw-bold text-success"><i class="feather-heart me-2"></i>3. Phép Thai sản (Maternity Leave)</h5>
+                                    <p class="text-muted text-justify">
+                                        Nghỉ phục vụ cho công tác thai nghén và chăm sóc con cái tuân theo quy định chung của luật BHXH hiện hành. Thời gian giới hạn trên hệ thống được đặt là <strong>180 ngày (tương đương 6 tháng)</strong> liên tiếp cho 1 kỳ nghỉ thai sản hưởng bảo hiểm chung. Đảm bảo bạn cần báo trước cho quản lý hoặc phòng tổ chức chậm nhất là 30 ngày để họ thay mới kế hoạch nhân sự và chuẩn bị nhân sự Back-up kịp thời. 
+                                    </p>
+                                </div>
+                                
+                                <!-- Loại 4 -->
+                                <div class="mb-5 border-start border-4 border-danger ps-4">
+                                    <h5 class="fw-bold text-danger"><i class="feather-user-minus me-2"></i>4. Nghỉ không hưởng lương (Unpaid Leave)</h5>
+                                    <p class="text-muted text-justify">
+                                        Sử dụng khi nhân sự đã dùng cạn hết số phép năm hiện còn mà có việc bận đột xuất cá nhân theo thoả thuận, được Giám Đốc nhân sự và Quản lý đồng ý phê duyệt trước. Việc nghỉ không lương này <strong>không có giới hạn</strong> ngày (đặt là 999 ngày trên API), mức trừ lương sẽ dựa trên hệ cơ bản số công/tháng bị khuyết.
+                                    </p>
+                                </div>
+
+                                <!-- Loại 5 -->
+                                <div class="mb-4 border-start border-4 border-info ps-4">
+                                    <h5 class="fw-bold text-info"><i class="feather-award me-2"></i>5. Nghỉ việc riêng hưởng lương / Hiếu hỉ</h5>
+                                    <p class="text-muted text-justify">
+                                        Cấp riêng cho các sự kiện cá nhân như Đám Cưới bản thân (nghỉ 3 ngày), con kết hôn (nghỉ 1 ngày)... được thanh toán nguyên lương. Bạn cần chú thích cụ thể sự kiện trên Box lí do khi tạo đơn xin phê duyệt đặc biệt.
+                                    </p>
+                                </div>
+                                <hr class="my-4">
+                                <p class="text-center text-muted fs-12 mb-0">Chính sách nghỉ phép cập nhật lần cuối: <b>01/01/2026</b></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer"></div>
+    </main>
+
+    <script src="load-layout.js"></script>
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="assets/vendors/js/bootstrap.min.js"></script>
+    <script src="assets/js/common-init.min.js"></script>
+</body>
+</html>

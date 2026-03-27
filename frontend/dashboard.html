@@ -25,6 +25,7 @@
     <!--! BEGIN: Custom CSS-->
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
     <!--! END: Custom CSS-->
+    <script src="assets/js/api.js"></script>
     <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
     <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
     <!--[if lt IE 9]>
@@ -122,7 +123,7 @@
                         <div class="card stretch stretch-full">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="card-title">Đơn xin nghỉ phép chờ duyệt mới nhất</h5>
-                                <a href="duyet-nghi-phep.html" class="btn btn-sm btn-light-brand">Xem tất cả</a>
+                                <a href="manager-QLNghiPhep.html" class="btn btn-sm btn-light-brand">Xem tất cả</a>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -133,7 +134,6 @@
                                                 <th>Phòng Ban</th>
                                                 <th>Loại Phép</th>
                                                 <th>Thời Gian Nghỉ</th>
-                                                <th>Trạng Thái</th>
                                                 <th>Thao Tác</th>
                                             </tr>
                                         </thead>
@@ -216,7 +216,8 @@
                         <div class="card stretch stretch-full">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="card-title">Nhật ký hoạt động (Audit Logs)</h5>
-                                <a href="quan-ly-nguoi-dung.html" class="btn btn-sm btn-light-brand">Quản lý Users</a>
+                                <a href="admin-user-management.html" class="btn btn-sm btn-light-brand">Quản lý
+                                    Users</a>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -266,6 +267,11 @@
                                     <h3 class="mb-0 text-white"><span id="emp-remaining-leave">0</span> ngày</h3>
                                 </div>
 
+                                <div id="emp-leave-chart"
+                                    style="min-height: 200px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 1rem; margin-top: 1rem;">
+                                    <span class="text-white-50">[Biểu đồ tỉ lệ phép]</span>
+                                </div>
+
                                 <h6 class="text-white mb-2 mt-4">Tiến độ sử dụng phép năm</h6>
                                 <div class="progress mb-2" style="height: 8px;">
                                     <div class="progress-bar bg-success" id="emp-progress-bar" role="progressbar"
@@ -275,7 +281,7 @@
                                 <small id="emp-progress-text">Đã dùng 0% quỹ phép năm</small>
 
                                 <div class="mt-4">
-                                    <a href="dang-ky-nghi-phep.html"
+                                    <a href="emp-leave-request.html"
                                         class="btn btn-light w-100 text-primary fw-bold">Tạo đơn xin nghỉ mới</a>
                                 </div>
                             </div>
@@ -375,6 +381,58 @@
             }
         }
 
+        // --- UTILITY HÀM VẼ PIE / DONUT CHART ===
+        function renderPieChart(elementId, labels, series, colors, isDark = false) {
+            var container = document.getElementById(elementId);
+            if (!container) return;
+
+            container.innerHTML = ''; // Xoá placeholder
+
+            if (!series || series.length === 0 || series.every(s => s === 0)) {
+                container.innerHTML = '<span class="' + (isDark ? 'text-white-50' : 'text-muted') + '">Không có dữ liệu</span>';
+                container.style.display = 'flex';
+                return;
+            }
+
+            // reset styles
+            container.style.display = 'block';
+
+            var options = {
+                series: series,
+                chart: {
+                    type: 'donut',
+                    height: 250,
+                    background: 'transparent',
+                    toolbar: { show: false }
+                },
+                labels: labels,
+                colors: colors || ['#3454d1', '#17c666', '#ea4d4d', '#ff9720', '#49B6F5'],
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%'
+                        }
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        colors: isDark ? '#fff' : '#000'
+                    }
+                },
+                stroke: {
+                    show: true,
+                    colors: isDark ? ['rgba(255,255,255,0.1)'] : ['#fff']
+                }
+            };
+
+            var chart = new ApexCharts(container, options);
+            chart.render();
+        }
+
         // --- CÁC HÀM SƯỜN (SKELETON) ĐỂ GỌI API ĐIỀN DỮ LIỆU ĐỘNG ---
 
         async function loadAdminData(user) {
@@ -400,6 +458,7 @@
                 let pendingCount = 0;
                 let absentCount = 0;
                 let deptAbsentCount = {};
+                let deptLeaveStats = {}; // Chart data: Tổng số đơn nghỉ phép theo phòng ban
                 let pendingList = [];
 
                 if (leaveRes && leaveRes.status === 'success') {
@@ -407,6 +466,11 @@
                     today.setHours(0, 0, 0, 0);
 
                     leaveRes.data.forEach(r => {
+                        let dept = userDeptMap[r.user_id] || 'Chưa phân bổ';
+                        
+                        // Thống kê tổng quan đơn xin nghỉ (tất cả trạng thái) cho chart
+                        deptLeaveStats[dept] = (deptLeaveStats[dept] || 0) + 1;
+
                         // Check pending
                         if (r.status === 'pending' || r.status === 'pending_hr') {
                             pendingCount++;
@@ -421,7 +485,6 @@
                             ed.setHours(23, 59, 59, 999);
                             if (today >= sd && today <= ed) {
                                 absentCount++;
-                                let dept = userDeptMap[r.user_id] || 'Chưa phân bổ';
                                 deptAbsentCount[dept] = (deptAbsentCount[dept] || 0) + 1;
                             }
                         }
@@ -461,9 +524,6 @@
                                 <td>${leaveTypeName}</td>
                                 <td>${startDate} - ${endDate}</td>
                                 <td><span class="badge ${badgeClass}">${statusText}</span></td>
-                                <td>
-                                    <a href="duyet-nghi-phep.html" class="btn btn-sm btn-light-brand text-primary">Chi tiết</a>
-                                </td>
                             </tr>
                         `;
                     });
@@ -473,6 +533,12 @@
                 let deptStatsContainer = document.getElementById('admin-dept-stats');
                 deptStatsContainer.innerHTML = '';
                 let depts = Object.keys(deptAbsentCount);
+                
+                // Vẽ chart phòng ban dựa trên TỔNG số đơn (deptLeaveStats), tránh việc không có ai vắng mặt hôm nay thì biểu đồ rỗng
+                let deptsChart = Object.keys(deptLeaveStats);
+                let deptColors = ['#ff9720', '#ea4d4d', '#3454d1', '#17c666', '#49B6F5', '#a434d1'];
+                renderPieChart('leave-department-chart', deptsChart, deptsChart.map(d => deptLeaveStats[d]), deptColors);
+
                 if (depts.length === 0) {
                     deptStatsContainer.innerHTML = `
                          <div class="col-12">
@@ -534,6 +600,9 @@
                     document.getElementById('it-total-users').innerText = totalUsers;
                     document.getElementById('it-active-users').innerText = activeUsers;
                     document.getElementById('it-inactive-users').innerText = `${inactiveUsers} tài khoản bị khóa/nghỉ việc`;
+
+                    // Vẽ chart IT
+                    renderPieChart('system-traffic-chart', ['Đang hoạt động', 'Bị khóa/Nghỉ'], [activeUsers, inactiveUsers], ['#17c666', '#ea4d4d']);
 
                     // Fetch leaves to add to logs
                     const leaveRes = await callAPI('leave/request.php');
@@ -599,11 +668,28 @@
             if (balanceRes && balanceRes.status === 'success') {
                 let total = 0;
                 let used = 0;
+                let labels = [];
+                let series = [];
+                let totalRemain = 0;
 
                 balanceRes.data.forEach(b => {
+                    let u = parseFloat(b.used_days);
                     if (b.max_days_per_year < 999) {
                         total += parseFloat(b.total_days);
-                        used += parseFloat(b.used_days);
+                        used += u;
+                        totalRemain += parseFloat(b.remaining_days);
+                        
+                        // Nếu loại phép có số ngày dùng > 0 thì tách riêng vào biểu đồ
+                        if (u > 0) {
+                            labels.push('Đã dùng: ' + b.leave_type_name);
+                            series.push(u);
+                        }
+                    } else {
+                        // Phép không giới hạn (như phép hiếu hỉ, nghỉ không lương...)
+                        if (u > 0) {
+                            labels.push('Đã dùng: ' + b.leave_type_name);
+                            series.push(u);
+                        }
                     }
                 });
 
@@ -625,6 +711,30 @@
                     progressBar.className = 'progress-bar bg-warning';
                 } else {
                     progressBar.className = 'progress-bar bg-success';
+                }
+
+                // Đưa Tổng Còn Lại vào biểu đồ
+                if (totalRemain > 0) {
+                    labels.push('Tổng còn lại');
+                    series.push(totalRemain);
+                } else if (series.length === 0) {
+                    // Xử lý case quỹ = 0
+                    labels.push('Không có dữ liệu');
+                    series.push(0);
+                }
+
+                // Vẽ chart Employee với danh sách màu nhiều hơn để ngừa nhiều loại phép
+                let employeeColors = ['#ff9720', '#ea4d4d', '#3454d1', '#49B6F5', '#a434d1', '#17c666'];
+                // Đảm bảo "Tổng còn lại" (Item cuối cùng nếu có) luôn có màu xanh lá (nếu mảng được push cuối)
+                if (totalRemain > 0) {
+                    let colorArr = [];
+                    for(let i=0; i<labels.length-1; i++) {
+                        colorArr.push(employeeColors[i % (employeeColors.length-1)]);
+                    }
+                    colorArr.push('#17c666'); // Xanh lá luôn cho phần "Tổng còn lại"
+                    renderPieChart('emp-leave-chart', labels, series, colorArr, true);
+                } else {
+                    renderPieChart('emp-leave-chart', labels, series, employeeColors, true);
                 }
             } else {
                 document.getElementById('emp-total-leave').innerText = '-';

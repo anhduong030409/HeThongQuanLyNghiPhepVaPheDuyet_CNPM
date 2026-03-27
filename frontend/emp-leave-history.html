@@ -317,7 +317,8 @@
 
         function renderStatus(status) {
             const map = {
-                pending: '<span class="badge bg-soft-warning text-warning w-100">Chờ duyệt</span>',
+                pending: '<span class="badge bg-soft-warning text-warning w-100">Chờ Manager duyệt</span>',
+                pending_hr: '<span class="badge bg-soft-warning text-warning w-100">Chờ HR duyệt</span>',
                 approved: '<span class="badge bg-soft-success text-success w-100">Đã phê duyệt</span>',
                 rejected: '<span class="badge bg-soft-danger text-danger w-100">Bị từ chối</span>',
                 cancelled: '<span class="badge bg-soft-secondary text-secondary w-100">Đã hủy</span>'
@@ -337,7 +338,7 @@
             const btnCancel = document.getElementById('btnCancel');
 
             // Chi hien nut huy neu don dang cho duyet
-            btnCancel.classList.toggle('d-none', r.status !== 'pending');
+            btnCancel.classList.toggle('d-none', !(r.status === 'pending' || r.status === 'pending_hr'));
 
             document.getElementById('modalDetailBody').innerHTML = `
     <div class="row g-3">

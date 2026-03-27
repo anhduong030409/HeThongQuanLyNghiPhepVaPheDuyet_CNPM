@@ -232,8 +232,8 @@ if ($method === 'POST') {
     // >  2 ngày: 2 cấp — manager duyệt → pending_hr → HR duyệt → approved
     // ================================================================
 
-   // ================================================================
-    // Xác định cấp duyệt theo ROLE người gửi, không theo số ngày
+    // ================================================================
+    // Xác định cấp duyệt theo ROLE và Số ngày
     // ================================================================
 
     // Lấy role của người gửi
@@ -248,8 +248,21 @@ if ($method === 'POST') {
     $sender = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_role));
     $sender_role = $sender['role_name'] ?? 'employee';
 
-    // Employee → 2 cấp, còn lại → 1 cấp
-    $approval_level = ($sender_role === 'employee') ? 2 : 1;
+    // Employee -> > 2 ngày: 2 cấp (qua HR), <= 2 ngày: 1 cấp
+    // Director -> tự động duyệt (status = 'approved')
+    // Các role khác -> 1 cấp
+    $approval_level = 1;
+    $initial_status = 'pending';
+    
+    if ($sender_role === 'employee') {
+        if ($total_days > 2) {
+            $approval_level = 2;
+        } else {
+            $approval_level = 1;
+        }
+    } elseif ($sender_role === 'director') {
+        $initial_status = 'approved';
+    }
 
     // ================================================================
     // Transaction: tạo đơn + items + trừ số dư
@@ -260,12 +273,12 @@ if ($method === 'POST') {
 
         $stmt_req = mysqli_prepare($conn,
             "INSERT INTO leave_requests
-             (user_id, leave_type_id, start_date, end_date, total_days, reason, document_url, approval_level, submitted_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())"
+             (user_id, leave_type_id, start_date, end_date, total_days, reason, document_url, approval_level, status, submitted_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
         );
-        mysqli_stmt_bind_param($stmt_req, "iissdssi",
+        mysqli_stmt_bind_param($stmt_req, "iissdssis",
             $user_id, $insert_type_id, $start_date, $end_date,
-            $total_days, $reason, $document_url, $approval_level
+            $total_days, $reason, $document_url, $approval_level, $initial_status
         );
         mysqli_stmt_execute($stmt_req);
         $request_id = mysqli_insert_id($conn);
@@ -308,9 +321,13 @@ if ($method === 'POST') {
         }
 
         // Thông báo cho nhân viên
-        $msg = ($approval_level == 2)
-            ? "Đơn nghỉ phép đã gửi — cần duyệt 2 cấp (Manager → HR)"
-            : "Đơn nghỉ phép đã gửi — chờ Director phê duyệt";
+        if ($initial_status === 'approved') {
+            $msg = "Đơn nghỉ phép cấp Director đã được TỰ ĐỘNG PHÊ DUYỆT ✅";
+        } elseif ($approval_level == 2) {
+            $msg = "Đơn nghỉ phép đã gửi — Cần duyệt 2 cấp (Manager → HR)";
+        } else {
+            $msg = "Đơn nghỉ phép đã gửi — Cần 1 cấp phê duyệt";
+        }
 
         $stmt_notif = mysqli_prepare($conn,
             "INSERT INTO notifications (user_id, request_id, type, message) VALUES (?, ?, 'submitted', ?)"
@@ -321,9 +338,9 @@ if ($method === 'POST') {
         mysqli_commit($conn);
         echo json_encode([
             "status"         => "success",
-            "message"        => $approval_level == 2
-                ? "Gửi đơn thành công — đơn này cần duyệt 2 cấp"
-                : "Gửi đơn thành công",
+            "message"        => $initial_status === 'approved' 
+                ? "Gửi đơn và Phê duyệt tự động thành công"
+                : ($approval_level == 2 ? "Gửi đơn thành công — đơn này cần duyệt 2 cấp" : "Gửi đơn thành công"),
             "approval_level" => $approval_level,
             "document_url"   => $document_url
         ]);

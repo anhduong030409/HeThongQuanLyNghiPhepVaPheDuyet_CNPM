@@ -11,6 +11,7 @@
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/vendors/css/daterangepicker.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <script src="assets/js/api.js"></script>
 </head>
 
@@ -23,12 +24,16 @@
             <div class="page-header">
                 <div class="page-header-left d-flex align-items-center">
                     <div class="page-header-title">
-                        <h5 class="m-b-10">Dashboard</h5>
+                        <h5 class="m-b-10">Admin</h5>
                     </div>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                         <li class="breadcrumb-item">Quản lý người dùng</li>
                     </ul>
+                </div>
+                <div class="page-header-right ms-auto">
+                    <div class="d-md-none d-flex align-items-center">
+                    </div>
                 </div>
             </div>
 
@@ -285,8 +290,8 @@
             }
             const genderLabel = {
                 male: '<span class="badge bg-soft-info text-info">Nam</span>',
-                female: '<span class="badge bg-soft-pink" style="color:#d63384">Nữ</span>',
-                other: '<span class="badge bg-soft-secondary text-secondary">Khác</span>',
+                female: '<span class="badge bg-pink-200 text-pink-600">Nữ</span>',
+                other: '<span class="badge bg-gray-300 text-secondary">Khác</span>',
             };
             tbody.innerHTML = data.map(u => `
                 <tr>

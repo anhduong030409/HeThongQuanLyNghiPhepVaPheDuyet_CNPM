@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trung tâm hỗ trợ || Leave Management System</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
+    <script src="assets/js/api.js"></script>
+</head>
+
+<body>
+    <div id="navigation"></div>
+    <div id="header"></div>
+
+    <main class="nxl-container apps-container d-flex flex-column" style="min-height: calc(100vh - 80px);">
+        <div class="nxl-content flex-grow-1">
+            <div class="page-header">
+                <div class="page-header-left d-flex align-items-center">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Hỗ trợ (Help)</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item">Trung tâm trợ giúp</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="card stretch stretch-full border-0 shadow-sm">
+                            <div class="card-header bg-white border-bottom-0 pt-4 pb-2">
+                                <h4 class="card-title fw-bold text-dark mb-0">Câu hỏi thường gặp hệ thống (FAQ)</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="accordion" id="accordionHelp">
+                                    <div class="accordion-item border-0 mb-3 shadow-none bg-light rounded-3">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed bg-transparent fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                                Làm thế nào để tạo đơn xin nghỉ phép?
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionHelp">
+                                            <div class="accordion-body text-muted">
+                                                Để tạo đơn xin nghỉ phép, bạn vào menu "Nhân viên" > "Gửi yêu cầu phép" ở thanh điều hướng bên trái. Sau đó điền Loại phép, Ngày bắt đầu, Ngày kết thúc và viết Lý do xin nghỉ rồi ấn nút "Gửi yêu cầu".
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item border-0 mb-3 shadow-none bg-light rounded-3">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed bg-transparent fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                                Đơn xin nghỉ của tôi sẽ được ai phê duyệt?
+                                            </button>
+                                        </h2>
+                                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionHelp">
+                                            <div class="accordion-body text-muted">
+                                                Đối với nhân viên bình thường, nếu nghỉ từ 1 - 2 ngày đơn sẽ được Quản lý trực tiếp (Manager) duyệt 1 cấp. Nếu đơn nghỉ phép vượt quá 2 ngày, hệ thống sẽ tự động yêu cầu duyệt 2 cấp (Manager duyệt trước, Bộ phận HR duyệt sau). Các chức vụ từ Manager hoặc Giám Đốc trở lên có tính năng duyệt tự động rẽ nhánh riêng.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="accordion-item border-0 mb-3 shadow-none bg-light rounded-3">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed bg-transparent fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                                                Tôi có thể tự Hủy đơn đã gửi không?
+                                            </button>
+                                        </h2>
+                                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionHelp">
+                                            <div class="accordion-body text-muted">
+                                                Bạn hoàn toàn có thể tự Hủy đơn ngay tại mục "Lịch sử xin nghỉ", nhưng với điều kiện đơn của bạn đang ở trạng thái chờ (Pending hoặc Pending HR). Nếu đơn đã được duyệt hoàn toàn (Approved) thì bạn cần liên hệ người quản lý để họ thực hiện hủy thủ công trên hệ thống.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                     <div class="accordion-item border-0 mb-3 shadow-none bg-light rounded-3">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed bg-transparent fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                                                Làm sao để biết tôi còn bao nhiêu ngày phép?
+                                            </button>
+                                        </h2>
+                                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionHelp">
+                                            <div class="accordion-body text-muted">
+                                                Hệ thống sẽ cập nhật số dư phép thời gian thực ngay tại trang chủ Bảng điều khiển (Dashboard). Ngoài ra, trên giao diện "Gửi yêu cầu" cũng sẽ hiển thị các ô thống kê "Tham chiếu quỹ phép hạn mức" cho bạn tiện theo dõi.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <h5 class="fw-bold text-dark">Cần hỗ trợ trực tiếp?</h5>
+                                <p class="text-muted">Nếu có bất kỳ lỗi không thể tương tác hay mất tài khoản mật khẩu, vui lòng liên hệ:</p>
+                                <ul class="text-muted">
+                                    <li>Trung tâm ITS Helpdesk: <strong>(024) 1234 5678</strong></li>
+                                    <li>Email bộ phận nhân sự: <strong>hr.support@lms.local</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer"></div>
+    </main>
+
+    <script src="load-layout.js"></script>
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="assets/vendors/js/bootstrap.min.js"></script>
+    <script src="assets/js/common-init.min.js"></script>
+</body>
+</html>

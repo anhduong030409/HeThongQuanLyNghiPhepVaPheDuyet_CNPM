@@ -233,9 +233,7 @@ if ($method === 'POST') {
         mysqli_stmt_execute($stmt_update);
 
         // Xử lý balance
-        if ($new_status === 'approved') {
-            _deductBalance($conn, $request_id);
-        } elseif ($new_status === 'rejected') {
+        if ($new_status === 'rejected') {
             _restoreBalance($conn, $request_id);
         }
 
