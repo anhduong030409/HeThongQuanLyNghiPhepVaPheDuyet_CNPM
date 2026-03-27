@@ -40,6 +40,16 @@ function loadPartial(id, file) {
             // Thêm vào đây luôn, sau khi nav được chèn vào DOM
             if (id === 'navigation') {
                 applyRoleBasedNav();
+
+                // Đánh dấu trang đang mở (active) trên navbar
+                const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+                document.querySelectorAll('.nxl-link').forEach(link => {
+                    const linkPage = link.getAttribute('href')?.split('/').pop();
+                    if (linkPage && linkPage === currentPage) {
+                        link.classList.add('active');
+                        link.closest('.nxl-item')?.classList.add('active');
+                    }
+                });
             }
         });
 }
