@@ -164,8 +164,14 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="card-footer d-flex justify-content-between align-items-center">
-                                <span class="fs-12 text-muted" id="recordCount">Chưa có dữ liệu</span>
+                            <div class="card-footer py-3 bg-white border-top">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-muted fs-12" id="recordCount">Chưa có dữ liệu</div>
+                                    <nav>
+                                        <ul class="pagination pagination-sm mb-0 gap-1" id="pagination-list">
+                                        </ul>
+                                    </nav>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -184,6 +190,8 @@
         if (!currentUser) throw new Error('Khong co quyen');
 
         let reportData = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
 
         // ===== Load departments =====
         async function loadDepts() {
@@ -197,6 +205,7 @@
 
         // ===== Load report =====
         async function loadReport() {
+            currentPage = 1; // Reset page
             const dept  = document.getElementById('filterDept').value;
             const year  = document.getElementById('filterYear').value;
             const from  = document.getElementById('filterFrom').value;
@@ -217,6 +226,13 @@
             const tbody = document.getElementById('reportTbody');
             const tfoot = document.getElementById('reportTfoot');
             const s = res.summary;
+            reportSummary = s; // Cất vào biến tạm để changePage dùng
+
+            const total = res.data.length;
+            const totalPages = Math.ceil(total / rowsPerPage);
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pagedData = res.data.slice(start, end);
 
             // Cập nhật summary cards
             document.getElementById('sumCount').innerText   = s.count;
@@ -224,7 +240,12 @@
             document.getElementById('sumPending').innerText = s.pending;
             document.getElementById('sumRemain').innerText  = s.remain;
             document.getElementById('reportTimestamp').innerText = 'Cập nhật: ' + new Date().toLocaleTimeString('vi-VN');
-            document.getElementById('recordCount').innerText = `Hiển thị ${s.count} nhân viên`;
+            
+            document.getElementById('recordCount').innerText = total > 0 
+                ? `Hiển thị ${start + 1}-${Math.min(end, total)} trên ${total} nhân viên`
+                : 'Không có dữ liệu';
+            
+            renderPagination(totalPages);
 
             // Footer tổng
             document.getElementById('footTotal').innerText   = s.total;
@@ -233,12 +254,12 @@
             document.getElementById('footRemain').innerText  = s.remain;
             tfoot.style.display = '';
 
-            if (res.data.length === 0) {
+            if (pagedData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Không có dữ liệu phù hợp</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = res.data.map((r, i) => {
+            tbody.innerHTML = pagedData.map((r, i) => {
                 const remainBadge = r.remain_days <= 0
                     ? `<span class="badge bg-soft-danger text-danger fs-12">${r.remain_days} ngày</span>`
                     : r.remain_days <= 2
@@ -289,8 +310,45 @@
             const colWidths = [25, 10, 15, 12, 12, 12, 12, 30];
             worksheet['!cols'] = colWidths.map(w => ({ wch: w }));
 
-            XLSX.writeFile(workbook, `Bao-Cao-Nghi-Phep-${new Date().toISOString().slice(0,10)}.xlsx`);
+            XLSX.writeFile(workbook, `Bao-Cao-Nghi-Phep-${new Date().toISOString().slice(0, 10)}.xlsx`);
         }
+
+        // ===== RENDER PHÂN TRANG =====
+        function renderPagination(totalPages) {
+            const paginationUl = document.getElementById('pagination-list');
+            if (!paginationUl) return;
+            paginationUl.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">Trước</a>
+                </li>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationUl.innerHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">Sau</a>
+                </li>
+            `;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderReport({ summary: reportSummary, data: reportData });
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        let reportSummary = {};
 
         // ===== Khởi động =====
         loadDepts();

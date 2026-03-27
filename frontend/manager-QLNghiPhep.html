@@ -66,6 +66,15 @@
                                     </table>
                                 </div>
                             </div>
+                            <div class="card-footer py-3 bg-white border-top">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-muted fs-12" id="pagination-info">Hiển thị 0-0 trên 0 bản ghi</div>
+                                    <nav>
+                                        <ul class="pagination pagination-sm mb-0 gap-1" id="pagination-list">
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -132,6 +141,9 @@
         const isHrLevel = ['hr'].includes(currentUser.role);
         const isDirector = currentUser.role === 'director';
         let rejectingId = null;
+        let allRequests = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
 
         // ================================================================
         // Render filter options theo role
@@ -283,20 +295,44 @@
                 : 'leave/approve.php';
 
             const json = await callAPI(endpoint);
-
             if (!json || json.status !== 'success') {
                 tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">
                     Lỗi tải dữ liệu</td></tr>`;
                 return;
             }
 
-            if (json.data.length === 0) {
+            allRequests = json.data;
+            currentPage = 1;
+            renderRequests();
+        }
+
+        // ================================================================
+        // Render danh sách
+        // ================================================================
+        function renderRequests() {
+            const tbody = document.getElementById('request-tbody');
+            const total = allRequests.length;
+            const totalPages = Math.ceil(total / rowsPerPage);
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pagedData = allRequests.slice(start, end);
+
+            // Cập nhật thông tin phân trang
+            const info = document.getElementById('pagination-info');
+            if (info) {
+                info.innerText = total > 0 
+                    ? `Hiển thị ${start + 1}-${Math.min(end, total)} trên ${total} bản ghi`
+                    : 'Không có bản ghi nào';
+            }
+            renderPagination(totalPages);
+
+            if (pagedData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-4">
                     Không có đơn nào</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = json.data.map((r, i) => {
+            tbody.innerHTML = pagedData.map((r, i) => {
                 const dateRange = r.start_date === r.end_date
                     ? formatDate(r.start_date)
                     : `${formatDate(r.start_date)} – ${formatDate(r.end_date)}`;
@@ -372,6 +408,39 @@
             } else {
                 showToast(res?.message || 'Có lỗi xảy ra', 'error');
             }
+        }
+
+        function renderPagination(totalPages) {
+            const paginationUl = document.getElementById('pagination-list');
+            if (!paginationUl) return;
+            paginationUl.innerHTML = '';
+            if (totalPages <= 1) return;
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">Trước</a>
+                </li>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationUl.innerHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">Sau</a>
+                </li>
+            `;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderRequests();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
         // ================================================================

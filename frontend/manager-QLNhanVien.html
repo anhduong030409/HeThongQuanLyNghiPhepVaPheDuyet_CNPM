@@ -193,6 +193,10 @@
         const currentUser = checkRole(['admin', 'hr', 'director', 'manager']);
         if (!currentUser) throw new Error('Không có quyền truy cập');
 
+        let allUsers = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
         // 2. Hàm tải danh sách nhân viên
         async function loadUsers() {
             const tbody = document.getElementById('users-tbody');
@@ -210,87 +214,140 @@
                     return;
                 }
 
-                let html = '';
-                let statTotal = res.data.length;
-                let statActive = 0;
-                let statInactive = 0;
-                let statNew = 0;
-
-                const now = new Date();
-                // check for "this month"
-                const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-
-                res.data.forEach(u => {
-                    const name = u.full_name || 'Chưa thiết lập';
-                    const initial = name.split(' ').pop().substring(0, 2).toUpperCase();
-
-                    // Map màu sắc để phân biệt role
-                    const roleColors = {
-                        'admin': 'danger',
-                        'director': 'primary',
-                        'manager': 'warning',
-                        'hr': 'info',
-                        'employee': 'success'
-                    };
-                    const color = roleColors[u.role_name] || roleColors[u.role] || 'secondary';
-
-                    // Xử lý Ngày gia nhập (created_at)
-                    let joinDate = '---';
-                    if (u.created_at) {
-                        const d = new Date(u.created_at);
-                        joinDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-
-                        // Tuyển mới: gia nhập trong THÁNG NÀY
-                        const uMonthStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-                        if (uMonthStr === currentMonthStr) {
-                            statNew++;
-                        }
-                    }
-
-                    // Xử lý Trạng thái
-                    const isActive = parseInt(u.is_active) === 1;
-                    if (isActive) statActive++;
-                    else statInactive++;
-
-                    const statusStr = isActive ? 'Hoạt động' : 'Tạm khóa';
-                    const statusColor = isActive ? 'success' : 'danger';
-
-                    html += `
-                        <tr>
-                            <td class="px-4">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-text avatar-md bg-soft-${color} text-${color} rounded-circle me-3 fw-bold">${initial}</div>
-                                    <div>
-                                        <span class="text-dark fw-bold d-block">${name}</span>
-                                        <small class="text-muted">${u.email || ''}</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-soft-${color} text-${color}">${u.role_display || u.role_name}</span></td>
-                            <td>${u.dept_name || (u.department_id ? 'Phòng ID: ' + u.department_id : '--')}</td>
-                            <td>${joinDate}</td>
-                            <td><span class="badge bg-soft-${statusColor} text-${statusColor}">${statusStr}</span></td>
-                            <td class="text-end px-4">
-                                <div class="hstack gap-2 justify-content-end">
-                                    <button class="btn btn-sm btn-light-brand" onclick="alert('Tính năng đang phát triển!')"><i class="feather-edit-3"></i></button>
-                                    <button class="btn btn-sm btn-light-danger" onclick="alert('Không thể xóa')"><i class="feather-trash-2"></i></button>
-                                </div>
-                            </td>
-                        </tr>`;
-                });
-
-                tbody.innerHTML = html;
-
-                // Render Stats
-                document.getElementById('stat-total').innerText = statTotal < 10 ? '0' + statTotal : statTotal;
-                document.getElementById('stat-active').innerText = statActive < 10 ? '0' + statActive : statActive;
-                document.getElementById('stat-inactive').innerText = statInactive < 10 ? '0' + statInactive : statInactive;
-                document.getElementById('stat-new').innerText = statNew < 10 ? '0' + statNew : statNew;
-
+                allUsers = res.data;
+                renderUsers();
             } catch (error) {
                 console.error("Lỗi:", error);
                 tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Không thể kết nối API</td></tr>';
             }
+        }
+
+        // 3. Render list nhân viên
+        function renderUsers() {
+            const tbody = document.getElementById('users-tbody');
+            const total = allUsers.length;
+            const totalPages = Math.ceil(total / rowsPerPage);
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pagedData = allUsers.slice(start, end);
+
+            let html = '';
+            let statActive = 0;
+            let statInactive = 0;
+            let statNew = 0;
+
+            const now = new Date();
+            const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+            // 1. Tính toán stats trên TOÀN BỘ dữ liệu
+            allUsers.forEach(u => {
+                if (parseInt(u.is_active) === 1) statActive++;
+                else statInactive++;
+
+                if (u.created_at) {
+                    const d = new Date(u.created_at);
+                    if (`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}` === currentMonthStr) statNew++;
+                }
+            });
+
+            // 2. Render pagedData
+            pagedData.forEach(u => {
+                const name = u.full_name || 'Chưa thiết lập';
+                const initial = name.split(' ').pop().substring(0, 2).toUpperCase();
+
+                const roleColors = {
+                    'admin': 'danger',
+                    'director': 'primary',
+                    'manager': 'warning',
+                    'hr': 'info',
+                    'employee': 'success'
+                };
+                const color = roleColors[u.role_name] || roleColors[u.role] || 'secondary';
+
+                let joinDate = '---';
+                if (u.created_at) {
+                    const d = new Date(u.created_at);
+                    joinDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                }
+
+                const isActive = parseInt(u.is_active) === 1;
+                const statusStr = isActive ? 'Hoạt động' : 'Tạm khóa';
+                const statusColor = isActive ? 'success' : 'danger';
+
+                html += `
+                    <tr>
+                        <td class="px-4">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-text avatar-md bg-soft-${color} text-${color} rounded-circle me-3 fw-bold">${initial}</div>
+                                <div>
+                                    <span class="text-dark fw-bold d-block">${name}</span>
+                                    <small class="text-muted">${u.email || ''}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-soft-${color} text-${color}">${u.role_display || u.role_name}</span></td>
+                        <td>${u.dept_name || (u.department_id ? 'Phòng ID: ' + u.department_id : '--')}</td>
+                        <td>${joinDate}</td>
+                        <td><span class="badge bg-soft-${statusColor} text-${statusColor}">${statusStr}</span></td>
+                        <td class="text-end px-4">
+                            <div class="hstack gap-2 justify-content-end">
+                                <button class="btn btn-sm btn-light-brand" onclick="alert('Tính năng đang phát triển!')"><i class="feather-edit-3"></i></button>
+                                <button class="btn btn-sm btn-light-danger" onclick="alert('Không thể xóa')"><i class="feather-trash-2"></i></button>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+
+            tbody.innerHTML = html;
+
+            // 3. Hiển thị Stats
+            document.getElementById('stat-total').innerText = total < 10 ? '0' + total : total;
+            document.getElementById('stat-active').innerText = statActive < 10 ? '0' + statActive : statActive;
+            document.getElementById('stat-inactive').innerText = statInactive < 10 ? '0' + statInactive : statInactive;
+            document.getElementById('stat-new').innerText = statNew < 10 ? '0' + statNew : statNew;
+
+            // 4. Cập nhật phân trang
+            const footer = document.querySelector('.card-footer');
+            if (footer) {
+                const info = footer.querySelector('.text-muted');
+                if (info) info.innerText = total > 0 
+                    ? `Đang xem ${start + 1} - ${Math.min(end, total)} của ${total} nhân viên`
+                    : 'Không có nhân viên nào';
+            }
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const paginationUl = document.querySelector('.pagination');
+            if (!paginationUl) return;
+            paginationUl.innerHTML = '';
+            if (totalPages <= 1) return;
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">Trình</a>
+                </li>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationUl.innerHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">Kế</a>
+                </li>
+            `;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderUsers();
+            window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
         // Gọi hàm render list

@@ -399,6 +399,9 @@
         const API = '../backend/api/leave/type.php';
         const token = localStorage.getItem('token');
         let editingId = null;
+        let allLeaveTypes = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
 
         function showToast(message, type = 'success') {
             const toastBox = document.getElementById('toastBox');
@@ -416,10 +419,22 @@
             const json = await res.json();
             if (json.status !== 'success') return;
 
+            allLeaveTypes = json.data;
+            renderLeaveTypes();
+        }
+
+        // ===== RENDER DANH SÁCH =====
+        function renderLeaveTypes() {
             const tbody = document.querySelector('tbody');
             tbody.innerHTML = '';
 
-            json.data.forEach((lt, i) => {
+            const total = allLeaveTypes.length;
+            const totalPages = Math.ceil(total / rowsPerPage);
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pagedData = allLeaveTypes.slice(start, end);
+
+            pagedData.forEach((lt, i) => {
                 const genderLabel = lt.gender_restriction === 'male'
                     ? '<span class="badge bg-soft-info text-info">Nam</span>'
                     : lt.gender_restriction === 'female'
@@ -461,8 +476,44 @@
                     </tr>`;
             });
             // Cap nhat so luong
-            document.querySelector('.card-footer .fs-12').innerText =
-                `Hiển thị 1 đến ${json.data.length} của ${json.data.length} loại phép`;
+            document.querySelector('.card-footer .fs-12').innerText = total > 0
+                ? `Hiển thị ${start + 1}-${Math.min(end, total)} trên ${total} loại phép`
+                : 'Không có loại phép nào';
+
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const paginationUl = document.querySelector('.pagination');
+            if (!paginationUl) return;
+            paginationUl.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">Trước</a>
+                </li>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationUl.innerHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">Sau</a>
+                </li>
+            `;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderLeaveTypes();
         }
 
         // ===== ĐIỀN FORM KHI CLICK SỬA =====

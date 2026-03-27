@@ -276,6 +276,8 @@
 
         let currentRequestId = null;
         let allHistory = []; // Cache toàn bộ dữ liệu
+        let currentPage = 1;
+        const rowsPerPage = 10;
 
         // ===== LOAD DANH SÁCH =====
         async function loadHistory() {
@@ -288,6 +290,7 @@
 
         // ===== LỌC DỮ LIỆU =====
         function filterHistory() {
+            currentPage = 1; // Reset về trang 1 khi lọc
             const keyword = (document.getElementById('filterKeyword')?.value || '').toLowerCase();
             const year = document.getElementById('filterYear')?.value || '';
             const status = document.getElementById('filterStatus')?.value || 'all';
@@ -322,15 +325,27 @@
             const tbody = document.querySelector('tbody');
             tbody.innerHTML = '';
 
-            const countDisplay = document.querySelector('.card-title + div');
-            if (countDisplay) countDisplay.innerText = `Hiển thị ${data.length} bản ghi`;
+            const total = data.length;
+            const totalPages = Math.ceil(total / rowsPerPage);
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pagedData = data.slice(start, end);
 
-            if (data.length === 0) {
+            const countDisplay = document.querySelector('.card-title + div');
+            if (countDisplay) {
+                countDisplay.innerText = total > 0 
+                    ? `Hiển thị ${start + 1}-${Math.min(end, total)} trên ${total} bản ghi`
+                    : 'Không có bản ghi nào';
+            }
+
+            renderPagination(totalPages);
+
+            if (pagedData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Chưa có đơn nào</td></tr>`;
                 return;
             }
 
-            data.forEach(r => {
+            pagedData.forEach(r => {
                 const statusBadge = renderStatus(r.status);
                 const dateRange = r.start_date === r.end_date
                     ? formatDate(r.start_date)
@@ -503,6 +518,62 @@
             worksheet['!cols'] = colWidths.map(w => ({ wch: w }));
 
             XLSX.writeFile(workbook, `Lich-Su-Nghi-Phep-${new Date().toISOString().slice(0, 10)}.xlsx`);
+        }
+
+        // ===== RENDER PHÂN TRANG =====
+        function renderPagination(totalPages) {
+            const paginationUl = document.querySelector('.pagination');
+            if (!paginationUl) return;
+            paginationUl.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            // Nút Previous
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link border-0 rounded-pill px-3 text-dark" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">
+                        <i class="feather-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+
+            // Các con số
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    paginationUl.innerHTML += `
+                        <li class="page-item ${i === currentPage ? 'active' : ''}">
+                            <a class="page-link border-0 rounded-pill px-3 ${i === currentPage ? '' : 'text-dark'}" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
+                        </li>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    paginationUl.innerHTML += `<li class="page-item disabled"><span class="page-link border-0">...</span></li>`;
+                }
+            }
+
+            // Nút Next
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link border-0 rounded-pill px-3 text-dark" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">
+                        <i class="feather-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            const keyword = (document.getElementById('filterKeyword')?.value || '').toLowerCase();
+            const year = document.getElementById('filterYear')?.value || '';
+            const status = document.getElementById('filterStatus')?.value || 'all';
+
+            const filtered = allHistory.filter(r => {
+                const matchKeyword = !keyword || String(r.id).includes(keyword) || (r.reason || '').toLowerCase().includes(keyword) || (r.leave_type_name || '').toLowerCase().includes(keyword);
+                const matchYear = !year || new Date(r.start_date).getFullYear() == year;
+                const matchStatus = status === 'all' || r.status === status;
+                return matchKeyword && matchYear && matchStatus;
+            });
+            renderHistory(filtered);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ===== KHỞI CHẠY =====

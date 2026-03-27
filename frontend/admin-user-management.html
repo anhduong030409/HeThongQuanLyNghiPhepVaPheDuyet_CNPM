@@ -90,6 +90,15 @@
                                     </table>
                                 </div>
                             </div>
+                            <div class="card-footer py-3 bg-white border-top">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-muted fs-12" id="pagination-info">Hiển thị 0-0 trên 0 bản ghi</div>
+                                    <nav>
+                                        <ul class="pagination pagination-sm mb-0 gap-1" id="pagination-list">
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -195,6 +204,8 @@
         if (!currentUser) throw new Error('Khong co quyen');
 
         let allUsers = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
 
         // ================================================================
         // Helpers
@@ -273,18 +284,35 @@
             const res = await callAPI('users/list.php');
             const tbody = document.getElementById('user-tbody');
             if (!res || res.status !== 'success') {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-4">
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-danger py-4">
                     Lỗi tải dữ liệu</td></tr>`;
                 return;
             }
             allUsers = res.data;
+            currentPage = 1;
             renderTable(allUsers);
         }
 
         function renderTable(data) {
             const tbody = document.getElementById('user-tbody');
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">
+            
+            const total = data.length;
+            const totalPages = Math.ceil(total / rowsPerPage);
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pagedData = data.slice(start, end);
+
+            // Cập nhật thông tin phân trang
+            const info = document.getElementById('pagination-info');
+            if (info) {
+                info.innerText = total > 0 
+                    ? `Hiển thị ${start + 1}-${Math.min(end, total)} trên ${total} bản ghi`
+                    : 'Không có bản ghi nào';
+            }
+            renderPagination(totalPages);
+
+            if (pagedData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-4">
                     Không có người dùng nào</td></tr>`;
                 return;
             }
@@ -293,7 +321,7 @@
                 female: '<span class="badge bg-pink-200 text-pink-600">Nữ</span>',
                 other: '<span class="badge bg-gray-300 text-secondary">Khác</span>',
             };
-            tbody.innerHTML = data.map(u => `
+            tbody.innerHTML = pagedData.map(u => `
                 <tr>
                     <td>#${String(u.id).padStart(3, '0')}</td>
                     <td class="fw-semibold">${u.full_name}</td>
@@ -326,9 +354,11 @@
         function filterUsers() {
             const search = document.getElementById('searchInput').value.toLowerCase();
             const role = document.getElementById('filterRole').value;
+            currentPage = 1; // Reset trang khi lọc
+
             const filtered = allUsers.filter(u =>
                 (!search || u.full_name.toLowerCase().includes(search) ||
-                    u.email.toLowerCase().includes(search)) &&
+                    u.email.toLowerCase().includes(search) || (u.employee_code || '').toLowerCase().includes(search)) &&
                 (!role || u.role_name === role)
             );
             renderTable(filtered);
@@ -474,6 +504,47 @@
             } else {
                 showToast(res?.message || 'Có lỗi xảy ra', 'error');
             }
+        }
+
+        function renderPagination(totalPages) {
+            const paginationUl = document.getElementById('pagination-list');
+            if (!paginationUl) return;
+            paginationUl.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">Trước</a>
+                </li>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationUl.innerHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+
+            paginationUl.innerHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">Sau</a>
+                </li>
+            `;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const role = document.getElementById('filterRole').value;
+            const filtered = allUsers.filter(u =>
+                (!search || u.full_name.toLowerCase().includes(search) ||
+                    u.email.toLowerCase().includes(search) || (u.employee_code || '').toLowerCase().includes(search)) &&
+                (!role || u.role_name === role)
+            );
+            renderTable(filtered);
+            window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
         // ================================================================
