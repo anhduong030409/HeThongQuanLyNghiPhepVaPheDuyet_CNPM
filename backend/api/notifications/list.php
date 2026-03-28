@@ -1,4 +1,9 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once '../../config/cors.php';
 require_once '../../config/database.php';
 require_once '../../config/auth.php';
@@ -11,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     mysqli_stmt_bind_param($stmt, "i", $payload['id']);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    
+
     $notifs = [];
     $unread_count = 0;
     while ($row = mysqli_fetch_assoc($result)) {
@@ -20,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $notifs[] = $row;
     }
-    
+
     echo json_encode(["status" => "success", "data" => $notifs, "unread" => $unread_count]);
 }
 ?>

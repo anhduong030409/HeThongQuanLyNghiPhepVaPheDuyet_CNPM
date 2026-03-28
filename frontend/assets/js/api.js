@@ -1,4 +1,10 @@
-const API_URL = "http://localhost:82/HeThongQuanLyNghiPhepVaPheDuyet_CNPM/backend/api";
+
+// Toggle: Set to true for server, false for local
+const IS_SERVER = false; // Sửa ở đây
+
+const API_URL = IS_SERVER 
+    ? "https://duralux.is-great.org/backend/api" // Server URL
+    : "http://localhost:82/HeThongQuanLyNghiPhepVaPheDuyet_CNPM/backend/api"; // Local URL
 
 // ===== TOKEN =====
 function saveToken(token) { localStorage.setItem("token", token); }
