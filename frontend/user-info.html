@@ -125,9 +125,11 @@
                                 <div id="profileStatusBadge" class="mb-4"></div>
 
                                 <div class="d-flex justify-content-center gap-2">
-                                    <button class="btn btn-primary px-4"><i class="feather-edit me-2"></i>Sửa hồ
+                                    <button class="btn btn-primary px-4" onclick="alert('Tính năng sửa hồ sơ đang được phát triển!')"><i class="feather-edit me-2"></i>Sửa hồ
                                         sơ</button>
-                                    <button class="btn btn-light px-3"><i class="feather-settings"></i></button>
+                                    <button class="btn btn-warning px-3" data-bs-toggle="modal" data-bs-target="#modalChangePassword">
+                                        <i class="feather-lock me-2"></i>Đổi mật khẩu
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -245,6 +247,51 @@
     <!--! BEGIN: Theme Customizer  !-->
 
     <!--! END: Theme Customizer !-->
+    <!-- Modal Đổi Mật Khẩu -->
+    <div class="modal fade" id="modalChangePassword" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="feather-lock me-2"></i>Đổi mật khẩu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="formChangePassword">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-dark">Mật khẩu cũ</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="feather-key text-muted"></i></span>
+                                <input type="password" id="oldPassword" class="form-control border-start-0 ps-0" placeholder="Nhập mật khẩu cũ" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-dark">Mật khẩu mới</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="feather-lock text-muted"></i></span>
+                                <input type="password" id="newPassword" class="form-control border-start-0 ps-0" placeholder="Nhập mật khẩu mới" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-dark">Xác nhận mật khẩu mới</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="feather-check-circle text-muted"></i></span>
+                                <input type="password" id="confirmPassword" class="form-control border-start-0 ps-0" placeholder="Nhập lại mật khẩu mới" required>
+                            </div>
+                        </div>
+                        <div class="alert alert-danger d-none" id="errorChangePassword"></div>
+                        <div class="alert alert-success d-none" id="successChangePassword"></div>
+                    </form>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-warning px-4" onclick="submitChangePassword()" id="btnSubmitChangePassword">
+                        <i class="feather-save me-1"></i>Xác nhận đổi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             // Xác thực xem có đang đăng nhập hay ko
@@ -253,7 +300,78 @@
 
             // Gọi hàm lấy chi tiết dữ liệu
             await loadUserProfile();
+            
+            // Xử lý sự kiện khi modal đóng (reset form)
+            const modalEl = document.getElementById('modalChangePassword');
+            modalEl.addEventListener('hidden.bs.modal', function() {
+                document.getElementById('formChangePassword').reset();
+                document.getElementById('errorChangePassword').classList.add('d-none');
+                document.getElementById('successChangePassword').classList.add('d-none');
+            });
         });
+
+        async function submitChangePassword() {
+            const old_password     = document.getElementById('oldPassword').value;
+            const new_password     = document.getElementById('newPassword').value;
+            const confirm_password = document.getElementById('confirmPassword').value;
+            const errorEl          = document.getElementById('errorChangePassword');
+            const successEl        = document.getElementById('successChangePassword');
+            const btnSubmit        = document.getElementById('btnSubmitChangePassword');
+
+            errorEl.classList.add('d-none');
+            successEl.classList.add('d-none');
+
+            // Validate front-end
+            if (!old_password || !new_password || !confirm_password) {
+                errorEl.innerText = "Vui lòng nhập đầy đủ thông tin!";
+                errorEl.classList.remove('d-none');
+                return;
+            }
+
+            if (new_password !== confirm_password) {
+                errorEl.innerText = "Mật khẩu xác nhận không khớp!";
+                errorEl.classList.remove('d-none');
+                return;
+            }
+
+            if (new_password.length < 6) {
+                errorEl.innerText = "Mật khẩu mới phải có ít nhất 6 ký tự!";
+                errorEl.classList.remove('d-none');
+                return;
+            }
+
+            try {
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Đang xử lý...';
+
+                const response = await callAPI('users/change-password.php', 'POST', {
+                    old_password,
+                    new_password,
+                    confirm_password
+                });
+
+                if (response && response.status === "success") {
+                    successEl.innerText = "Đổi mật khẩu thành công!";
+                    successEl.classList.remove('d-none');
+                    document.getElementById('formChangePassword').reset();
+                    
+                    // Đóng modal sau 2 giây
+                    setTimeout(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('modalChangePassword')).hide();
+                    }, 1500);
+                } else {
+                    errorEl.innerText = response.message || "Có lỗi xảy ra, vui lòng thử lại!";
+                    errorEl.classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error("Lỗi:", error);
+                errorEl.innerText = "Không thể kết nối đến máy chủ!";
+                errorEl.classList.remove('d-none');
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="feather-save me-1"></i>Xác nhận đổi';
+            }
+        }
 
         async function loadUserProfile() {
             try {

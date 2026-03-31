@@ -27,6 +27,26 @@
     <script src="assets/js/api.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <!--! END: Custom CSS-->
+    <style>
+        .skeleton {
+            background: #eee;
+            background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+            border-radius: 5px;
+            background-size: 200% 100%;
+            animation: 1.5s shine linear infinite;
+        }
+
+        .skeleton-text {
+            height: 15px;
+            width: 100%;
+        }
+
+        @keyframes shine {
+            to {
+                background-position-x: -200%;
+            }
+        }
+    </style>
     <!--! HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries !-->
     <!--! WARNING: Respond.js doesn"t work if you view the page via file: !-->
     <!--[if lt IE 9]>
@@ -125,7 +145,7 @@
                         <div class="card border-0 shadow-sm">
                             <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                                 <h5 class="card-title mb-0 fw-bold text-dark">Lịch sử nghỉ phép chi tiết</h5>
-                                <div class="text-muted fs-12">Hiển thị 1-10 trên 80 bản ghi</div>
+                                <div class="text-muted fs-12 record-count"></div>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -142,55 +162,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td class="ps-4 fw-bold">#LR-2026-008</td>
-                                                <td>Nghỉ phép năm</td>
-                                                <td>15/01/2026 - 16/01/2026</td>
-                                                <td>2.0</td>
-                                                <td class="text-truncate" style="max-width: 200px;">Về quê thăm gia đình
-                                                    định kỳ</td>
-                                                <td><span class="badge bg-soft-success text-success w-100">Đã phê
-                                                        duyệt</span></td>
-                                                <td class="text-end pe-4">
-                                                    <button class="btn btn-sm btn-icon btn-light"><i
-                                                            class="feather-eye"></i></button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4 fw-bold">#LR-2026-005</td>
-                                                <td>Nghỉ bù</td>
-                                                <td>10/01/2026 (Sáng)</td>
-                                                <td>0.5</td>
-                                                <td class="text-truncate" style="max-width: 200px;">Giải quyết việc
-                                                    riêng cá nhân</td>
-                                                <td><span class="badge bg-soft-danger text-danger w-100">Bị từ
-                                                        chối</span></td>
-                                                <td class="text-end pe-4">
-                                                    <button class="btn btn-sm btn-icon btn-light"
-                                                        title="Xem lý do từ chối"><i
-                                                            class="feather-help-circle text-danger"></i></button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4 fw-bold">#LR-2025-099</td>
-                                                <td>Nghỉ phép năm</td>
-                                                <td>28/12/2025 - 31/12/2025</td>
-                                                <td>4.0</td>
-                                                <td class="text-truncate" style="max-width: 200px;">Nghỉ lễ cuối năm
-                                                </td>
-                                                <td><span class="badge bg-soft-success text-success w-100">Đã phê
-                                                        duyệt</span></td>
-                                                <td class="text-end pe-4">
-                                                    <button class="btn btn-sm btn-icon btn-light"><i
-                                                            class="feather-eye"></i></button>
-                                                </td>
-                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                             <div class="card-footer bg-white d-flex justify-content-between align-items-center py-3">
-                                <p class="mb-0 fs-12 text-muted">Hiển thị <b>1-10</b> trên <b>80</b> bản ghi</p>
+                                <p class="mb-0 fs-12 text-muted record-count"></p>
                                 <nav aria-label="Page navigation">
                                     <ul class="pagination pagination-sm mb-0 gap-1">
                                         <li class="page-item disabled">
@@ -281,11 +258,38 @@
 
         // ===== LOAD DANH SÁCH =====
         async function loadHistory() {
+            renderSkeleton(); // Hiển thị skeleton loader
             const res = await callAPI(`leave/request.php?user_id=${currentUser.id}`);
-            if (!res || res.status !== 'success') return;
+            if (!res || res.status !== 'success') {
+                document.querySelector('tbody').innerHTML = `<tr><td colspan="7" class="text-center text-danger py-4">Lỗi tải dữ liệu</td></tr>`;
+                return;
+            }
 
             allHistory = res.data; // Lưu vào cache
             filterHistory(); // Hiển thị với filter hiện tại
+        }
+
+        // ===== RENDER SKELETON =====
+        function renderSkeleton() {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Clear record count displays
+            document.querySelectorAll('.record-count').forEach(el => el.innerText = 'Đang tải...');
+
+            for (let i = 0; i < 5; i++) {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="ps-4"><div class="skeleton skeleton-text" style="width: 80px;"></div></td>
+                        <td><div class="skeleton skeleton-text" style="width: 120px;"></div></td>
+                        <td><div class="skeleton skeleton-text" style="width: 150px;"></div></td>
+                        <td><div class="skeleton skeleton-text" style="width: 40px;"></div></td>
+                        <td><div class="skeleton skeleton-text" style="width: 200px;"></div></td>
+                        <td><div class="skeleton skeleton-text" style="width: 100px;"></div></td>
+                        <td class="text-end pe-4"><div class="skeleton skeleton-text ms-auto" style="width: 32px; height: 32px; border-radius: 4px;"></div></td>
+                    </tr>
+                `;
+            }
         }
 
         // ===== LỌC DỮ LIỆU =====
@@ -331,12 +335,10 @@
             const end = start + rowsPerPage;
             const pagedData = data.slice(start, end);
 
-            const countDisplay = document.querySelector('.card-title + div');
-            if (countDisplay) {
-                countDisplay.innerText = total > 0 
-                    ? `Hiển thị ${start + 1}-${Math.min(end, total)} trên ${total} bản ghi`
-                    : 'Không có bản ghi nào';
-            }
+            const countText = total > 0 
+                ? `Hiển thị ${start + 1}-${Math.min(end, total)} trên ${total} bản ghi`
+                : 'Không có bản ghi nào';
+            document.querySelectorAll('.record-count').forEach(el => el.innerText = countText);
 
             renderPagination(totalPages);
 

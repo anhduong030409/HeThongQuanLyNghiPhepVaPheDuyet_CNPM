@@ -180,6 +180,31 @@
         </div>
     </div>
 
+    <!-- Modal Thông báo mật khẩu mới -->
+    <div class="modal fade" id="modalResetSuccess" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h6 class="modal-title fw-bold text-success"><i class="feather-check-circle me-2"></i>Reset thành công!</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <p class="text-muted small mb-3">Mật khẩu mới của <strong id="resetTargetName">...</strong> là:</p>
+                    <div class="bg-light p-3 rounded mb-3 position-relative">
+                        <h4 class="fw-bold mb-0 text-dark font-monospace" id="newPasswordDisplay">........</h4>
+                    </div>
+                    <p class="text-muted fs-11 mb-4">Vui lòng cung cấp mật khẩu này cho nhân viên và yêu cầu họ đổi ngay khi đăng nhập.</p>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary py-2" onclick="copyNewPassword()">
+                            <i class="feather-copy me-2"></i>Sao chép mật khẩu
+                        </button>
+                        <button type="button" class="btn btn-light py-2" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div class="position-fixed top-0 end-0 p-3" style="z-index:9999">
         <div id="toastBox" class="toast align-items-center border-0" role="alert">
@@ -336,11 +361,15 @@
                     <td class="text-center">
                         <div class="d-flex justify-content-center gap-2">
                             <button class="btn btn-sm btn-outline-primary"
-                                onclick='openEdit(${JSON.stringify(u)})'>
+                                onclick='openEdit(${JSON.stringify(u)})' title="Sửa thông tin">
                                 <i class="feather-edit"></i>
                             </button>
+                            <button class="btn btn-sm btn-outline-warning"
+                                onclick="resetPassword(${u.id}, '${u.full_name}')" title="Đặt lại mật khẩu">
+                                <i class="feather-key"></i>
+                            </button>
                             <button class="btn btn-sm btn-outline-danger"
-                                onclick="disableUser(${u.id})">
+                                onclick="disableUser(${u.id})" title="Vô hiệu hóa">
                                 <i class="feather-slash"></i>
                             </button>
                         </div>
@@ -490,6 +519,37 @@
 
 
 
+        }
+
+        // ================================================================
+        // Đặt lại mật khẩu
+        // ================================================================
+        let tempNewPassword = ''; // Biến tạm lưu mật khẩu mới
+
+        async function resetPassword(id, name) {
+            if (!confirm(`Bạn có chắc chắn muốn đặt lại mật khẩu cho nhân viên [${name}]?\n\nHệ thống sẽ tạo ra một mật khẩu ngẫu nhiên mới.`)) return;
+            
+            const res = await callAPI('users/reset-password.php', 'POST', { id });
+            if (res && res.status === 'success') {
+                tempNewPassword = res.new_password;
+                document.getElementById('resetTargetName').innerText = name;
+                document.getElementById('newPasswordDisplay').innerText = res.new_password;
+                
+                // Hiển thị modal thông báo thay cho alert
+                new bootstrap.Modal(document.getElementById('modalResetSuccess')).show();
+            } else {
+                showToast(res?.message || 'Có lỗi xảy ra', 'error');
+            }
+        }
+
+        function copyNewPassword() {
+            if (!tempNewPassword) return;
+            navigator.clipboard.writeText(tempNewPassword).then(() => {
+                showToast('Đã sao chép mật khẩu!', 'success');
+            }).catch(err => {
+                console.error('Lỗi khi sao chép:', err);
+                showToast('Không thể sao chép!', 'error');
+            });
         }
 
         // ================================================================
