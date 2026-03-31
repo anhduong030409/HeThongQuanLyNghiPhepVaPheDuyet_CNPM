@@ -174,9 +174,9 @@
                     <div class="col-md-4">
                         <div class="card bg-danger text-white">
                             <div class="card-body">
-                                <h5>Cảnh báo hệ thống (Logs)</h5>
-                                <h2 class="mb-0">2</h2>
-                                <small>Cần kiểm tra server/email</small>
+                                <h5>Tổng lượt hoạt động (Logs)</h5>
+                                <h2 class="mb-0" id="it-total-logs">0</h2>
+                                <small>Lượt tài khoản/xử lý đơn ghi nhận</small>
                             </div>
                         </div>
                     </div>
@@ -186,26 +186,17 @@
                     <div class="col-xxl-4">
                         <div class="card stretch stretch-full">
                             <div class="card-header">
-                                <h5 class="card-title">Tình trạng hệ thống & Truy cập</h5>
+                                <h5 class="card-title">Cơ cấu vai trò người dùng hệ thống</h5>
                             </div>
                             <div class="card-body custom-card-action">
                                 <div id="system-traffic-chart"
                                     style="min-height: 250px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px; margin-bottom: 1rem;">
-                                    <span class="text-muted">[Biểu đồ lượng truy cập hệ thống]</span>
+                                    <span class="text-muted">[Biểu đồ cơ cấu User]</span>
                                 </div>
 
-                                <ul class="list-group list-group-flush mt-3">
+                                <ul class="list-group list-group-flush mt-3" id="it-role-list">
                                     <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                        Server Uptime
-                                        <span class="badge bg-success rounded-pill">99.9%</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                        Email SMTP Status
-                                        <span class="badge bg-success rounded-pill">Connected</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                        Database Backup
-                                        <span class="badge bg-warning text-dark rounded-pill">Last: 2 days ago</span>
+                                        Đang tải...
                                     </li>
                                 </ul>
                             </div>
@@ -237,6 +228,11 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="card-footer py-2 text-center" id="it-more-logs-container" style="display: none;">
+                                    <button class="btn btn-sm btn-light-brand" onclick="showMoreITLogs()">
+                                        Xem thêm hoạt động <i class="feather-chevron-down ms-1"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -355,29 +351,64 @@
 
     <!--! END: Theme Customizer !-->
     <script>
-        // 1. Kiểm tra login và lấy thông tin user (nhớ thêm quyền 'it' vào mảng cho phép)
+        let allITLogs = [];
+        let itLogLimit = 10;
+
+        function showMoreITLogs() {
+            itLogLimit += 10;
+            renderITLogs();
+        }
+
+        function renderITLogs() {
+            const tbody = document.getElementById('it-audit-logs-body');
+            const container = document.getElementById('it-more-logs-container');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            const paged = allITLogs.slice(0, itLogLimit);
+            
+            if (paged.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center">Chưa có nhật ký hoạt động</td></tr>`;
+            } else {
+                paged.forEach(l => {
+                    let statusBadge = l.status === 'Success' ? 'bg-success' : 'bg-danger';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${new Date(l.time).toLocaleString('vi-VN')}</td>
+                            <td><strong>${l.account}</strong></td>
+                            <td>${l.action}</td>
+                            <td>${l.ip}</td>
+                            <td><span class="badge ${statusBadge}">${l.status}</span></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            if (allITLogs.length > itLogLimit) {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // ================================================================
+        // KHỞI CHẠY DASHBOARD
+        // ================================================================
         const user = checkRole(['admin', 'director', 'hr', 'manager', 'employee']);
 
         if (user) {
-            // 2. Logic phân quyền hiển thị Giao diện
             const role = user.role;
-
             if (['director', 'hr', 'manager'].includes(role)) {
-                // Nhóm quản lý
                 document.getElementById('admin-hr-dashboard').style.display = 'block';
                 loadAdminData(user);
             }
             else if (role === 'admin') {
-                // IT hệ thống
                 document.getElementById('it-admin-dashboard').style.display = 'block';
                 loadITData(user);
             }
             else if (role === 'employee') {
-                // Nhân viên bình thường
                 document.getElementById('employee-dashboard').style.display = 'block';
                 loadEmployeeData(user);
-            } else {
-                alert("Role không hợp lệ!");
             }
         }
 
@@ -578,19 +609,28 @@
 
                     let logs = [];
 
-                    usersRes.data.forEach(u => {
-                        if (u.is_active == 1) {
-                            activeUsers++;
-                        } else {
-                            inactiveUsers++;
-                        }
+                    let roleCounts = {};
+                    let roleDisplay = {
+                        admin: 'Quản trị hệ thống',
+                        director: 'Giám đốc/Ban điều hành',
+                        hr: 'Phòng Nhân sự',
+                        manager: 'Trưởng phòng / Quản lý',
+                        employee: 'Nhân viên chính thức'
+                    };
 
-                        // Fake audit log from user creation
+                    usersRes.data.forEach(u => {
+                        if (u.is_active == 1) activeUsers++;
+                        else inactiveUsers++;
+
+                        // Đếm role
+                        let role = u.role_name || u.role;
+                        roleCounts[role] = (roleCounts[role] || 0) + 1;
+
                         if (u.created_at) {
                             logs.push({
                                 time: u.created_at,
-                                account: u.email,
-                                action: 'Khởi tạo tài khoản',
+                                account: u.full_name || u.email,
+                                action: 'Tài khoản được tạo mới',
                                 ip: 'System',
                                 status: 'Success'
                             });
@@ -599,52 +639,61 @@
 
                     document.getElementById('it-total-users').innerText = totalUsers;
                     document.getElementById('it-active-users').innerText = activeUsers;
-                    document.getElementById('it-inactive-users').innerText = `${inactiveUsers} tài khoản bị khóa/nghỉ việc`;
+                    document.getElementById('it-inactive-users').innerText = `${inactiveUsers} tài khoản đang bị khóa`;
 
-                    // Vẽ chart IT
-                    renderPieChart('system-traffic-chart', ['Đang hoạt động', 'Bị khóa/Nghỉ'], [activeUsers, inactiveUsers], ['#17c666', '#ea4d4d']);
+                    // Vẽ chart IT: Phân bổ Role
+                    let roleLabels = Object.keys(roleCounts).map(r => roleDisplay[r] || r);
+                    let roleSeries = Object.values(roleCounts);
+                    renderPieChart('system-traffic-chart', roleLabels, roleSeries, ['#3454d1', '#ff9720', '#17c666', '#ea4d4d', '#49B6F5']);
 
-                    // Fetch leaves to add to logs
+                    // Hiển thị danh sách Role bên dưới chart
+                    let roleListHtml = '';
+                    Object.keys(roleCounts).forEach(r => {
+                        let badgeColor = r === 'admin' ? 'bg-danger' : (r === 'employee' ? 'bg-success' : 'bg-primary');
+                        roleListHtml += `
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                ${roleDisplay[r] || r}
+                                <span class="badge ${badgeColor} rounded-pill">${roleCounts[r]}</span>
+                            </li>
+                        `;
+                    });
+                    document.getElementById('it-role-list').innerHTML = roleListHtml;
+
+                    // Lấy đơn nghỉ phép để thống kê approvals
                     const leaveRes = await callAPI('leave/request.php');
+                    let totalApprovals = 0;
                     if (leaveRes && leaveRes.status === 'success') {
                         leaveRes.data.forEach(r => {
-                            let action = `Gửi đơn nghỉ phép`;
-                            if (r.status === 'approved') action = 'Đơn nghỉ phép được duyệt';
-                            if (r.status === 'rejected') action = 'Đơn nghỉ phép bị từ chối';
+                            let action = `Gửi đơn: ${r.leave_type_name || 'Nghỉ phép'}`;
+                            if (r.status === 'approved') {
+                                action = 'Đơn được phê duyệt hoàn tất';
+                                totalApprovals++;
+                            }
+                            if (r.status === 'rejected') {
+                                action = 'Đơn đã bị quản lý từ chối';
+                                totalApprovals++;
+                            }
+                            if (r.status === 'pending_hr') {
+                                action = 'Manager đã duyệt (Chờ HR)';
+                                totalApprovals++; // Coi như 1 lượt xử lý
+                            }
 
                             logs.push({
-                                time: r.submitted_at || new Date().toISOString().slice(0, 19).replace('T', ' '),
-                                account: r.email || r.full_name || 'User',
+                                time: r.submitted_at || r.created_at || new Date().toISOString(),
+                                account: r.full_name || 'User',
                                 action: action,
-                                ip: 'System',
+                                ip: '127.0.0.1',
                                 status: 'Success'
                             });
                         });
                     }
+                    // Tổng lượt hoạt động (bao gồm cả tạo tài khoản + nghỉ phép)
+                    document.getElementById('it-total-logs').innerText = logs.length;
 
                     // Sort logs descending by time
-                    logs.sort((a, b) => new Date(b.time) - new Date(a.time));
-
-                    let tbody = document.getElementById('it-audit-logs-body');
-                    if (tbody) {
-                        tbody.innerHTML = '';
-                        if (logs.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="5" class="text-center">Chưa có nhật ký hoạt động</td></tr>`;
-                        } else {
-                            logs.slice(0, 5).forEach(l => {
-                                let statusBadge = l.status === 'Success' ? 'bg-success' : 'bg-danger';
-                                tbody.innerHTML += `
-                                    <tr>
-                                        <td>${new Date(l.time).toLocaleString('vi-VN')}</td>
-                                        <td><strong>${l.account}</strong></td>
-                                        <td>${l.action}</td>
-                                        <td>${l.ip}</td>
-                                        <td><span class="badge ${statusBadge}">${l.status}</span></td>
-                                    </tr>
-                                `;
-                            });
-                        }
-                    }
+                    allITLogs = logs;
+                    allITLogs.sort((a, b) => new Date(b.time) - new Date(a.time));
+                    renderITLogs();
                 }
             } catch (e) {
                 console.error("Lỗi khi tải dữ liệu IT: ", e);
