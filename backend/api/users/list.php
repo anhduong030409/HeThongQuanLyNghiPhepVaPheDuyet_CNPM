@@ -3,7 +3,7 @@ require_once '../../config/cors.php';
 require_once '../../config/database.php';
 require_once '../../config/auth.php';
 
-requireAuth();
+$payload = requireAuth();
 
 $sql = "SELECT u.id, u.full_name, u.email, u.phone, u.is_active,
                u.gender,
@@ -20,6 +20,32 @@ $sql = "SELECT u.id, u.full_name, u.email, u.phone, u.is_active,
 
 $params = [];
 $types = '';
+
+// ================================================================
+// PHÂN QUYỀN TRUY CẬP (Role-Based Access Control)
+// ================================================================
+// - Manager: Chỉ thấy nhân viên trong phòng ban của mình
+// - HR, Admin, Director: Thấy toàn bộ hệ thống
+// ================================================================
+if ($payload['role'] === 'manager') {
+    // Lấy department_id của manager
+    $stmt_m = mysqli_prepare($conn, "SELECT department_id FROM users WHERE id = ?");
+    mysqli_stmt_bind_param($stmt_m, "i", $payload['id']);
+    mysqli_stmt_execute($stmt_m);
+    $m_info = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_m));
+    $my_dept = $m_info['department_id'] ?? 0;
+
+    if ($my_dept) {
+        $sql .= " AND u.department_id = ?";
+        $params[] = $my_dept;
+        $types .= 'i';
+    } else {
+        // Trường hợp lỗi: Manager không có phòng ban -> chỉ thấy chính mình
+        $sql .= " AND u.id = ?";
+        $params[] = $payload['id'];
+        $types .= 'i';
+    }
+}
 
 // Lọc theo ID cụ thể (dùng cho loadApprover)
 if (!empty($_GET['id'])) {

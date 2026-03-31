@@ -10,7 +10,7 @@ $sql = "SELECT u.*, r.name as role_name, d.name as dept_name
         FROM users u
         JOIN roles r ON u.role_id = r.id
         LEFT JOIN departments d ON u.department_id = d.id
-        WHERE u.email = ? AND u.password_hash = ? AND u.is_active = 1";
+        WHERE u.email = ? AND u.password_hash = ?";
 
 $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, "ss", $email, $password);
@@ -19,6 +19,11 @@ $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
 
 if ($user) {
+    if ($user['is_active'] == 0) {
+        http_response_code(403); // Hoặc 401 tùy ý, 403 mang tính "bị cấm" hơn
+        echo json_encode(["status" => "error", "message" => "Tài khoản của bạn đã bị vô hiệu hóa!"]);
+        exit;
+    }
     $secret = "DURALUX_SECRET_KEY_2026";
 
     // Token chứa đủ thông tin cần thiết cho các API

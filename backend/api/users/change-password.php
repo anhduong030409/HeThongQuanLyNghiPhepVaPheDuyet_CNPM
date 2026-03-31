@@ -33,7 +33,7 @@ $result = mysqli_stmt_get_result($stmt);
 $user = mysqli_fetch_assoc($result);
 
 if (!$user || $user['password_hash'] !== MD5($old_password)) {
-    http_response_code(401);
+    http_response_code(400);
     echo json_encode(["status" => "error", "message" => "Mật khẩu cũ không chính xác"]);
     exit;
 }

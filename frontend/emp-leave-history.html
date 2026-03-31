@@ -433,7 +433,7 @@
         </div>` : ''}
         <div class="col-12">
             <div class="fs-12 text-muted">Ngày gửi</div>
-            <div>${formatDate(r.submitted_at)}</div>
+            <div>${r.submitted_at ? formatDate(r.submitted_at.split(' ')[0]) + ' ' + r.submitted_at.split(' ')[1].substring(0, 5) : '--'}</div>
         </div>
 
         <div class="col-12">
@@ -508,7 +508,7 @@
                 r.status === 'rejected' ? 'Bị từ chối' : 
                 r.status === 'cancelled' ? 'Đã hủy' : 'Đang chờ',
                 r.reason || '--',
-                r.submitted_at ? formatDate(r.submitted_at) : '--'
+                r.submitted_at ? `${formatDate(r.submitted_at.split(' ')[0])} ${r.submitted_at.split(' ')[1].substring(0, 5)}` : '--'
             ]);
 
             const worksheet = XLSX.utils.aoa_to_sheet([...headers, ...rows]);

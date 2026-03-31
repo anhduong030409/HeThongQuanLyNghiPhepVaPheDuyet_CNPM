@@ -51,8 +51,8 @@ async function callAPI(endpoint, method = "GET", body = null) {
         const res = await fetch(`${API_URL}/${endpoint}`, options);
         const data = await res.json();
 
-        // SỬA Ở ĐÂY: Nếu trả về 401 NHƯNG KHÔNG PHẢI là API login thì mới đá văng (logout)
-        if (res.status === 401 && !endpoint.includes("login.php")) {
+        // SỬA Ở ĐÂY: Nếu trả về 401 NHƯNG KHÔNG PHẢI là API login/change-password thì mới đá văng (logout)
+        if (res.status === 401 && !endpoint.includes("login.php") && !endpoint.includes("change-password.php")) {
             // Kiểm tra xem hàm logout có tồn tại không để tránh lỗi văng catch
             if (typeof logout === "function") {
                 logout();

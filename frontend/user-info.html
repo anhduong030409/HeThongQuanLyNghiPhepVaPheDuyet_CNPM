@@ -360,7 +360,7 @@
                         bootstrap.Modal.getInstance(document.getElementById('modalChangePassword')).hide();
                     }, 1500);
                 } else {
-                    errorEl.innerText = response.message || "Có lỗi xảy ra, vui lòng thử lại!";
+                    errorEl.innerText = (response && response.message) ? response.message : "Có lỗi xảy ra, vui lòng thử lại!";
                     errorEl.classList.remove('d-none');
                 }
             } catch (error) {

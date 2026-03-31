@@ -21,6 +21,7 @@ function verifyToken($jwt) {
 }
 
 function requireAuth() {
+    global $conn;
     $headers = getallheaders();
     $token   = $headers['Authorization'] ?? '';
     $token   = str_replace('Bearer ', '', $token);
@@ -31,6 +32,22 @@ function requireAuth() {
         echo json_encode(["status" => "error", "message" => "Chua dang nhap"]);
         exit;
     }
+
+    // Kiểm tra tài khoản còn hoạt động không
+    $user_id = $payload['id'];
+    $sql = "SELECT is_active FROM users WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
+
+    if (!$user || $user['is_active'] != 1) {
+        http_response_code(401);
+        echo json_encode(["status" => "error", "message" => "Tài khoản đã bị khóa hoặc không tồn tại"]);
+        exit;
+    }
+
     return $payload;
 }
 

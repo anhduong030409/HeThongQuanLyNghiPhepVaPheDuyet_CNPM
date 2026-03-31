@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quy trình Phê duyệt || Leave Management System</title>
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/vendors/css/vendors.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/theme.min.css" />
+    <script src="assets/js/api.js"></script>
+    <style>
+        .workflow-step {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 30px;
+        }
+        .workflow-step::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -30px;
+            width: 2px;
+            background: #e1e7ec;
+        }
+        .workflow-step:last-child::before {
+            display: none;
+        }
+        .step-icon {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border: 2px solid #3454d1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3454d1;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="navigation"></div>
+    <div id="header"></div>
+
+    <main class="nxl-container apps-container d-flex flex-column" style="min-height: calc(100vh - 80px);">
+        <div class="nxl-content flex-grow-1">
+            <div class="page-header">
+                <div class="page-header-left d-flex align-items-center">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">Quy trình Phê duyệt</h5>
+                    </div>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item">Sơ đồ duyệt đơn</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-lg-10 mx-auto">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white border-bottom-0 pt-4 text-center">
+                                <h3 class="fw-bold text-dark mb-0">Sơ đồ Quy trình Phê duyệt Nghỉ phép</h3>
+                                <p class="text-muted mt-2">Hệ thống LMS áp dụng mô hình phê duyệt phân tầng dựa trên vai trò và thời gian nghỉ.</p>
+                            </div>
+                            <div class="card-body px-md-5 pb-5">
+                                
+                                <div class="row g-4 mt-2">
+                                    <!-- Role 1: Employee -->
+                                    <div class="col-md-6">
+                                        <div class="card h-100 border-0 bg-soft-primary-light">
+                                            <div class="card-body">
+                                                <div class="avatar-text avatar-md bg-soft-primary text-primary rounded mb-3">
+                                                    <i class="feather-user"></i>
+                                                </div>
+                                                <h5 class="fw-bold text-dark">Dành cho Nhân viên</h5>
+                                                <p class="fs-13 text-muted">Quy trình thay đổi tùy theo số ngày nghỉ trong đơn.</p>
+                                                
+                                                <div class="mt-4">
+                                                    <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-white rounded border-start border-3 border-success">
+                                                        <div class="fs-12 fw-bold text-success" style="min-width: 60px;">≤ 2 ngày</div>
+                                                        <div class="fs-13"><b>1 Cấp:</b> Cần Trưởng phòng (Manager) duyệt là hoàn tất.</div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-3 p-3 bg-white rounded border-start border-3 border-warning">
+                                                        <div class="fs-12 fw-bold text-warning" style="min-width: 60px;">> 2 ngày</div>
+                                                        <div class="fs-13"><b>2 Cấp:</b> Trưởng phòng duyệt xong sẽ chuyển qua HR phê duyệt cuối.</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Role 2: Manager/HR/Admin -->
+                                    <div class="col-md-6">
+                                        <div class="card h-100 border-0 bg-soft-warning-light">
+                                            <div class="card-body">
+                                                <div class="avatar-text avatar-md bg-soft-warning text-warning rounded mb-3">
+                                                    <i class="feather-award"></i>
+                                                </div>
+                                                <h5 class="fw-bold text-dark">Dành cho Cấp Quản lý</h5>
+                                                <p class="fs-13 text-muted">Bao gồm các Role: Manager, HR, Admin.</p>
+                                                
+                                                <div class="mt-4">
+                                                    <div class="d-flex align-items-center gap-3 p-3 bg-white rounded border-start border-3 border-danger">
+                                                        <div class="fs-12 fw-bold text-danger" style="min-width: 60px;">Mọi đơn</div>
+                                                        <div class="fs-13"><b>1 Cấp:</b> Đơn được gửi trực tiếp cho Giám đốc (Director) phê duyệt.</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Role 3: Director -->
+                                    <div class="col-12 mt-4">
+                                        <div class="card border-0 bg-soft-success-light">
+                                            <div class="card-body text-center py-4">
+                                                <div class="avatar-text avatar-md bg-soft-success text-success rounded mx-auto mb-3">
+                                                    <i class="feather-shield"></i>
+                                                </div>
+                                                <h5 class="fw-bold text-dark">Dành cho Cấp Giám đốc (Director)</h5>
+                                                <p class="fs-13 text-muted mb-0">Director là cấp phê duyệt cao nhất trong toàn bộ hệ thống.</p>
+                                                <div class="mt-3">
+                                                    <span class="badge bg-success py-2 px-3 fs-12 mt-2">Duyệt tự động (Auto-Approved) ngay khi gửi đơn</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-soft-info mt-5 border-0">
+                                    <div class="d-flex gap-3">
+                                        <i class="feather-info fs-4"></i>
+                                        <div>
+                                            <h6 class="fw-bold text-info">Lưu ý quan trọng:</h6>
+                                            <ul class="fs-12 mb-0">
+                                                <li>Khi đơn bị **Từ chối (Rejected)** ở bất kỳ cấp nào, quy trình sẽ dừng lại ngay lập tức và số dư phép được hoàn trả.</li>
+                                                <li>Sau khi đơn được phê duyệt hoàn tất, hệ thống sẽ gửi thông báo tự động (Bell icon) cho người gửi.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer"></div>
+    </main>
+
+    <script src="assets/vendors/js/vendors.min.js"></script>
+    <script src="load-layout.js"></script>
+    <script src="assets/js/common-init.min.js"></script>
+</body>
+
+</html>

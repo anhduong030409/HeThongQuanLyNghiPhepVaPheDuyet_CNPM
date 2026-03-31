@@ -273,8 +273,8 @@
             const currentYear = now.getFullYear();
 
             data.forEach(r => {
-                // Đếm đơn trong tháng hiện tại (dựa trên start_date hoặc created_at)
-                const date = r.created_at ? new Date(r.created_at) : new Date(r.start_date);
+                // Đếm đơn trong tháng hiện tại (dựa trên start_date hoặc submitted_at)
+                const date = r.submitted_at ? new Date(r.submitted_at) : new Date(r.start_date);
                 if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
                     statTotal++;
                 }
@@ -340,8 +340,14 @@
                 const reqId = r.id.toString().padStart(4, '0');
                 const initial = r.full_name ? r.full_name.split(' ').pop().substring(0, 2).toUpperCase() : 'NV';
                 
-                // Format ngày hiển thị
-                const createdDate = r.created_at ? formatDate(r.created_at.split(' ')[0]) : '--';
+                // Format ngày và giờ hiển thị
+                let createdDate = '--';
+                if (r.submitted_at) {
+                    const parts = r.submitted_at.split(' ');
+                    const dateFmt = formatDate(parts[0]);
+                    const timeFmt = parts[1] ? parts[1].substring(0, 5) : '';
+                    createdDate = `${dateFmt} ${timeFmt}`;
+                }
                 const startFmt = formatDate(r.start_date);
                 const endFmt = formatDate(r.end_date);
                 const dRange = r.start_date === r.end_date ? startFmt : `${startFmt} - ${endFmt}`;
@@ -403,7 +409,7 @@
                 r.status === 'approved' ? 'Đã phê duyệt' : 
                 r.status === 'rejected' ? 'Bị từ chối' : 
                 r.status === 'cancelled' ? 'Đã hủy' : 'Đang xử lý',
-                r.created_at ? formatDate(r.created_at.split(' ')[0]) : '--'
+                r.submitted_at ? `${formatDate(r.submitted_at.split(' ')[0])} ${r.submitted_at.split(' ')[1].substring(0, 5)}` : '--'
             ]);
 
             const worksheet = XLSX.utils.aoa_to_sheet([...headers, ...rows]);
